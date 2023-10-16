@@ -65,9 +65,10 @@ const Onboarding = () => {
         <Logo href={'/onboarding'} />
 
         <div className={'w-full max-w-xl'}>
-          <If condition={currentStep === 0}>
+          {/* https://makerkit.dev/recipes/removing-organizations */}
+          {/* <If condition={currentStep === 0}>
             <OrganizationInfoStep onSubmit={onFirstStepSubmitted} />
-          </If>
+          </If> */}
 
           <If condition={currentStep === 1 && data}>
             {(data) => (

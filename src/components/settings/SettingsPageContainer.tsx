@@ -8,10 +8,11 @@ const links = [
     path: '/settings/profile',
     i18n: 'common:profileSettingsTabLabel',
   },
-  {
-    path: '/settings/organization',
-    i18n: 'common:organizationSettingsTabLabel',
-  },
+  // https://makerkit.dev/recipes/removing-organizations
+  // {
+  //   path: '/settings/organization',
+  //   i18n: 'common:organizationSettingsTabLabel',
+  // },
   {
     path: '/settings/subscription',
     i18n: 'common:subscriptionSettingsTabLabel',

@@ -93,14 +93,7 @@ service cloud.firestore {
     }
 
     match /organizations/{organizationId} {
-      allow create: if canCreateOrganization();
       allow read: if userId() in existingData().members;
-      allow update: if canUpdateOrganization(organizationId);
-
-      match /invites/{inviteId} {
-        allow delete: if isAdmin(organizationId);
-        allow list: if userIsMemberByOrganizationId(organizationId);
-      }
     }
 
     match /users/{user} {
