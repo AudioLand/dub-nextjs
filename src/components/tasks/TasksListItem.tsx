@@ -56,7 +56,7 @@ const TasksListItem: React.FC<{
                 className={'Toggle cursor-pointer'}
                 type="checkbox"
                 defaultChecked={task.done}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   return onDoneChange(e.currentTarget.checked);
                 }}
               />
@@ -85,7 +85,7 @@ const TasksListItem: React.FC<{
           <div className={'flex justify-end'}>
             <Tooltip content={`Delete Task`}>
               <IconButton
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
                   e.stopPropagation();
                   setIsDeleting(true);
                 }}
