@@ -6,7 +6,7 @@ import Heading from '~/core/ui/Heading';
 import AppSidebar from './AppSidebar';
 
 const RouteShellWithSidebar: React.FCC<{
-  title: string;
+  title: React.ReactNode;
 }> = ({ title, children }) => {
   useDisableBodyScrolling();
 
