@@ -5,4 +5,7 @@
  *
  * Use this interface for any more data you may want to add to a User record.
  */
-export interface UserData {}
+export interface UserData {
+	id: string;
+	role: number;
+}
