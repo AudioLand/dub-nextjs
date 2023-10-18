@@ -56,7 +56,8 @@ const configuration = {
     signUp: '/auth/sign-up',
     emailLinkSignIn: '/auth/link',
     onboarding: `/onboarding`,
-    appHome: '/dashboard',
+    dashboard: '/dashboard',
+    appHome: '/tasks',
     settings: {
       profile: '/settings/profile',
       authentication: '/settings/profile/authentication',

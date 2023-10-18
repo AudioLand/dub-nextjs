@@ -99,5 +99,10 @@ service cloud.firestore {
     match /users/{user} {
       allow read: if userId() == user;
     }
+
+    match /tasks/{taskId} {
+      allow create: if userIsMemberByOrganizationId(incomingData().organizationId);
+      allow read, update, delete: if userIsMemberByOrganizationId(existingData().organizationId);
+    }
   }
 }

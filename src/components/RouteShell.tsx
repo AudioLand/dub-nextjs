@@ -32,7 +32,7 @@ const RouteShellWithTopNavigation = dynamic(
 const redirectPathWhenSignedOut = '/';
 
 const RouteShell: React.FCC<{
-  title: string;
+  title: React.ReactNode;
   style?: LayoutStyle;
 }> = ({ title, style, children }) => {
   const layout = style ?? configuration.navigation.style;
@@ -60,7 +60,7 @@ const RouteShell: React.FCC<{
 
 function LayoutRenderer(
   props: React.PropsWithChildren<{
-    title: string;
+    title: React.ReactNode;
     style: LayoutStyle;
   }>,
 ) {
