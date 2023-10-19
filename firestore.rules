@@ -99,5 +99,9 @@ service cloud.firestore {
     match /users/{user} {
       allow read: if userId() == user;
     }
+
+    match /projects/{project} {
+      allow read, write: if request.auth != null;
+    }
   }
 }

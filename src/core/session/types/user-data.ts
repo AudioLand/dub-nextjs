@@ -5,4 +5,8 @@
  *
  * Use this interface for any more data you may want to add to a User record.
  */
-export interface UserData {}
+export interface UserData {
+	//^ All fields should be optional, because of complete-onboarding.ts file in 45 line
+	id?: string;
+	role?: number;
+}
