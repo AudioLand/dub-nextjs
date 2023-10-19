@@ -87,3 +87,5 @@ vcs.xml
 .env.*
 !.env.*.template
 !.env.test
+.vercel
+.env*.local
