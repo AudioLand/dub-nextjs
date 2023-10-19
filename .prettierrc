@@ -4,6 +4,6 @@
   "semi": true,
   "arrowParens": "always",
   "parser": "typescript",
-  "printWidth": 80,
+  "printWidth": 90,
   "singleQuote": false
 }
