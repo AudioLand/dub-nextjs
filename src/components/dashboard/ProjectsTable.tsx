@@ -35,8 +35,9 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
 			</TableHeader>
 
 			<TableBody>
-				{projects?.map(({ id, name, language, status, createdAt }) => (
-					<TableRow key={id}>
+				{projects?.map(({ name, language, status, createdAt }) => (
+					// TODO: add func to convert Firebase Timestamp to date string
+					<TableRow key={createdAt.toDate().toDateString()}>
 						<TableCell>{name}</TableCell>
 						<TableCell>{language}</TableCell>
 						<TableCell>{status}</TableCell>
