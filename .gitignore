@@ -83,6 +83,7 @@ cypress/screenshots
 vcs.xml
 .idea/
 
+.env
 .env.*
 !.env.*.template
 !.env.test
