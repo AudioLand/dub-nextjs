@@ -36,6 +36,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
 
   const [newProject, setNewProject] = useState<Project>({
     name: "",
+    userId: userId,
   } as Project);
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
