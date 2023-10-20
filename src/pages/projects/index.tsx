@@ -1,13 +1,13 @@
 import { GetServerSidePropsContext } from "next";
 
 import RouteShell from "~/components/RouteShell";
-import ProjectsList from "~/components/projects/ProjectsList";
+import ProjectsWrapper from "~/components/projects/ProjectsWrapper";
 import { withAppProps } from "~/lib/props/with-app-props";
 
 const Projects = () => {
   return (
     <RouteShell title={"Projects"}>
-      <ProjectsList />
+      <ProjectsWrapper />
     </RouteShell>
   );
 };
