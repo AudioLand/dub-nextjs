@@ -1,6 +1,5 @@
 // react
 import { ChangeEvent, FC, useState } from "react";
-import { useUser } from "reactfire";
 
 // ui-components
 import Button from "~/core/ui/Button";
@@ -29,14 +28,11 @@ interface CreateProjectModalProps {
 const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
   const { handleClose } = props;
 
-  const user = useUser();
-  const userId = user.data?.uid as string;
   const targetLanguages = useTargetLanguages();
   const createNewProject = useCreateProject();
 
   const [newProject, setNewProject] = useState<Project>({
     name: "",
-    userId: userId,
   } as Project);
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
