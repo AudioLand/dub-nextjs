@@ -1,27 +1,29 @@
-import {
-	CollectionReference,
-	collection,
-	query,
-	where,
-} from "firebase/firestore";
+// react
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
+
+// firebase
+import { CollectionReference, collection, query, where } from "firebase/firestore";
+
+// constants
 import { PROJECTS_COLLECTION } from "~/lib/firestore-collections";
-import { UserProject } from "../types/project";
+
+// types
+import { Project } from "../types/project";
 
 const useFetchProjects = (userId: string) => {
-	const firestore = useFirestore();
+  const firestore = useFirestore();
 
-	const collectionRef = collection(
-		firestore,
-		PROJECTS_COLLECTION,
-	) as CollectionReference<UserProject>;
+  const collectionRef = collection(
+    firestore,
+    PROJECTS_COLLECTION,
+  ) as CollectionReference<Project>;
 
-	const constraint = where("userId", "==", userId);
-	const organizationsQuery = query<UserProject>(collectionRef, constraint);
+  const constraint = where("userId", "==", userId);
+  const projectsQuery = query<Project>(collectionRef, constraint);
 
-	return useFirestoreCollectionData<UserProject>(organizationsQuery, {
-		idField: "id",
-	});
+  return useFirestoreCollectionData<Project>(projectsQuery, {
+    idField: "id",
+  });
 };
 
 export default useFetchProjects;
