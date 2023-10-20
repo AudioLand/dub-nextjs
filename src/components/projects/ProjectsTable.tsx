@@ -16,7 +16,7 @@ import {
 import { Project } from "~/lib/projects/types/project";
 
 interface ProjectsTableProps {
-  projects: Project[];
+  projects: WithId<Project>[];
 }
 
 export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
@@ -35,7 +35,7 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
       </TableHeader>
 
       <TableBody>
-        {projects?.map(({ name, language, status, createdAt }) => (
+        {projects?.map(({ id, name, language, status, createdAt }) => (
           // TODO: add func to convert Firebase Timestamp to date string
           <TableRow key={createdAt.toDate().toDateString()}>
             <TableCell>{name}</TableCell>
@@ -45,7 +45,7 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
             <TableCell className="flex flex-row gap-5">
               <Button variant="destructive">Remove</Button>
               <Button>Download</Button>
-              <Button>View</Button>
+              <Button href={`/projects/${id}`}>View</Button>
             </TableCell>
           </TableRow>
         ))}
