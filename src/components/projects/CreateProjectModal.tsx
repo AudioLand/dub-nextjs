@@ -115,6 +115,10 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
       fullFileUrl = await uploadFileToStorage(userMediaFile!, userId, createdProject.id);
     } catch (error) {
       console.error("Failed to upload file to storage", error);
+      await updateProject({
+        ...createdProject,
+        status: PROJECT_STATUSES.uploadError,
+      });
       return;
     }
 
