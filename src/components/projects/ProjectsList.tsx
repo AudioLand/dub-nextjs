@@ -11,7 +11,7 @@ import { ProjectsTable } from "./ProjectsTable";
 // hooks
 import useFetchProjects from "~/lib/projects/hooks/use-fetch-projects";
 
-const ProjectsList: FC<{ userId: string}> = ({ userId }) => {
+const ProjectsList: FC<{ userId: string }> = ({ userId }) => {
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
   const { data: projectsList, status } = useFetchProjects(userId);
 
@@ -22,6 +22,14 @@ const ProjectsList: FC<{ userId: string}> = ({ userId }) => {
   const handleCloseCreateProjectModal = () => {
     setCreateProjectModalOpen(false);
   };
+
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className={"flex flex-col space-y-6 pb-36"}>
@@ -34,13 +42,7 @@ const ProjectsList: FC<{ userId: string}> = ({ userId }) => {
         <CreateProjectModal handleClose={handleCloseCreateProjectModal} />
       </Modal>
 
-      {status === "loading" ? (
-        <div className="flex justify-center items-center">
-          <Spinner />
-        </div>
-      ) : (
-        <ProjectsTable projects={projectsList} />
-      )}
+      <ProjectsTable projects={projectsList} />
     </div>
   );
 };
