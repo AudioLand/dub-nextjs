@@ -1,38 +1,36 @@
-import Head from 'next/head';
-import dynamic from 'next/dynamic';
+import Head from "next/head";
+import dynamic from "next/dynamic";
 
-import configuration from '~/configuration';
-import { LayoutStyle } from '~/core/layout-style';
-import Layout from '~/core/ui/Layout';
+import configuration from "~/configuration";
+import { LayoutStyle } from "~/core/layout-style";
+import Layout from "~/core/ui/Layout";
 
 const Sonner = dynamic(async () => {
-  const { Toaster } = await import('sonner');
+  const { Toaster } = await import("sonner");
 
   return Toaster;
 });
 
 const FirebaseFirestoreProvider = dynamic(
-  () => import('~/core/firebase/components/FirebaseFirestoreProvider'),
+  () => import("~/core/firebase/components/FirebaseFirestoreProvider"),
 );
 
-const SentryProvider = dynamic(() => import('~/components/SentryProvider'));
+const SentryProvider = dynamic(() => import("~/components/SentryProvider"));
 
-const GuardedPage = dynamic(
-  () => import('~/core/firebase/components/GuardedPage'),
-);
+const GuardedPage = dynamic(() => import("~/core/firebase/components/GuardedPage"));
 
 const RouteShellWithSidebar = dynamic(
-  () => import('./layouts/sidebar/RouteShellWithSidebar'),
+  () => import("./layouts/sidebar/RouteShellWithSidebar"),
 );
 
 const RouteShellWithTopNavigation = dynamic(
-  () => import('./layouts/header/RouteShellWithTopNavigation'),
+  () => import("./layouts/header/RouteShellWithTopNavigation"),
 );
 
-const redirectPathWhenSignedOut = '/';
+const redirectPathWhenSignedOut = "/";
 
 const RouteShell: React.FCC<{
-  title: string;
+  title: React.ReactNode;
   style?: LayoutStyle;
 }> = ({ title, style, children }) => {
   const layout = style ?? configuration.navigation.style;
@@ -60,7 +58,7 @@ const RouteShell: React.FCC<{
 
 function LayoutRenderer(
   props: React.PropsWithChildren<{
-    title: string;
+    title: React.ReactNode;
     style: LayoutStyle;
   }>,
 ) {

@@ -3,7 +3,7 @@ import AppHeaderWithMenu from './AppHeaderWithMenu';
 import Container from '~/core/ui/Container';
 
 const RouteShellWithTopNavigation: React.FCC<{
-  title: string;
+  title: React.ReactNode;
 }> = ({ title, children }) => {
   return (
     <div className={'flex flex-1'}>

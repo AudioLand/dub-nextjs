@@ -37,10 +37,6 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
 
   const [newProject, setNewProject] = useState<Project>({
     name: "",
-    userId: userId,
-    targetLanguage: "",
-    status: "",
-    createdAt: Timestamp.fromDate(new Date()),
   } as Project);
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
@@ -88,7 +84,13 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
   const handleCreate = () => {
     if (isFormValid()) {
       handleClose();
-      createNewProject(newProject);
+      createNewProject({
+        ...newProject,
+        userId: userId,
+        // TODO: set initial status from statuses.ts
+        status: "",
+        createdAt: Timestamp.fromDate(new Date()),
+      });
     }
   };
 

@@ -1,5 +1,5 @@
 // react
-import { useState } from "react";
+import { FC, useState } from "react";
 
 // ui-components
 import Button from "~/core/ui/Button";
@@ -9,15 +9,11 @@ import CreateProjectModal from "./CreateProjectModal";
 import { ProjectsTable } from "./ProjectsTable";
 
 // hooks
-import { useUserSession } from "~/core/hooks/use-user-session";
 import useFetchProjects from "~/lib/projects/hooks/use-fetch-projects";
 
-const ProjectsList = () => {
-  const userSession = useUserSession();
-  const userData = userSession!.data!;
-
+const ProjectsList: FC<{ userId: string}> = ({ userId }) => {
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
-  const { data: projectsList, status } = useFetchProjects(userData.id!);
+  const { data: projectsList, status } = useFetchProjects(userId);
 
   const handleOpenCreateProjectModal = () => {
     setCreateProjectModalOpen(true);

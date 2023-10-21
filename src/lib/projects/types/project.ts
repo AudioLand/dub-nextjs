@@ -5,5 +5,7 @@ export type Project = {
   targetLanguage: string;
   status: string;
   userId: string;
+  input: string;
+  output: string;
   createdAt: Timestamp;
 };
