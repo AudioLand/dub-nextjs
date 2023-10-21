@@ -16,12 +16,12 @@ const useFetchProjects = (userId: string) => {
   const collectionRef = collection(
     firestore,
     PROJECTS_COLLECTION,
-  ) as CollectionReference<Project>;
+  ) as CollectionReference<WithId<Project>>;
 
   const constraint = where("userId", "==", userId);
-  const projectsQuery = query<Project>(collectionRef, constraint);
+  const projectsQuery = query<WithId<Project>>(collectionRef, constraint);
 
-  return useFirestoreCollectionData<Project>(projectsQuery, {
+  return useFirestoreCollectionData<WithId<Project>>(projectsQuery, {
     idField: "id",
   });
 };
