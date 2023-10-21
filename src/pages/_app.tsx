@@ -23,6 +23,7 @@ import { CsrfTokenContext } from "~/core/contexts/csrf-token";
 import { SidebarContext } from "~/core/contexts/sidebar";
 import { ThemeContext } from "~/core/contexts/theme";
 import { UserSessionContext } from "~/core/contexts/user-session";
+import FirebaseStorageProvider from "~/core/firebase/components/FirebaseStorageProvider";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import { UserData } from "~/core/session/types/user-data";
 import { UserSession } from "~/core/session/types/user-session";
@@ -30,18 +31,18 @@ import { OrganizationContext } from "~/lib/contexts/organization";
 import { Organization } from "~/lib/organizations/types/organization";
 
 const AppRouteLoadingIndicator = dynamic(
-	() => import("~/core/ui/AppRouteLoadingIndicator"),
-	{
-		ssr: false,
-	},
+  () => import("~/core/ui/AppRouteLoadingIndicator"),
+  {
+    ssr: false,
+  },
 );
 
 const fontFamilySans = SansFont({
-	subsets: ["latin"],
-	variable: "--font-family-sans",
-	fallback: ["system-ui", "Helvetica Neue", "Helvetica", "Arial"],
-	preload: true,
-	weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  variable: "--font-family-sans",
+  fallback: ["system-ui", "Helvetica Neue", "Helvetica", "Arial"],
+  preload: true,
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 // replace the below with your heading
@@ -49,103 +50,105 @@ const fontFamilySans = SansFont({
 const fontFamilyHeading = fontFamilySans;
 
 interface UIState {
-	sidebarState: string;
-	theme: "light" | "dark";
+  sidebarState: string;
+  theme: "light" | "dark";
 }
 
 interface DefaultPageProps extends SSRConfig {
-	session?: Maybe<AuthUser>;
-	user?: Maybe<UserData>;
-	organization?: Maybe<WithId<Organization>>;
-	csrfToken?: string;
-	ui?: UIState;
+  session?: Maybe<AuthUser>;
+  user?: Maybe<UserData>;
+  organization?: Maybe<WithId<Organization>>;
+  csrfToken?: string;
+  ui?: UIState;
 }
 
 function App(props: AppProps<DefaultPageProps> & { pageProps: DefaultPageProps }) {
-	const { Component } = props;
-	const pageProps = props.pageProps as DefaultPageProps;
-	const { emulator, firebase } = configuration;
-	const { i18n } = useTranslation();
+  const { Component } = props;
+  const pageProps = props.pageProps as DefaultPageProps;
+  const { emulator, firebase } = configuration;
+  const { i18n } = useTranslation();
 
-	const userSessionContext: UserSession = useMemo(() => {
-		return {
-			auth: pageProps.session,
-			data: pageProps.user,
-		};
-	}, [pageProps]);
+  const userSessionContext: UserSession = useMemo(() => {
+    return {
+      auth: pageProps.session,
+      data: pageProps.user,
+    };
+  }, [pageProps]);
 
-	const [organization, setOrganization] = useState<DefaultPageProps["organization"]>(
-		pageProps.organization,
-	);
+  const [organization, setOrganization] = useState<DefaultPageProps["organization"]>(
+    pageProps.organization,
+  );
 
-	const [userSession, setUserSession] = useState<Maybe<UserSession>>(userSessionContext);
+  const [userSession, setUserSession] = useState<Maybe<UserSession>>(userSessionContext);
 
-	const updateCurrentOrganization = useCallback(() => {
-		setOrganization(pageProps.organization);
-	}, [pageProps.organization]);
+  const updateCurrentOrganization = useCallback(() => {
+    setOrganization(pageProps.organization);
+  }, [pageProps.organization]);
 
-	const updateCurrentUser = useCallback(() => {
-		if (userSessionContext.auth) {
-			setUserSession(userSessionContext);
-		}
-	}, [userSessionContext]);
+  const updateCurrentUser = useCallback(() => {
+    if (userSessionContext.auth) {
+      setUserSession(userSessionContext);
+    }
+  }, [userSessionContext]);
 
-	useEffect(updateCurrentOrganization, [updateCurrentOrganization]);
-	useEffect(updateCurrentUser, [updateCurrentUser]);
+  useEffect(updateCurrentOrganization, [updateCurrentOrganization]);
+  useEffect(updateCurrentUser, [updateCurrentUser]);
 
-	//* Init Flagsmith API to get feature flags
-	initFlagsmith();
+  //* Init Flagsmith API to get feature flags
+  initFlagsmith();
 
-	return (
-		<FirebaseAppShell config={firebase}>
-			<FirebaseAppCheckProvider>
-				<FirebaseAuthProvider
-					language={i18n.language}
-					userSession={userSession}
-					setUserSession={setUserSession}
-					useEmulator={emulator}
-				>
-					<UserSessionContext.Provider value={{ userSession, setUserSession }}>
-						<OrganizationContext.Provider value={{ organization, setOrganization }}>
-							<FirebaseAnalyticsProvider>
-								<AppRouteLoadingIndicator />
+  return (
+    <FirebaseAppShell config={firebase}>
+      <FirebaseAppCheckProvider>
+        <FirebaseAuthProvider
+          language={i18n.language}
+          userSession={userSession}
+          setUserSession={setUserSession}
+          useEmulator={emulator}
+        >
+          <FirebaseStorageProvider>
+            <UserSessionContext.Provider value={{ userSession, setUserSession }}>
+              <OrganizationContext.Provider value={{ organization, setOrganization }}>
+                <FirebaseAnalyticsProvider>
+                  <AppRouteLoadingIndicator />
 
-								<UiStateProvider state={pageProps.ui}>
-									<CsrfTokenContext.Provider value={pageProps.csrfToken}>
-										<FontFamily />
-										<Component {...pageProps} />
-									</CsrfTokenContext.Provider>
-								</UiStateProvider>
-							</FirebaseAnalyticsProvider>
-						</OrganizationContext.Provider>
-					</UserSessionContext.Provider>
-				</FirebaseAuthProvider>
-			</FirebaseAppCheckProvider>
-		</FirebaseAppShell>
-	);
+                  <UiStateProvider state={pageProps.ui}>
+                    <CsrfTokenContext.Provider value={pageProps.csrfToken}>
+                      <FontFamily />
+                      <Component {...pageProps} />
+                    </CsrfTokenContext.Provider>
+                  </UiStateProvider>
+                </FirebaseAnalyticsProvider>
+              </OrganizationContext.Provider>
+            </UserSessionContext.Provider>
+          </FirebaseStorageProvider>
+        </FirebaseAuthProvider>
+      </FirebaseAppCheckProvider>
+    </FirebaseAppShell>
+  );
 }
 
 export default appWithTranslation<AppProps & { pageProps: DefaultPageProps }>(App);
 
 function UiStateProvider(
-	props: React.PropsWithChildren<{
-		state: Maybe<UIState>;
-	}>,
+  props: React.PropsWithChildren<{
+    state: Maybe<UIState>;
+  }>,
 ) {
-	const ui = props.state;
-	const isCollapsed = ui?.sidebarState === "collapsed";
-	const currentTheme = ui?.theme ?? configuration.theme;
+  const ui = props.state;
+  const isCollapsed = ui?.sidebarState === "collapsed";
+  const currentTheme = ui?.theme ?? configuration.theme;
 
-	const [collapsed, setCollapsed] = useCollapsible(isCollapsed);
-	const [theme, setTheme] = useState(currentTheme);
+  const [collapsed, setCollapsed] = useCollapsible(isCollapsed);
+  const [theme, setTheme] = useState(currentTheme);
 
-	return (
-		<SidebarContext.Provider value={{ collapsed, setCollapsed }}>
-			<ThemeContext.Provider value={{ theme, setTheme }}>
-				{props.children}
-			</ThemeContext.Provider>
-		</SidebarContext.Provider>
-	);
+  return (
+    <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
+      <ThemeContext.Provider value={{ theme, setTheme }}>
+        {props.children}
+      </ThemeContext.Provider>
+    </SidebarContext.Provider>
+  );
 }
 
 /**
@@ -153,22 +156,22 @@ function UiStateProvider(
  * Do not add it as an effect to _app.tsx, the flashing is very visible
  */
 if (isBrowser()) {
-	loadSelectedTheme();
+  loadSelectedTheme();
 }
 
 function FontFamily() {
-	return (
-		<style jsx global>
-			{`
-				html {
-					--font-family-sans: "-apple-system", "BlinkMacSystemFont",
-						${fontFamilySans.style.fontFamily}, "Segoe UI", "Roboto", "Ubuntu",
-						"sans-serif";
+  return (
+    <style jsx global>
+      {`
+        html {
+          --font-family-sans: "-apple-system", "BlinkMacSystemFont",
+            ${fontFamilySans.style.fontFamily}, "Segoe UI", "Roboto", "Ubuntu",
+            "sans-serif";
 
-					--font-family-heading: "-apple-system", "BlinkMacSystemFont",
-						${fontFamilyHeading.style.fontFamily};
-				}
-			`}
-		</style>
-	);
+          --font-family-heading: "-apple-system", "BlinkMacSystemFont",
+            ${fontFamilyHeading.style.fontFamily};
+        }
+      `}
+    </style>
+  );
 }
