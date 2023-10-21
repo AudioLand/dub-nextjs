@@ -21,6 +21,7 @@ import useCreateProject from "~/lib/projects/hooks/use-create-project";
 
 // types
 import { Timestamp } from "firebase/firestore";
+import PROJECT_STATUSES from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 
 interface CreateProjectModalProps {
@@ -37,6 +38,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
 
   const [newProject, setNewProject] = useState<Project>({
     name: "",
+    targetLanguage: "",
   } as Project);
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
@@ -83,14 +85,16 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
 
   const handleCreate = () => {
     if (isFormValid()) {
-      handleClose();
+      const projectNameIsEmpty = newProject.name.trim() === "";
+
       createNewProject({
         ...newProject,
+        name: projectNameIsEmpty ? "Untitled" : newProject.name,
         userId: userId,
-        // TODO: set initial status from statuses.ts
-        status: "",
+        status: PROJECT_STATUSES.uploading,
         createdAt: Timestamp.fromDate(new Date()),
       });
+      handleClose();
     }
   };
 
