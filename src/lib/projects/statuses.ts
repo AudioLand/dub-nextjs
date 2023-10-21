@@ -1,7 +1,7 @@
-const PROJECT_STATUSES = {
-  uploading: "uploading",
-  uploaded: "uploaded",
-  translated: "translated",
-};
+enum PROJECT_STATUSES {
+  uploading = "uploading",
+  uploaded = "uploaded",
+  translated = "translated",
+}
 
 export default PROJECT_STATUSES;

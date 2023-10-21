@@ -35,8 +35,9 @@ const ProjectsList: FC<{ userId: string}> = ({ userId }) => {
       </Modal>
 
       {status === "loading" ? (
-        // TODO: center this spinner
-        <Spinner />
+        <div className="flex justify-center items-center">
+          <Spinner />
+        </div>
       ) : (
         <ProjectsTable projects={projectsList} />
       )}
