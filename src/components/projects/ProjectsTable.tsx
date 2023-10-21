@@ -12,6 +12,8 @@ import {
   TableRow,
 } from "~/core/ui/Table";
 
+import PROJECT_STATUSES from "~/lib/projects/statuses";
+
 // types
 import { Project } from "~/lib/projects/types/project";
 
@@ -45,7 +47,9 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
             <TableCell className="flex flex-row gap-5">
               <Button variant="destructive">Remove</Button>
               <Button>Download</Button>
-              <Button href={`/projects/${id}`}>View</Button>
+              <Button disabled={status !== PROJECT_STATUSES.translated} href={`/projects/${id}`}>
+                View
+              </Button>
             </TableCell>
           </TableRow>
         ))}
