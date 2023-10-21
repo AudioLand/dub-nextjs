@@ -17,9 +17,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/core/ui/Tabs"
 
 import useFetchProject from "~/lib/projects/hooks/use-fetch-project";
 
-// types
-import { UserProject } from "~/lib/projects/types/project";
-
 const ProjectItem: React.FC<{
 	projectId: string;
 }> = ({ projectId }) => {
@@ -47,7 +44,7 @@ const ProjectItem: React.FC<{
 		<div>
 			<div className={"flex flex-1"}>
 				<div className={"absolute"}>
-					<Button size={"small"} color={"transparent"} href={"/dashboard"}>
+					<Button size={"small"} color={"transparent"} href={"/projects"}>
 						<ArrowLeftIcon className={"mr-2 h-4"} />
 						Back
 					</Button>
@@ -78,12 +75,12 @@ const ProjectItem: React.FC<{
 							/>
 						</TabsContent>
 					</Tabs>
-					<div className="flex border rounded-lg px-6 py-5">
-						<div className="mr-6">
+					<div className="flex flex-col md:flex-row border rounded-lg px-6 py-5">
+						<div className="mb-3 md:mr-6 md:mb-0">
 							<div className="text-[8px]">Name</div>
 							<div>{project.name}</div>
 						</div>
-						<div className="mr-6">
+						<div className="mb-3 md:mr-6 md:mb-0">
 							<div className="text-[8px]">Target language</div>
 							<div>{project.language}</div>
 						</div>
