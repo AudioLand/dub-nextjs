@@ -18,6 +18,8 @@ import FileUploader from "./FileUploader";
 // hooks
 import useTargetLanguages from "~/core/flagsmith/hooks/use-target-languages";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
+import useUpdateProject from "~/lib/projects/hooks/use-update-project";
+import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -35,6 +37,8 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
   const userId = user.data?.uid as string;
   const targetLanguages = useTargetLanguages();
   const createNewProject = useCreateProject();
+  const uploadFileToStorage = useUploadFileToStorage();
+  const updateProject = useUpdateProject();
 
   const [newProject, setNewProject] = useState<Project>({
     name: "",
@@ -83,19 +87,54 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
     return true;
   };
 
-  const handleCreate = () => {
-    if (isFormValid()) {
-      const projectNameIsEmpty = newProject.name.trim() === "";
+  const handleCreate = async () => {
+    if (!isFormValid()) {
+      return;
+    }
 
-      createNewProject({
+    const projectNameIsEmpty = newProject.name.trim() === "";
+
+    //* Create new project
+    let createdProject;
+    try {
+      createdProject = await createNewProject({
         ...newProject,
         name: projectNameIsEmpty ? "Untitled" : newProject.name,
         userId: userId,
         status: PROJECT_STATUSES.uploading,
         createdAt: Timestamp.fromDate(new Date()),
       });
-      handleClose();
+    } catch (error) {
+      console.error("Failed to create new project", error);
+      return;
     }
+
+    //* Upload file to google cloud storage
+    let fullFileUrl;
+    try {
+      fullFileUrl = await uploadFileToStorage(userMediaFile!, userId, createdProject.id);
+    } catch (error) {
+      console.error("Failed to upload file to storage", error);
+      await updateProject({
+        ...createdProject,
+        status: PROJECT_STATUSES.uploadError,
+      });
+      return;
+    }
+
+    //* Update project status and file link
+    try {
+      await updateProject({
+        ...createdProject,
+        status: PROJECT_STATUSES.uploaded,
+        originalFileLink: fullFileUrl,
+      });
+    } catch (error) {
+      console.error("Failed to update project", error);
+      return;
+    }
+
+    handleClose();
   };
 
   return (
