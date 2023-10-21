@@ -1,11 +1,15 @@
+// firebase
 import { Timestamp } from "firebase/firestore";
+
+// types
+import PROJECT_STATUSES from "../statuses";
 
 export type Project = {
   name: string;
   targetLanguage: string;
-  status: string;
+  status: PROJECT_STATUSES;
   userId: string;
-  input: string;
-  output: string;
+  originalFileLink: string;
+  translatedFileLink: string;
   createdAt: Timestamp;
 };
