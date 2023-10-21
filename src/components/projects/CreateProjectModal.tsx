@@ -20,6 +20,7 @@ import useTargetLanguages from "~/core/flagsmith/hooks/use-target-languages";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
 
 // types
+import { Timestamp } from "firebase/firestore";
 import { Project } from "~/lib/projects/types/project";
 
 interface CreateProjectModalProps {
@@ -37,6 +38,9 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
   const [newProject, setNewProject] = useState<Project>({
     name: "",
     userId: userId,
+    targetLanguage: "",
+    status: "",
+    createdAt: Timestamp.fromDate(new Date()),
   } as Project);
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
@@ -44,7 +48,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
 
   const handleNameUpdate = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = (e.currentTarget as HTMLInputElement).value;
+    const name = e.target.value;
     setNewProject((prevProject) => ({
       ...prevProject,
       name: name,
@@ -65,8 +69,8 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
     setUserMediaFile(file);
   };
 
-  const handleIsValid = () => {
-    const isTargetLanguageSelected = newProject.language?.length > 0;
+  const isFormValid = () => {
+    const isTargetLanguageSelected = newProject.targetLanguage.length > 0;
     const isMediaFileExists = userMediaFile !== undefined;
 
     if (!isTargetLanguageSelected) {
@@ -82,7 +86,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
   };
 
   const handleCreate = () => {
-    if (handleIsValid()) {
+    if (isFormValid()) {
       handleClose();
       createNewProject(newProject);
     }
@@ -114,7 +118,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
               <SelectItem
                 key={language}
                 value={language}
-                defaultChecked={newProject.language === language}
+                defaultChecked={newProject.targetLanguage === language}
               >
                 {language}
               </SelectItem>
