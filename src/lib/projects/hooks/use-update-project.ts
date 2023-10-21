@@ -16,7 +16,6 @@ const useUpdateProject = () => {
 
   return useCallback(
     async (project: WithId<Project>) => {
-      console.log("ggg", project);
       const projectRef = doc(
         firestore,
         PROJECTS_COLLECTION,
