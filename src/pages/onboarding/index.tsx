@@ -1,45 +1,35 @@
-import { useCallback, useEffect, useState } from 'react';
-import { GetServerSidePropsContext } from 'next';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useCallback, useEffect } from "react";
 
-import configuration from '~/configuration';
-import { withUserProps } from '~/lib/props/with-user-props';
+import configuration from "~/configuration";
+import { withUserProps } from "~/lib/props/with-user-props";
 
-import Logo from '~/core/ui/Logo';
-import If from '~/core/ui/If';
-import Layout from '~/core/ui/Layout';
+import Layout from "~/core/ui/Layout";
+import Logo from "~/core/ui/Logo";
 
-import { CompleteOnboardingStep } from '~/components/onboarding/CompleteOnboardingStep';
-
-import {
-  OrganizationInfoStep,
-  OrganizationInfoStepData,
-} from '~/components/onboarding/OrganizationInfoStep';
-
-import { withTranslationProps } from '~/lib/props/with-translation-props';
-
-interface Data {
-  organization: string;
-}
+import { CompleteOnboardingStep } from "~/components/onboarding/CompleteOnboardingStep";
+import { withTranslationProps } from "~/lib/props/with-translation-props";
 
 const appHome = configuration.paths.appHome;
 
 const Onboarding = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [data, setData] = useState<Data>();
+  // const [currentStep, setCurrentStep] = useState(0);
+  // const [data, setData] = useState<Data>();
   const router = useRouter();
 
-  const onFirstStepSubmitted = useCallback(
-    (organizationInfo: OrganizationInfoStepData) => {
-      setData({
-        organization: organizationInfo.organization,
-      });
+  // const onFirstStepSubmitted = useCallback(
+  //   (organizationInfo: OrganizationInfoStepData) => {
+  //     setData({
+  //       // organization: organizationInfo.organization,
+  //       organization: "",
+  //     } as Data);
 
-      setCurrentStep(1);
-    },
-    [],
-  );
+  //     setCurrentStep(1);
+  //   },
+  //   [],
+  // );
 
   // prefetch application home route
   useEffect(() => {
@@ -58,23 +48,26 @@ const Onboarding = () => {
 
       <div
         className={
-          'flex h-screen flex-1 flex-col items-center justify-center' +
-          ' w-full space-y-24'
+          "flex h-screen flex-1 flex-col items-center justify-center" +
+          " w-full space-y-24"
         }
       >
-        <Logo href={'/onboarding'} />
+        <Logo href={"/onboarding"} />
 
-        <div className={'w-full max-w-xl'}>
+        <div className={"w-full flex flex-col max-w-xl"}>
           {/* https://makerkit.dev/recipes/removing-organizations */}
           {/* <If condition={currentStep === 0}>
             <OrganizationInfoStep onSubmit={onFirstStepSubmitted} />
-          </If> */}
+          </If>
 
           <If condition={currentStep === 1 && data}>
-            {(data) => (
-              <CompleteOnboardingStep data={data} onComplete={onComplete} />
-            )}
-          </If>
+            {(data) => <CompleteOnboardingStep data={data} onComplete={onComplete} />}
+          </If> */}
+
+          <CompleteOnboardingStep
+            data={{ organization: "Organization" }}
+            onComplete={onComplete}
+          />
         </div>
       </div>
     </Layout>
@@ -112,7 +105,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   const { getCurrentOrganization } = await import(
-    '~/lib/server/organizations/get-current-organization'
+    "~/lib/server/organizations/get-current-organization"
   );
 
   const organization = await getCurrentOrganization(user.uid);
@@ -131,10 +124,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function redirectToSignIn() {
   const paths = configuration.paths;
 
-  const destination = [
-    paths.signIn,
-    `?returnUrl=${paths.onboarding}&signOut=true`,
-  ].join('/');
+  const destination = [paths.signIn, `?returnUrl=${paths.onboarding}&signOut=true`].join(
+    "/",
+  );
 
   return {
     redirect: {
@@ -145,7 +137,7 @@ function redirectToSignIn() {
 }
 
 function redirectToAppHome(locale: string | undefined) {
-  const localePrefix = locale ? `/${locale}` : '';
+  const localePrefix = locale ? `/${locale}` : "";
   const destination = `${localePrefix}${configuration.paths.appHome}`;
 
   return {
@@ -162,7 +154,7 @@ function redirectToAppHome(locale: string | undefined) {
  * @param userId
  */
 async function getUserData(userId: string) {
-  const { getUserRefById } = await import('~/lib/server/queries');
+  const { getUserRefById } = await import("~/lib/server/queries");
 
   const ref = await getUserRefById(userId);
   const data = ref.data();
