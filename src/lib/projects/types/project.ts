@@ -1,12 +1,11 @@
 import { Timestamp } from "firebase/firestore";
 
-export interface UserProject {
-	id: string;
-	name: string;
-	// TODO: add languages we use
-	language: string;
-	// TODO: add project statuses
-	status: string;
-	userId: string;
-	createdAt: Timestamp;
-}
+export type Project = {
+  name: string;
+  targetLanguage: string;
+  status: string;
+  userId: string;
+  input: string;
+  output: string;
+  createdAt: Timestamp;
+};
