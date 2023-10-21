@@ -34,12 +34,6 @@ const ProjectItem: React.FC<{
     );
   }
 
-  // TODO temporary added hardcoded media
-  project.output =
-    "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4";
-  project.input =
-    "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
-
   return (
     <div>
       <div className={"flex flex-1"}>
