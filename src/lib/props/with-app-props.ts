@@ -1,23 +1,23 @@
-import { GetServerSidePropsContext } from "next";
-import { parseCookies, setCookie } from "nookies";
+import { GetServerSidePropsContext } from 'next';
+import { parseCookies, setCookie } from 'nookies';
 
-import configuration from "~/configuration";
-import { getLoggedInUser } from "~/core/firebase/admin/auth/get-logged-in-user";
-import { getUserInfoById } from "~/core/firebase/admin/auth/get-user-info-by-id";
-import { initializeFirebaseAdminApp } from "~/core/firebase/admin/initialize-firebase-admin-app";
+import configuration from '~/configuration';
+import { getLoggedInUser } from '~/core/firebase/admin/auth/get-logged-in-user';
+import { getUserInfoById } from '~/core/firebase/admin/auth/get-user-info-by-id';
+import { initializeFirebaseAdminApp } from '~/core/firebase/admin/initialize-firebase-admin-app';
 
-import { withTranslationProps } from "~/lib/props/with-translation-props";
-import { getCurrentOrganization } from "~/lib/server/organizations/get-current-organization";
-import { getUserData } from "~/lib/server/queries";
+import { withTranslationProps } from '~/lib/props/with-translation-props';
+import { getCurrentOrganization } from '~/lib/server/organizations/get-current-organization';
+import { getUserData } from '~/lib/server/queries';
 
-import createCsrfCookie from "~/core/generic/create-csrf-token";
-import { signOutServerSession } from "~/core/session/sign-out-server-session";
+import createCsrfCookie from '~/core/generic/create-csrf-token';
+import { signOutServerSession } from '~/core/session/sign-out-server-session';
 
-const ORGANIZATION_ID_COOKIE_NAME = "organizationId";
+const ORGANIZATION_ID_COOKIE_NAME = 'organizationId';
 
 const DEFAULT_OPTIONS = {
   redirectPath: configuration.paths.signIn,
-  locale: configuration.site.locale ?? "en",
+  locale: configuration.site.locale ?? 'en',
   localeNamespaces: <string[]>[],
   requirePlans: <string[]>[],
 };
@@ -55,7 +55,8 @@ export async function withAppProps(
     const userId = metadata.uid;
     const isEmailVerified = metadata.emailVerified;
 
-    const requireEmailVerification = configuration.auth.requireEmailVerification;
+    const requireEmailVerification =
+      configuration.auth.requireEmailVerification;
 
     // when the user is not yet verified and we require email verification
     // redirect them back to the login page
@@ -72,9 +73,9 @@ export async function withAppProps(
 
     // when the user is not yet onboarded,
     // we simply redirect them back to the onboarding flow
-    // if (!isOnboarded) {
-    //   return redirectToOnboarding();
-    // }
+    if (!isOnboarded) {
+      return redirectToOnboarding();
+    }
 
     const currentOrganizationId = ctx.req.cookies[ORGANIZATION_ID_COOKIE_NAME];
 
@@ -99,7 +100,8 @@ export async function withAppProps(
       // if the user is not subscribed to a required plan
       // we redirect back to where they came from
       if (!isSubscribed) {
-        const destination = ctx.req.headers.referer || configuration.paths.appHome;
+        const destination =
+          ctx.req.headers.referer || configuration.paths.appHome;
 
         return {
           redirect: {
@@ -124,7 +126,8 @@ export async function withAppProps(
 
     const csrfToken = await createCsrfCookie(ctx);
 
-    const { props: translationProps } = await withTranslationProps(mergedOptions);
+    const { props: translationProps } =
+      await withTranslationProps(mergedOptions);
 
     const ui = getUiProps(ctx);
 
@@ -168,15 +171,15 @@ function redirectToLogin({
   const cleanReturnUrl = getPathFromReturnUrl(returnUrl);
 
   const params: StringObject = {
-    returnUrl: cleanReturnUrl ?? "/",
+    returnUrl: cleanReturnUrl ?? '/',
   };
 
   if (needsEmailVerification) {
-    params.needsEmailVerification = "true";
+    params.needsEmailVerification = 'true';
   }
 
   if (signOut) {
-    params.signOut = "true";
+    params.signOut = 'true';
   }
 
   const queryParams = new URLSearchParams(params);
@@ -206,7 +209,7 @@ function saveOrganizationInCookies(
   organizationId: string,
 ) {
   setCookie(ctx, ORGANIZATION_ID_COOKIE_NAME, organizationId, {
-    path: "/",
+    path: '/',
     httpOnly: true,
   });
 }
@@ -215,7 +218,7 @@ function saveOrganizationInCookies(
  * @name redirectToOnboarding
  */
 function redirectToOnboarding() {
-  const destination = configuration.paths.onboarding;
+  const destination = configuration.paths.appHome;
 
   return {
     redirect: {
@@ -239,8 +242,8 @@ function getAppPropsOptions(
 
 function getUiProps(ctx: GetServerSidePropsContext) {
   const cookies = parseCookies(ctx);
-  const sidebarState = cookies["sidebarState"] ?? "expanded";
-  const theme = cookies["theme"] ?? "light";
+  const sidebarState = cookies['sidebarState'] ?? 'expanded';
+  const theme = cookies['theme'] ?? 'light';
 
   return {
     sidebarState,
@@ -252,6 +255,6 @@ function getPathFromReturnUrl(returnUrl: string) {
   try {
     return new URL(returnUrl).pathname;
   } catch (e) {
-    return returnUrl.split("?")[0];
+    return returnUrl.split('?')[0];
   }
 }
