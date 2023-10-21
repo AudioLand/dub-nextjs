@@ -35,11 +35,11 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
       </TableHeader>
 
       <TableBody>
-        {projects?.map(({ name, language, status, createdAt }) => (
+        {projects?.map(({ name, targetLanguage, status, createdAt }) => (
           // TODO: add func to convert Firebase Timestamp to date string
           <TableRow key={createdAt.toDate().toDateString()}>
             <TableCell>{name}</TableCell>
-            <TableCell>{language}</TableCell>
+            <TableCell>{targetLanguage}</TableCell>
             <TableCell>{status}</TableCell>
             <TableCell>{createdAt.toDate().toDateString()}</TableCell>
             <TableCell className="flex flex-row gap-5">

@@ -60,7 +60,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
 
     setNewProject((prevProject) => ({
       ...prevProject,
-      language: language,
+      targetLanguage: language,
     }));
   };
 
