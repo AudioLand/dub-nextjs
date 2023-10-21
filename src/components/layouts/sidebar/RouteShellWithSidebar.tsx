@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { isBrowser } from '~/core/generic/is-browser';
-import AppHeaderNoMenu from './AppHeaderNoMenu';
-import Heading from '~/core/ui/Heading';
-import AppSidebar from './AppSidebar';
+import { isBrowser } from "~/core/generic/is-browser";
+import AppHeaderNoMenu from "./AppHeaderNoMenu";
+import Heading from "~/core/ui/Heading";
+import AppSidebar from "./AppSidebar";
 
 const RouteShellWithSidebar: React.FCC<{
   title: React.ReactNode;
@@ -11,25 +11,21 @@ const RouteShellWithSidebar: React.FCC<{
   useDisableBodyScrolling();
 
   return (
-    <div className={'flex h-full flex-1 overflow-hidden'}>
-      <div className={'hidden lg:block'}>
+    <div className={"flex h-full flex-1 overflow-hidden"}>
+      <div className={"hidden lg:block"}>
         <AppSidebar />
       </div>
 
-      <div
-        className={
-          'relative mx-auto h-screen w-full overflow-y-auto flex flex-col'
-        }
-      >
+      <div className={"relative mx-auto h-screen w-full overflow-y-auto flex flex-col"}>
         <AppHeaderNoMenu>
-          <div className={'w-full'}>
+          <div className={"w-full"}>
             <Heading type={5}>
-              <span className={'font-medium dark:text-white'}>{title}</span>
+              <span className={"font-medium dark:text-white"}>{title}</span>
             </Heading>
           </div>
         </AppHeaderNoMenu>
 
-        <div className={'p-3 flex flex-col flex-1'}>{children}</div>
+        <div className={"p-3 flex flex-col flex-1"}>{children}</div>
       </div>
     </div>
   );
@@ -43,10 +39,10 @@ function useDisableBodyScrolling() {
       return;
     }
 
-    document.body.style.setProperty('overflow', 'hidden');
+    document.body.style.setProperty("overflow", "hidden");
 
     return () => {
-      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty("overflow");
     };
   }, []);
 }

@@ -47,7 +47,10 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
             <TableCell className="flex flex-row gap-5">
               <Button variant="destructive">Remove</Button>
               <Button>Download</Button>
-              <Button disabled={status !== PROJECT_STATUSES.translated} href={`/projects/${id}`}>
+              <Button
+                disabled={status !== PROJECT_STATUSES.translated}
+                href={`/projects/${id}`}
+              >
                 View
               </Button>
             </TableCell>

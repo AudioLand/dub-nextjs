@@ -11,36 +11,32 @@ import ErrorBoundary from "~/core/ui/ErrorBoundary";
 import { withAppProps } from "~/lib/props/with-app-props";
 
 // types
-import { UserProject } from "~/lib/projects/types/project";
+import { Project } from "~/lib/projects/types/project";
 
-const ProjectPage: React.FC<{ projectId: UserProject["id"] }> = ({
-	projectId,
-}) => {
-	return (
-		<RouteShell title={"Project"}>
-			<ErrorBoundary
-				fallback={<Alert type={"error"}>Ops, an error occurred :(</Alert>}
-			>
-				<ProjectItem projectId={projectId} />
-			</ErrorBoundary>
-		</RouteShell>
-	);
+const ProjectPage: React.FC<{ projectId: WithId<Project>["id"] }> = ({ projectId }) => {
+  return (
+    <RouteShell title={"Project"}>
+      <ErrorBoundary fallback={<Alert type={"error"}>Ops, an error occurred :(</Alert>}>
+        <ProjectItem projectId={projectId} />
+      </ErrorBoundary>
+    </RouteShell>
+  );
 };
 
 export default ProjectPage;
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-	const appProps = await withAppProps(ctx);
-	const projectId = ctx.query.id;
+  const appProps = await withAppProps(ctx);
+  const projectId = ctx.query.id;
 
-	if ("props" in appProps) {
-		return {
-			props: {
-				...(appProps.props ?? {}),
-				projectId,
-			},
-		};
-	}
+  if ("props" in appProps) {
+    return {
+      props: {
+        ...(appProps.props ?? {}),
+        projectId,
+      },
+    };
+  }
 
-	return appProps;
+  return appProps;
 }
