@@ -26,6 +26,8 @@
     "healthcheck": "npm run lint && npm run typecheck",
     "firebase:emulators:start": "firebase emulators:start --project audioland-dub-dev --import ./firebase-seed",
     "firebase:emulators:export": "firebase emulators:export --project audioland-dub-dev ./firebase-seed",
+    "firebase:functions:deploy:dev": "firebase deploy --only functions --project dev",
+    "firebase:functions:deploy:prod": "firebase deploy --only functions",
     "cypress": "NODE_ENV=test cypress open",
     "cypress:headless": "NODE_ENV=test cypress run",
     "test": "firebase emulators:exec --project audioland-dub-dev --import ./firebase-seed \"sh ./scripts/test.sh\"",
