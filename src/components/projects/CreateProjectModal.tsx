@@ -91,6 +91,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
     if (!isFormValid()) {
       return;
     }
+    handleClose();
 
     const projectNameIsEmpty = newProject.name.trim() === "";
 
@@ -133,8 +134,6 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
       console.error("Failed to update project", error);
       return;
     }
-
-    handleClose();
   };
 
   return (
