@@ -2,8 +2,8 @@
 /* eslint-disable max-len */
 
 // firebase
-import {onRequest} from "firebase-functions/v2/https";
 import {log} from "firebase-functions/logger";
+import {onRequest} from "firebase-functions/v2/https";
 
 // infra
 import {firestore} from "../infra/cloudFunctions";
@@ -11,7 +11,7 @@ import {firestore} from "../infra/cloudFunctions";
 // types
 import {Project} from "../types/project";
 
-export const updateTranslatedProject = onRequest((request, response) => {
+export const updateTranslatedProject = onRequest(async (request, response) => {
   try {
     const data: Project = request.body;
     const projectId = data.id;
@@ -21,14 +21,19 @@ export const updateTranslatedProject = onRequest((request, response) => {
 
     // Update project's status and translated file link
     const projectRef = firestore.collection("projects").doc(projectId);
-    projectRef.update({
-      status: newStatus,
-      translatedFileLink: translatedFileLink,
-    });
-    log(`Project with id: ${projectId} was updated with { status: ${newStatus}, translatedFileLink: ${translatedFileLink} }`);
-
-    response.status(200).send("Translated project status updated successfully!");
+    const projectData = await projectRef.get();
+    if (projectData.exists) {
+      projectRef.update({
+        status: newStatus,
+        translatedFileLink: translatedFileLink,
+      });
+      log(`Project with id: ${projectId} was updated with { status: ${newStatus}, translatedFileLink: ${translatedFileLink} }`);
+      response.status(200).send("Translated project status updated successfully!!");
+    } else {
+      log(`Project with id ${projectId} does not exist`);
+      response.status(400).send(`Project with id ${projectId} does not exist`);
+    }
   } catch (err: any) {
-    response.status(400).send(`Error code: ${err.code} | Error message: ${err.message}`);
+    response.send(`Error code: ${err.code} | Error message: ${err.message}`);
   }
 });
