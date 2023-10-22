@@ -1,24 +1,23 @@
-import { useCallback, useContext } from 'react';
-import { GetServerSidePropsContext } from 'next';
-import { Trans } from 'next-i18next';
-import { UserInfo } from 'firebase/auth';
-import { useUser } from 'reactfire';
+import { useCallback, useContext } from "react";
+import { GetServerSidePropsContext } from "next";
+import { Trans } from "next-i18next";
+import { UserInfo } from "firebase/auth";
+import { useUser } from "reactfire";
 
-import FirebaseStorageProvider from '~/core/firebase/components/FirebaseStorageProvider';
+import { withAppProps } from "~/lib/props/with-app-props";
+import { UserSessionContext } from "~/core/contexts/user-session";
 
-import { withAppProps } from '~/lib/props/with-app-props';
-import { UserSessionContext } from '~/core/contexts/user-session';
-
-import UpdateProfileForm from '~/components/profile/UpdateProfileForm';
-import ProfileSettingsTabs from '~/components/profile/ProfileSettingsTabs';
-import SettingsPageContainer from '~/components/settings/SettingsPageContainer';
-import SettingsContentContainer from '~/components/settings/SettingsContentContainer';
-import SettingsTile from '~/components/settings/SettingsTile';
-import Head from 'next/head';
+import UpdateProfileForm from "~/components/profile/UpdateProfileForm";
+import ProfileSettingsTabs from "~/components/profile/ProfileSettingsTabs";
+import SettingsPageContainer from "~/components/settings/SettingsPageContainer";
+import SettingsContentContainer from "~/components/settings/SettingsContentContainer";
+import SettingsTile from "~/components/settings/SettingsTile";
+import Head from "next/head";
 
 type ProfileData = Partial<UserInfo>;
 
 const Profile = () => {
+  console.log("Profile провалились");
   const { userSession, setUserSession } = useContext(UserSessionContext);
   const { data: user } = useUser();
 
@@ -36,7 +35,7 @@ const Profile = () => {
         });
       }
     },
-    [setUserSession, userSession]
+    [setUserSession, userSession],
   );
 
   if (!user) {
@@ -44,21 +43,19 @@ const Profile = () => {
   }
 
   return (
-    <SettingsPageContainer title={'Settings'}>
+    <SettingsPageContainer title={"Settings"}>
       <Head>
-        <title key={'title'}>My Details</title>
+        <title key={"title"}>My Details</title>
       </Head>
 
       <ProfileSettingsTabs />
 
       <SettingsContentContainer>
         <SettingsTile
-          heading={<Trans i18nKey={'profile:generalTab'} />}
-          subHeading={<Trans i18nKey={'profile:generalTabSubheading'} />}
+          heading={<Trans i18nKey={"profile:generalTab"} />}
+          subHeading={<Trans i18nKey={"profile:generalTabSubheading"} />}
         >
-          <FirebaseStorageProvider>
-            <UpdateProfileForm user={user} onUpdate={onUpdate} />
-          </FirebaseStorageProvider>
+          <UpdateProfileForm user={user} onUpdate={onUpdate} />
         </SettingsTile>
       </SettingsContentContainer>
     </SettingsPageContainer>
