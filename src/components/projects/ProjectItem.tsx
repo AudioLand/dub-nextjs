@@ -1,18 +1,7 @@
-import { useState, useEffect } from "react";
-
-import PageLoadingIndicator from "~/core/ui/PageLoadingIndicator";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-  SelectLabel,
-} from "~/core/ui/Select";
-import Alert from "~/core/ui/Alert";
 import ArrowLeftIcon from "@heroicons/react/24/outline/ArrowLeftIcon";
+import Alert from "~/core/ui/Alert";
 import Button from "~/core/ui/Button";
+import PageLoadingIndicator from "~/core/ui/PageLoadingIndicator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/core/ui/Tabs";
 
 import useFetchProject from "~/lib/projects/hooks/use-fetch-project";
@@ -53,10 +42,10 @@ const ProjectItem: React.FC<{
               <TabsTrigger value="origin">Origin</TabsTrigger>
             </TabsList>
             <TabsContent value="translated" className="mt-6 w-full">
-              <video className="w-full" controls src={project.output} />
+              <video className="w-full" controls src={project.translatedFileLink} />
             </TabsContent>
             <TabsContent value="origin" className="mt-6 w-full">
-              <video className="w-full" controls src={project.input} />
+              <video className="w-full" controls src={project.originalFileLink} />
             </TabsContent>
           </Tabs>
           <div className="flex flex-col md:flex-row border rounded-lg px-6 py-5">
@@ -66,7 +55,7 @@ const ProjectItem: React.FC<{
             </div>
             <div className="mb-3 md:mr-6 md:mb-0">
               <div className="text-[8px]">Target language</div>
-              <div>{project.language}</div>
+              <div>{project.targetLanguage}</div>
             </div>
             <div>
               <div className="text-[8px]">Created at</div>
