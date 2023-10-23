@@ -111,9 +111,11 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
     }
 
     //* Upload file to google cloud storage
-    let fullFileUrl;
+    let publicUrl, filePathInBucket;
     try {
-      fullFileUrl = await uploadFileToStorage(userMediaFile!, userId, createdProject.id);
+      const data = await uploadFileToStorage(userMediaFile!, userId, createdProject.id);
+      publicUrl = data.publicUrl;
+      filePathInBucket = data.filePathInBucket;
     } catch (error) {
       console.error("Failed to upload file to storage", error);
       await updateProject({
@@ -128,7 +130,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
       await updateProject({
         ...createdProject,
         status: PROJECT_STATUSES.uploaded,
-        originalFileLink: fullFileUrl,
+        originalFileLink: publicUrl,
       });
     } catch (error) {
       console.error("Failed to update project", error);
@@ -138,7 +140,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
     //* Trigger ML pipeline URL to start work
     try {
       const response = await fetch(
-        `https://audioland.fly.dev/?original_file_location=${fullFileUrl}&project_id${createdProject.id}`,
+        `https://audioland.fly.dev/?project_id${createdProject.id}&original_file_location=${filePathInBucket}`,
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

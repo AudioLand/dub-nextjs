@@ -20,7 +20,10 @@ const useUploadFileToStorage = () => {
       error: `Something went wrong..`,
     });
 
-    return getDownloadURL(reference)
+    return {
+      publicUrl: await getDownloadURL(reference),
+      filePathInBucket: path
+    }
   };
 
   return useCallback(uploadFile, [storage]);
