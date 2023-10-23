@@ -1,6 +1,9 @@
 name: Deploy to Firebase
 
 on:
+  push:
+    branches:
+      - main
   workflow_run:
     workflows: ["🚀 Build", "Code Review GPT"]
     types:
