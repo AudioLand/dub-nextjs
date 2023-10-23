@@ -1,20 +1,11 @@
 import Image from "next/image";
 import { GetStaticPropsContext } from "next";
 
-import {
-  BuildingLibraryIcon,
-  CubeIcon,
-  DocumentIcon,
-  PaintBrushIcon,
-  UserGroupIcon,
-  UserIcon,
-  ChevronRightIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 import Container from "~/core/ui/Container";
 import SubHeading from "~/core/ui/SubHeading";
 import Button from "~/core/ui/Button";
-import Divider from "~/core/ui/Divider";
 import Heading from "~/core/ui/Heading";
 import Layout from "~/core/ui/Layout";
 import SiteHeader from "~/components/SiteHeader";
@@ -139,16 +130,6 @@ function HeroTitle({ children }: React.PropsWithChildren) {
   );
 }
 
-function FeatureIcon(props: React.PropsWithChildren) {
-  return (
-    <div className={"flex"}>
-      <div className={"rounded-xl bg-primary/10 p-4 dark:bg-primary/30"}>
-        {props.children}
-      </div>
-    </div>
-  );
-}
-
 function Pill(props: React.PropsWithChildren) {
   return (
     <h2
@@ -163,28 +144,6 @@ function Pill(props: React.PropsWithChildren) {
       <span>{props.children}</span>
     </h2>
   );
-}
-
-function FeatureShowcaseContainer(props: React.PropsWithChildren) {
-  return (
-    <div
-      className={
-        "flex flex-col lg:flex-row items-center justify-between" + " lg:space-x-24"
-      }
-    >
-      {props.children}
-    </div>
-  );
-}
-
-function LeftFeatureContainer(props: React.PropsWithChildren) {
-  return (
-    <div className={"flex flex-col space-y-8 w-full lg:w-6/12"}>{props.children}</div>
-  );
-}
-
-function RightFeatureContainer(props: React.PropsWithChildren) {
-  return <div className={"flex w-full lg:w-6/12"}>{props.children}</div>;
 }
 
 function MainCallToActionButton() {
