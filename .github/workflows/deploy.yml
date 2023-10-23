@@ -1,0 +1,37 @@
+name: Deploy to Firebase
+
+on:
+  workflow_run:
+    workflows: ["🚀 Build", "Code Review GPT"]
+    types:
+      - completed
+
+jobs:
+  all-is-okey:
+    name: Deploy
+    runs-on: "ubuntu-latest"
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.11.0
+
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm ci
+
+      # TODO start: when we'll start use dev project, update in 3 steps below here prod => dev
+    - name: Deploy Firestore rules to Production
+      run: npm run firebase:firestore:rules:deploy:prod
+
+    - name: Deploy Storage rules to Production
+      run: npm run firebase:storage:rules:deploy:prod
+
+    - name: Deploy Functions to Production
+      run: npm run firebase:functions:deploy:prod
