@@ -140,7 +140,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
     //* Trigger ML pipeline URL to start work
     try {
       const response = await fetch(
-        `https://audioland.fly.dev/?project_id${createdProject.id}&original_file_location=${filePathInBucket}`,
+        `https://audioland.fly.dev/?project_id=${createdProject.id}&original_file_location=${filePathInBucket}`,
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
