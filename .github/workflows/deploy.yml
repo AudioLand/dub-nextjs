@@ -29,7 +29,9 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-      # TODO start: when we'll start use dev project, update in 3 steps below here prod => dev
+    - name: Select Firebase project
+      run: firebase use default
+
     - name: Deploy Firestore rules to Production
       run: npm run firebase:firestore:rules:deploy:prod
 
