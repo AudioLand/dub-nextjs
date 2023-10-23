@@ -134,6 +134,19 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
       console.error("Failed to update project", error);
       return;
     }
+
+    //* Trigger ML pipeline URL to start work
+    try {
+      const response = await fetch(
+        `https://audioland.fly.dev/?original_file_location=${fullFileUrl}&project_id${createdProject.id}`,
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error("Failed to trigger ML pipeline", error);
+      return;
+    }
   };
 
   return (
