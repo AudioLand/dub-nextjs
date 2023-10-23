@@ -8,8 +8,8 @@ enum Themes {
 
 const configuration = {
   site: {
-    name: 'Awesomely - Your SaaS Title',
-    description: 'Your SaaS Description',
+    name: 'DUB - Translate video & audio',
+    description: 'Make your videos speak more languages',
     themeColor: '#ffffff',
     themeColorDark: '#0a0a0a',
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL as string,
