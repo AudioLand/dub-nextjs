@@ -120,7 +120,7 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
       console.error("Failed to upload file to storage", error);
       await updateProject({
         ...createdProject,
-        status: PROJECT_STATUSES.uploadError,
+        status: PROJECT_STATUSES.uploadingError,
       });
       return;
     }
