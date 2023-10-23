@@ -10,7 +10,7 @@ const useUploadFileToStorage = () => {
   const storage = useStorage();
 
   const uploadFile = async (file: File, userId: string, projectId: string) => {
-    const path = `/${userId}/${projectId}/${file.name}`;
+    const path = `${userId}/${projectId}/${file.name}`;
     const reference = ref(storage, path);
     const promise = uploadBytes(reference, file, {});
 
