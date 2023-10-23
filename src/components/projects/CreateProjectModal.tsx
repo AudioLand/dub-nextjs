@@ -16,8 +16,8 @@ import TextField from "~/core/ui/TextField";
 import FileUploader from "./FileUploader";
 
 // hooks
-import useTargetLanguages from "~/core/flagsmith/hooks/use-target-languages";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
+import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 
@@ -139,9 +139,14 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
 
     //* Trigger ML pipeline URL to start work
     try {
-      const response = await fetch(
-        `https://audioland.fly.dev/?project_id=${createdProject.id}&original_file_location=${filePathInBucket}`,
-      );
+      const requestParams = new URLSearchParams({
+        project_id: createdProject.id,
+        target_language: createdProject.targetLanguage,
+        original_file_location: filePathInBucket,
+      });
+
+      const url = `https://audioland.fly.dev/?${requestParams.toString()}`;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
