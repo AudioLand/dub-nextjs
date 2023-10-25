@@ -1,6 +1,9 @@
 // react
 import { ChangeEvent, Dispatch, DragEvent, FC, SetStateAction, useRef } from "react";
 
+// hooks
+import useMaxMediaFileDuration from "~/lib/projects/hooks/use-max-media-file-duration";
+
 // icons
 import { ArrowUpTrayIcon, DocumentCheckIcon } from "@heroicons/react/24/outline";
 
@@ -30,6 +33,7 @@ const ACCEPTED_FILES = [
   "video/mpeg",
   "video/3gpp",
 ];
+const ICON_IN_DROPZONE_SIZE = 48;
 
 interface FileUploaderProps {
   file: File | undefined;
@@ -41,39 +45,55 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
   const { file, handleUploadFile, setFileErrorMessage } = props;
   const filesInputRef = useRef<HTMLInputElement>(null);
   const isFileExists = file !== undefined;
-  const ICON_IN_DROPZONE_SIZE = 48;
+
+  const MAX_MEDIA_FILE_DURATION = useMaxMediaFileDuration();
+
+  const tryToSaveFile = (uploadedFile: File | null) => {
+    setFileErrorMessage("");
+
+    if (uploadedFile) {
+      const objectUrl = URL.createObjectURL(uploadedFile);
+      const audio = new Audio(objectUrl);
+
+      audio.addEventListener("loadedmetadata", () => {
+        if (audio.duration <= MAX_MEDIA_FILE_DURATION.inSeconds) {
+          const isFileTypeAccepted = ACCEPTED_FILES.includes(uploadedFile.type);
+          if (isFileTypeAccepted) {
+            handleUploadFile(uploadedFile);
+          } else {
+            setFileErrorMessage("Wrong file type. Please, upload audio or video file");
+          }
+        } else {
+          setFileErrorMessage(
+            `Too long file. Please, upload a file with a duration of no more than ${MAX_MEDIA_FILE_DURATION.inMinutes} minutes`,
+          );
+        }
+        URL.revokeObjectURL(objectUrl);
+      });
+    } else {
+      setFileErrorMessage("No file was uploaded.");
+    }
+  };
 
   const handleDropzoneClick = () => {
     filesInputRef.current?.click();
-  };
-
-  const handleDroppedFiles = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setFileErrorMessage("");
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      const isFileTypeAccepted = ACCEPTED_FILES.includes(file.type);
-      if (isFileTypeAccepted) {
-        handleUploadFile(file);
-      } else {
-        setFileErrorMessage("Wrong file type. Upload audio or video file");
-      }
-    } else {
-      setFileErrorMessage("No file was dropped.");
-    }
   };
 
   const handleDropOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
+  const handleDroppedFiles = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    tryToSaveFile(file);
+  };
+
   const handleUploadFiles = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files![0];
-    const isFileTypeAccepted = ACCEPTED_FILES.includes(file.type);
-    if (isFileTypeAccepted) {
-      handleUploadFile(file);
-    } else {
-      setFileErrorMessage("Wrong file type. Upload audio or video file");
+    e.preventDefault();
+    const filesList = e.target.files;
+    if (filesList) {
+      tryToSaveFile(filesList.item(0));
     }
   };
 
