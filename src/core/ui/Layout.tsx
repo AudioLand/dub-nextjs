@@ -1,7 +1,7 @@
-import Head from 'next/head';
-import configuration from '~/configuration';
-import { useContext } from 'react';
-import { ThemeContext } from '~/core/contexts/theme';
+import Head from "next/head";
+import { useContext } from "react";
+import configuration from "~/configuration";
+import { ThemeContext } from "~/core/contexts/theme";
 
 const Layout: React.FCC = ({ children }) => {
   const siteUrl = configuration.site.siteUrl;
@@ -14,14 +14,14 @@ const Layout: React.FCC = ({ children }) => {
     name: configuration.site.name,
     url: siteUrl,
     logo: `${siteUrl}/assets/images/favicon/favicon-150x150.png`,
-    '@context': 'https://schema.org',
-    '@type': 'Organization', // change to person for Personal websites
+    "@context": "https://schema.org",
+    "@type": "Organization", // change to person for Personal websites
   };
 
   return (
     <>
       <Head>
-        <title key={'title'}>{configuration.site.name}</title>
+        <title key={"title"}>{configuration.site.name}</title>
 
         <link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" />
 
@@ -56,11 +56,13 @@ const Layout: React.FCC = ({ children }) => {
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
 
-        <meta name="msapplication-TileColor" content="#ffffff" />
         <meta
-          name="msapplication-config"
-          content="/favicon/browserconfig.xml"
+          name="google-site-verification"
+          content="VwFn4zBGTiUrqKCdwjXQta4mKqQJOda3pcBteUGPSdM"
         />
+
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
 
         <MetaColor />
 
@@ -70,11 +72,7 @@ const Layout: React.FCC = ({ children }) => {
           key="meta:description"
         />
 
-        <meta
-          property="og:title"
-          key="og:title"
-          content={configuration.site.name}
-        />
+        <meta property="og:title" key="og:title" content={configuration.site.name} />
 
         <meta
           property="og:description"
@@ -86,10 +84,7 @@ const Layout: React.FCC = ({ children }) => {
         <meta property="twitter:title" content={configuration.site.siteName} />
         <meta property="twitter:card" content="summary_large_image" />
 
-        <meta
-          property="twitter:creator"
-          content={configuration.site.twitterHandle}
-        />
+        <meta property="twitter:creator" content={configuration.site.twitterHandle} />
 
         <script
           async
@@ -110,9 +105,7 @@ function MetaColor() {
   const { theme } = useContext(ThemeContext);
 
   const color =
-    theme === 'dark'
-      ? configuration.site.themeColorDark
-      : configuration.site.themeColor;
+    theme === "dark" ? configuration.site.themeColorDark : configuration.site.themeColor;
 
   return <meta name="theme-color" content={color} />;
 }
