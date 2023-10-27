@@ -32,11 +32,6 @@ const ProjectsWrapper = () => {
 
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
 
-  const redirectToPaywall = () => {
-    const payWallPage = configuration.paths.settings.subscription;
-    return router.push(payWallPage);
-  };
-
   const handleOpenCreateProjectModal = () => {
     setCreateProjectModalOpen(true);
   };
