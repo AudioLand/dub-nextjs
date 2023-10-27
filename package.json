@@ -35,7 +35,8 @@
     "cypress": "NODE_ENV=test cypress open",
     "cypress:headless": "NODE_ENV=test cypress run",
     "test": "firebase emulators:exec --project audioland-dub-dev --import ./firebase-seed \"sh ./scripts/test.sh\"",
-    "stripe:listen": "docker run --rm -it --name=stripe -v ~/.config/stripe:/root/.config/stripe stripe/stripe-cli:latest listen --forward-to http://host.docker.internal:3000/api/stripe/webhook",
+    "stripe:listen:docker": "docker run --rm -it --name=stripe -v ~/.config/stripe:/root/.config/stripe stripe/stripe-cli:latest listen --forward-to http://host.docker.internal:3000/api/stripe/webhook",
+    "stripe:listen:local": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
     "stripe:mock-server": "docker run --rm -it -p 12111-12112:12111-12112 stripe/stripe-mock:latest",
     "killports": "sh scripts/kill-ports.sh"
   },
