@@ -62,6 +62,7 @@ const configuration = {
       authentication: "/settings/profile/authentication",
       email: "/settings/profile/email",
       password: "/settings/profile/password",
+      subscription: "/settings/subscription",
     },
     api: {
       checkout: `/api/stripe/checkout`,
