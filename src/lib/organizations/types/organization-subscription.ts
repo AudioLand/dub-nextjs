@@ -4,6 +4,8 @@ export interface OrganizationSubscription {
   id: string;
   priceId: string;
 
+  subscriptionItemId: string;
+
   status: Stripe.Subscription.Status;
   cancelAtPeriodEnd: boolean;
   currency: string | null;

@@ -1,6 +1,5 @@
 // react
 import { ChangeEvent, FC, useState } from "react";
-import { useUser } from "reactfire";
 
 // ui-components
 import Button from "~/core/ui/Button";
@@ -10,6 +9,8 @@ import TextField from "~/core/ui/TextField";
 import FileUploader from "./FileUploader";
 
 // hooks
+import { useUserId } from "~/core/hooks/use-user-id";
+import useCurrentOrganizationSubscriptionItemId from "~/lib/organizations/hooks/use-current-organization-subscription-item-id";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
@@ -27,8 +28,8 @@ interface CreateProjectFormProps {
 const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const { handleClose } = props;
 
-  const user = useUser();
-  const userId = user.data?.uid as string;
+  const userId = useUserId()!;
+  const subscriptionItemId = useCurrentOrganizationSubscriptionItemId();
   const targetLanguages = useTargetLanguages();
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
@@ -138,6 +139,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         target_language: createdProject.targetLanguage,
         original_file_location: filePathInBucket,
       });
+
+      if (subscriptionItemId) {
+        requestParams.append("subscription_item_id", subscriptionItemId);
+      }
 
       const url = `https://audioland.fly.dev/?${requestParams.toString()}`;
       const response = await fetch(url);

@@ -1,15 +1,17 @@
-import type { Stripe } from 'stripe';
+import type { Stripe } from "stripe";
 
-import { OrganizationSubscription } from '~/lib/organizations/types/organization-subscription';
+import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
 
 export function buildOrganizationSubscription(
-  subscription: Stripe.Subscription
+  subscription: Stripe.Subscription,
 ): OrganizationSubscription {
   const lineItem = subscription.items.data[0];
+  const subscriptionItemId = lineItem.id;
   const price = lineItem.price;
 
   return {
     id: subscription.id,
+    subscriptionItemId: subscriptionItemId,
     priceId: price?.id,
     status: subscription.status,
     currency: lineItem.price.currency ?? null,
