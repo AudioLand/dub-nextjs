@@ -29,14 +29,11 @@ jobs:
     - name: Install Firebase CLI
       run: npm install -g firebase-tools@latest
 
-    - name: Login to Firebase
-      run: firebase login:ci --token "${{ secrets.FIREBASE_AUTH_TOKEN }}"
-
     - name: Deploy Firestore rules to Production
-      run: npm run firebase:firestore:rules:deploy:prod
+      run: npm run firebase:firestore:rules:deploy:prod --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
 
     - name: Deploy Storage rules to Production
-      run: npm run firebase:storage:rules:deploy:prod
+      run: npm run firebase:storage:rules:deploy:prod --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
 
     - name: Deploy Functions to Production
-      run: npm run firebase:functions:deploy:prod
+      run: npm run firebase:functions:deploy:prod --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
