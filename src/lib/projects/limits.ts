@@ -1,0 +1,1 @@
+export const MAX_PROJECTS_COUNT_FOR_FREE_PLAN = 3;

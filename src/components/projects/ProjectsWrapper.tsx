@@ -6,29 +6,18 @@ import Alert, { AlertHeading } from "~/core/ui/Alert";
 import Button from "~/core/ui/Button";
 import Modal from "~/core/ui/Modal";
 import Spinner from "~/core/ui/Spinner";
-import CreateProjectModal from "./CreateProjectModal";
+import CreateProjectForm from "./CreateProjectForm";
 import ProjectsList from "./ProjectsList";
 
 // hooks
-import { useRouter } from "next/router";
-import { useUserSession } from "~/core/hooks/use-user-session";
-import useIsSubscriptionActive from "~/lib/organizations/hooks/use-is-subscription-active";
-import useFetchProjectsCount from "~/lib/projects/hooks/use-fetch-projects-count";
+import useIsUserCanCreateDubs from "~/lib/projects/hooks/use-is-user-can-create-dubs";
 
 // constants
-import configuration from "~/configuration";
-
-const MAX_PROJECTS_COUNT_FOR_FREE_PLAN = 3;
+import { useUserId } from "~/core/hooks/use-user-id";
 
 const ProjectsWrapper = () => {
-  const router = useRouter();
-  const userSession = useUserSession();
-  const userId = userSession?.data?.id;
-  const isSubscriptionActive = useIsSubscriptionActive();
-  const { userProjectsCount, status } = useFetchProjectsCount(userId!);
-
-  const isUserExceededFreeProjectsCount = userProjectsCount >= MAX_PROJECTS_COUNT_FOR_FREE_PLAN;
-  const isUserCanCreateNewDubs = isSubscriptionActive || !isUserExceededFreeProjectsCount;
+  const userId = useUserId();
+  const { isUserCanCreateNewDubs, fetchProjectsCountStatus } = useIsUserCanCreateDubs();
 
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
 
@@ -40,7 +29,7 @@ const ProjectsWrapper = () => {
     setCreateProjectModalOpen(false);
   };
 
-  if (userId === undefined || status === "loading") {
+  if (userId === undefined || fetchProjectsCountStatus === "loading") {
     return (
       <div className="flex justify-center items-center">
         <Spinner />
@@ -63,7 +52,7 @@ const ProjectsWrapper = () => {
         isOpen={isCreateProjectModalOpen}
         setIsOpen={setCreateProjectModalOpen}
       >
-        <CreateProjectModal handleClose={handleCloseCreateProjectModal} />
+        <CreateProjectForm handleClose={handleCloseCreateProjectModal} />
       </Modal>
 
       <ProjectsList userId={userId} />
