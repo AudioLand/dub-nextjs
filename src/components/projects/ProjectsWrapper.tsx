@@ -67,11 +67,7 @@ const FreePlanExceededAlert = () => (
     <AlertHeading>You exceeded your free plan</AlertHeading>
 
     <div>
-      <p className="mb-3 mt-2">
-        You have reached the limit of your free plan.
-        <br />
-        Please upgrade to continue creating new dubs.
-      </p>
+      <p className="mb-3 mt-2">Please upgrade your plan to continue creating new projects.</p>
       <Button href="/settings/subscription">Upgrade plan</Button>
     </div>
   </Alert>
