@@ -4,35 +4,12 @@ import { ChangeEvent, Dispatch, DragEvent, FC, SetStateAction, useRef } from "re
 // hooks
 import useMaxMediaFileDuration from "~/lib/projects/hooks/use-max-media-file-duration";
 
+// constants
+import { ACCEPTED_FILES } from "~/lib/projects/limits";
+
 // icons
 import { ArrowUpTrayIcon, DocumentCheckIcon } from "@heroicons/react/24/outline";
 
-const ACCEPTED_FILES = [
-  "audio/aac",
-  "audio/x-aac",
-  "audio/x-aiff",
-  "audio/ogg",
-  "audio/mpeg",
-  "audio/mp3",
-  "audio/mpeg3",
-  "audio/x-mpeg-3",
-  "audio/opus",
-  "audio/wav",
-  "audio/x-wav",
-  "audio/webm",
-  "audio/flac",
-  "audio/x-flac",
-  "audio/mp4",
-  "video/mp4",
-  "video/x-msvideo",
-  "video/x-matroska",
-  "video/quicktime",
-  "video/x-ms-wmv",
-  "video/x-flv",
-  "video/webm",
-  "video/mpeg",
-  "video/3gpp",
-];
 const ICON_IN_DROPZONE_SIZE = 48;
 
 interface FileUploaderProps {
