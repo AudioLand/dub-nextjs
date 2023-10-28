@@ -5,13 +5,7 @@ import { useUser } from "reactfire";
 // ui-components
 import Button from "~/core/ui/Button";
 import Modal from "~/core/ui/Modal";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/core/ui/Select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/core/ui/Select";
 import TextField from "~/core/ui/TextField";
 import FileUploader from "./FileUploader";
 
@@ -26,11 +20,11 @@ import { Timestamp } from "firebase/firestore";
 import PROJECT_STATUSES from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 
-interface CreateProjectModalProps {
+interface CreateProjectFormProps {
   handleClose: () => void;
 }
 
-const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
+const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const { handleClose } = props;
 
   const user = useUser();
@@ -213,4 +207,4 @@ const CreateProjectModal: FC<CreateProjectModalProps> = (props) => {
   );
 };
 
-export default CreateProjectModal;
+export default CreateProjectForm;

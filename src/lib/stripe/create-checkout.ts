@@ -45,7 +45,6 @@ export async function createStripeCheckout(params: CreateCheckoutParams) {
   const stripe = await getStripeInstance();
 
   const lineItem: Stripe.Checkout.SessionCreateParams.LineItem = {
-    quantity: 1,
     price: params.priceId,
   };
 
