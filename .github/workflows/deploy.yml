@@ -29,8 +29,8 @@ jobs:
     - name: Install Firebase CLI
       run: npm install -g firebase-tools@latest
 
-    - name: Select Firebase project
-      run: firebase use default
+    - name: Authenticate with Firebase
+      run: firebase login:ci --token "${{ secrets.FIREBASE_AUTH_TOKEN }}"
 
     - name: Deploy Firestore rules to Production
       run: npm run firebase:firestore:rules:deploy:prod
