@@ -16,6 +16,9 @@ import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 
+// constants
+import PIPELINE_URL from "~/core/ml-pipeline/url";
+
 // types
 import { Timestamp } from "firebase/firestore";
 import PROJECT_STATUSES from "~/lib/projects/statuses";
@@ -144,7 +147,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         requestParams.append("subscription_item_id", subscriptionItemId);
       }
 
-      const url = `https://audioland.fly.dev/?${requestParams.toString()}`;
+      const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Network response was not ok");

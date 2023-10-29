@@ -1,3 +1,85 @@
+## AudioLand.DUB NextJS
+
+
+## Install packages
+To install all packages that we use, run this command:
+```shell
+npm install
+```
+
+
+## Run the application
+
+### Run frontend
+To run frontend locally, run this command:
+```shell
+npm run dev
+```
+
+**Also this project use some services:**
+- Firestore
+- Firebase Storage
+- Firebase Cloud Functions
+- Stripe
+
+And you may need run some of them locally
+
+
+### Run Firebase emulators
+To run Firebase emulators (Firestore, Firebase Storage, Firebase Cloud Functions) locally, run this command:
+```shell
+npm run firebase:emulators:start
+```
+
+### Run Stripe
+To run Stripe locally, run this command:
+```shell
+npm run stripe:listen:local
+```
+Or if you want to run it locally **in docker**, run this command:
+```shell
+npm run stripe:listen:docker
+```
+
+## Deploy to Firebase
+You can deploy each Firestore rules, Firebase Storage rules, Firebase Cloud Functions
+
+### Deploy Firestore rules
+To deploy to `development` project, run this command:
+```shell
+npm run firebase:firestore:rules:deploy:dev
+```
+To deploy to `production` project, run this command:
+```shell
+npm run firebase:firestore:rules:deploy:prod
+```
+
+### Deploy Firebase Storage rules
+To deploy to `development` project, run this command:
+```shell
+npm run firebase:storage:rules:deploy:dev
+```
+To deploy to `production` project, run this command:
+```shell
+npm run firebase:storage:rules:deploy:prod
+```
+
+### Deploy Firebase Cloud Functions
+To deploy to `development` project, run this command:
+```shell
+npm run firebase:functions:deploy:dev
+```
+To deploy to `production` project, run this command:
+```shell
+npm run firebase:functions:deploy:prod
+```
+
+*Please note that we use Github Actions, so if you make a pull request or commit in `main`, you don't need to run the deployment command every time*
+
+
+
+
+<!--
 # MakerKit - SaaS Starter for Next.js and Firebase
 
 MakerKit is a SaaS starter project built with Next.js, Firebase and Tailwind 
@@ -142,3 +224,4 @@ ENABLE_STRIPE_TESTING=true
 ### Full Documentation
 To continue setting up your application, please take a look at [the official 
 documentation](https://makerkit.dev/docs/setting-up-firebase).
+-->
