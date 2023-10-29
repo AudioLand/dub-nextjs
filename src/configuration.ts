@@ -81,7 +81,7 @@ const configuration = {
   },
   stripe: {
     products: [
-      // Free
+      //* Free
       {
         name: "Free",
         description: "3 tokens",
@@ -109,7 +109,7 @@ const configuration = {
           },
         ],
       },
-      // Creator
+      //* Creator
       {
         name: "Creator",
         description: "10 tokens/month",
@@ -136,7 +136,7 @@ const configuration = {
           },
         ],
       },
-      // Standart
+      //* Standart
       {
         name: "Standard",
         description: "30 tokens/month",
@@ -163,7 +163,7 @@ const configuration = {
           },
         ],
       },
-      // Producer
+      //* Producer
       {
         name: "Producer",
         badge: `Most Popular`,
@@ -192,7 +192,7 @@ const configuration = {
           },
         ],
       },
-      // Enterprise
+      //* Enterprise
       {
         name: "Enterprise",
         badge: `Let's talk`,
