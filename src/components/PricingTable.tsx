@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import classNames from 'clsx';
-import { CheckCircleIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { Trans } from 'next-i18next';
+import { CheckCircleIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import classNames from "clsx";
+import { Trans } from "next-i18next";
+import { useState } from "react";
 
-import Heading from '~/core/ui/Heading';
-import Button from '~/core/ui/Button';
-import If from '~/core/ui/If';
+import Button from "~/core/ui/Button";
+import Heading from "~/core/ui/Heading";
+import If from "~/core/ui/If";
 
-import configuration from '~/configuration';
+import configuration from "~/configuration";
 
 interface CheckoutButtonProps {
   readonly stripePriceId?: string;
@@ -52,25 +52,14 @@ function PricingTable(
   const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[0]);
 
   return (
-    <div className={'flex flex-col space-y-12'}>
-      <div className={'flex justify-center'}>
-        <PlansSwitcher
-          plans={STRIPE_PLANS}
-          plan={planVariant}
-          setPlan={setPlanVariant}
-        />
+    <div className={"flex flex-col space-y-12"}>
+      <div className={"flex justify-center"}>
+        <PlansSwitcher plans={STRIPE_PLANS} plan={planVariant} setPlan={setPlanVariant} />
       </div>
 
-      <div
-        className={
-          'flex flex-col items-start space-y-6 lg:space-y-0' +
-          ' justify-center lg:flex-row lg:space-x-4'
-        }
-      >
+      <div className={"grid md:grid-cols-2 xl:grid-cols-3 gap-6"}>
         {STRIPE_PRODUCTS.map((product) => {
-          const plan =
-            product.plans.find((item) => item.name === planVariant) ??
-            product.plans[0];
+          const plan = product.plans.find((item) => item.name === planVariant) ?? product.plans[0];
 
           return (
             <PricingItem
@@ -104,81 +93,63 @@ function PricingItem(
 
   return (
     <div
-      data-cy={'subscription-plan'}
+      data-cy={"subscription-plan"}
       className={classNames(
-        `
-         relative flex w-full flex-col justify-between space-y-6 rounded-xl
-         p-6 lg:w-4/12 xl:p-8 2xl:w-3/12 xl:max-w-xs
-      `,
+        "relative flex w-full flex-col justify-between space-y-6 rounded-xl p-6",
         {
-          ['border-gray-100 dark:border-dark-900 border-2']: !recommended,
-          ['border-primary border-2']: recommended,
+          ["border-gray-100 dark:border-dark-900 border-2"]: !recommended,
+          ["border-primary border-2"]: recommended,
         },
       )}
     >
-      <div className={'flex flex-col space-y-2.5'}>
-        <div className={'flex items-center space-x-6'}>
+      <div className={"flex flex-col space-y-2.5"}>
+        <div className={"flex items-center space-x-6"}>
           <Heading type={3}>
-            <b className={'font-semibold'}>{props.product.name}</b>
+            <b className={"font-semibold"}>{props.product.name}</b>
           </Heading>
 
           <If condition={props.product.badge}>
             <div
-              className={classNames(
-                `rounded-md py-1 px-2 text-xs font-medium flex space-x-1`,
-                {
-                  ['text-primary-foreground bg-primary']: recommended,
-                  ['bg-gray-50 text-gray-500 dark:text-gray-800']: !recommended,
-                },
-              )}
+              className={classNames(`rounded-md py-1 px-2 text-xs font-medium flex space-x-1`, {
+                ["text-primary-foreground bg-primary"]: recommended,
+                ["bg-gray-50 text-gray-500 dark:text-gray-800"]: !recommended,
+              })}
             >
               <If condition={recommended}>
-                <SparklesIcon className={'h-4 w-4 mr-1'} />
+                <SparklesIcon className={"h-4 w-4 mr-1"} />
               </If>
               <span>{props.product.badge}</span>
             </div>
           </If>
         </div>
 
-        <span className={'text-sm text-gray-500 dark:text-gray-400'}>
+        <span className={"text-sm text-gray-500 dark:text-gray-400"}>
           {props.product.description}
         </span>
       </div>
 
-      <div className={'flex items-end space-x-1'}>
+      <div className={"flex items-end space-x-1"}>
         <Price>{props.plan.price}</Price>
 
         <If condition={props.plan.name}>
-          <span
-            className={classNames(
-              `text-lg lowercase text-gray-500 dark:text-gray-400`,
-            )}
-          >
+          <span className={classNames(`text-lg lowercase text-gray-500 dark:text-gray-400`)}>
             <span>/</span>
             <span>{props.plan.name}</span>
           </span>
         </If>
       </div>
 
-      <div className={'text-current'}>
+      <div className={"text-current"}>
         <FeaturesList features={props.product.features} />
       </div>
 
       <If condition={props.selectable}>
         <If
           condition={props.plan.stripePriceId && props.CheckoutButton}
-          fallback={
-            <DefaultCheckoutButton
-              recommended={recommended}
-              plan={props.plan}
-            />
-          }
+          fallback={<DefaultCheckoutButton recommended={recommended} plan={props.plan} />}
         >
           {(CheckoutButton) => (
-            <CheckoutButton
-              recommended={recommended}
-              stripePriceId={props.plan.stripePriceId}
-            />
+            <CheckoutButton recommended={recommended} stripePriceId={props.plan.stripePriceId} />
           )}
         </If>
       </If>
@@ -192,14 +163,11 @@ function FeaturesList(
   }>,
 ) {
   return (
-    <ul className={'flex flex-col space-y-2'}>
+    <ul className={"grid w-fit space-y-2"}>
       {props.features.map((feature) => {
         return (
           <ListItem key={feature}>
-            <Trans
-              i18nKey={`common:plans.features.${feature}`}
-              defaults={feature}
-            />
+            <Trans i18nKey={`common:plans.features.${feature}`} defaults={feature} />
           </ListItem>
         );
       })}
@@ -212,27 +180,20 @@ function Price({ children }: React.PropsWithChildren) {
   const key = Math.random();
 
   return (
-    <div
-      key={key}
-      className={`animate-in duration-500 slide-in-from-left-4 fade-in`}
-    >
-      <span className={'text-2xl font-bold lg:text-3xl xl:text-4xl'}>
-        {children}
-      </span>
+    <div key={key} className={`animate-in duration-500 slide-in-from-left-4 fade-in`}>
+      <span className={"text-2xl font-bold lg:text-3xl xl:text-4xl"}>{children}</span>
     </div>
   );
 }
 
 function ListItem({ children }: React.PropsWithChildren) {
   return (
-    <li className={'flex items-center space-x-3 font-medium'}>
+    <li className={"flex items-center space-x-3 font-medium"}>
       <div>
-        <CheckCircleIcon className={'h-5'} />
+        <CheckCircleIcon className={"h-5"} />
       </div>
 
-      <span className={'text-sm text-gray-600 dark:text-gray-300'}>
-        {children}
-      </span>
+      <span className={"text-sm text-gray-600 dark:text-gray-300"}>{children}</span>
     </li>
   );
 }
@@ -245,27 +206,27 @@ function PlansSwitcher(
   }>,
 ) {
   return (
-    <div className={'flex'}>
+    <div className={"flex"}>
       {props.plans.map((plan, index) => {
         const selected = plan === props.plan;
 
-        const className = classNames('focus:!ring-0 !outline-none', {
-          'rounded-r-none': index === 0,
-          'rounded-l-none': index === props.plans.length - 1,
-          ['border-gray-100 dark:border-dark-800 hover:bg-gray-50' +
-          ' dark:hover:bg-background/80']: !selected,
+        const className = classNames("focus:!ring-0 !outline-none", {
+          "rounded-r-none": index === 0,
+          "rounded-l-none": index === props.plans.length - 1,
+          ["border-gray-100 dark:border-dark-800 hover:bg-gray-50" +
+          " dark:hover:bg-background/80"]: !selected,
         });
 
         return (
           <Button
             key={plan}
-            variant={selected ? 'outlinePrimary' : 'outline'}
+            variant={selected ? "outlinePrimary" : "outline"}
             className={className}
             onClick={() => props.setPlan(plan)}
           >
-            <span className={'flex space-x-2 items-center'}>
+            <span className={"flex space-x-2 items-center"}>
               <If condition={selected}>
-                <CheckCircleIcon className={'h-4'} />
+                <CheckCircleIcon className={"h-4"} />
               </If>
 
               <span>
@@ -281,23 +242,18 @@ function PlansSwitcher(
 
 function DefaultCheckoutButton(
   props: React.PropsWithChildren<{
-    plan: PricingItemProps['plan'];
+    plan: PricingItemProps["plan"];
     recommended?: boolean;
   }>,
 ) {
   const linkHref =
-    props.plan.href ??
-    `${configuration.paths.signUp}?utm_source=${props.plan.stripePriceId}`;
+    props.plan.href ?? `${configuration.paths.signUp}?utm_source=${props.plan.stripePriceId}`;
 
-  const label = props.plan.label ?? 'common:getStarted';
+  const label = props.plan.label ?? "common:getStarted";
 
   return (
-    <div className={'bottom-0 left-0 w-full p-0'}>
-      <Button
-        block
-        href={linkHref}
-        variant={props.recommended ? 'default' : 'outline'}
-      >
+    <div className={"bottom-0 left-0 w-full p-0"}>
+      <Button block href={linkHref} variant={props.recommended ? "default" : "outline"}>
         <Trans i18nKey={label} defaults={label} />
       </Button>
     </div>
