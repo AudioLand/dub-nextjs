@@ -1,10 +1,20 @@
 import Head from "next/head";
-import { useContext } from "react";
+import { Router } from "next/router";
+import Script from "next/script";
+import { useContext, useEffect } from "react";
 import configuration from "~/configuration";
 import { ThemeContext } from "~/core/contexts/theme";
+import { useUserId } from "../hooks/use-user-id";
+
+type WindowWithDataLayer = Window & {
+  dataLayer: Record<string, any>[];
+};
+
+declare const window: WindowWithDataLayer;
 
 const Layout: React.FCC = ({ children }) => {
   const siteUrl = configuration.site.siteUrl;
+  const userId = useUserId();
 
   if (!siteUrl) {
     throw new Error(`Please add the property siteUrl in the configuration`);
@@ -17,6 +27,25 @@ const Layout: React.FCC = ({ children }) => {
     "@context": "https://schema.org",
     "@type": "Organization", // change to person for Personal websites
   };
+
+  useEffect(() => {
+    //@ts-ignore
+    const handleRouteChange = (url, { shallow }) => {
+      console.log(userId);
+      window.dataLayer = window.dataLayer || [];
+
+      window.dataLayer.push({
+        userId: userId,
+      });
+    };
+
+    Router.events.on("routeChangeComplete", handleRouteChange);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      Router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [userId]);
 
   return (
     <>
@@ -47,11 +76,7 @@ const Layout: React.FCC = ({ children }) => {
 
         <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
 
-        <link
-          rel="mask-icon"
-          href="/assets/images/favicon/safari-pinned-tab.svg"
-          color="#000000"
-        />
+        <link rel="mask-icon" href="/assets/images/favicon/safari-pinned-tab.svg" color="#000000" />
 
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -66,11 +91,7 @@ const Layout: React.FCC = ({ children }) => {
 
         <MetaColor />
 
-        <meta
-          name="description"
-          content={configuration.site.description}
-          key="meta:description"
-        />
+        <meta name="description" content={configuration.site.description} key="meta:description" />
 
         <meta property="og:title" key="og:title" content={configuration.site.name} />
 
@@ -93,6 +114,19 @@ const Layout: React.FCC = ({ children }) => {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </Head>
+
+      <Script
+        id="google-tag-manager"
+        dangerouslySetInnerHTML={{
+          __html: `
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-5W2LCS44');
+            `,
+        }}
+      />
 
       <main>{children}</main>
     </>

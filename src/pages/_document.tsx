@@ -1,4 +1,4 @@
-import Document, { Html, Main, Head, NextScript } from 'next/document';
+import Document, { Head, Html, Main, NextScript } from "next/document";
 
 export default class MyDocument extends Document {
   render() {
@@ -9,6 +9,16 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          {/* Google Tag Manager (noscript) */}
+          <noscript>
+            <iframe
+              src="https://www.googletagmanager.com/ns.html?id=GTM-5W2LCS44"
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            ></iframe>
+          </noscript>
+          {/* End Google Tag Manager (noscript) */}
         </body>
       </Html>
     );
