@@ -1,17 +1,18 @@
-import React from 'react';
-import { Trans } from 'next-i18next';
+import { Trans } from "next-i18next";
+import React from "react";
 
-import CheckoutRedirectButton from '~/components/subscriptions/CheckoutRedirectButton';
-import BillingPortalRedirectButton from '~/components/subscriptions/BillingRedirectButton';
+import BillingPortalRedirectButton from "~/components/subscriptions/BillingRedirectButton";
+import CheckoutRedirectButton from "~/components/subscriptions/CheckoutRedirectButton";
 
-import { Organization } from '~/lib/organizations/types/organization';
+import { Organization } from "~/lib/organizations/types/organization";
 
-import { IfHasPermissions } from '~/components/IfHasPermissions';
-import { canChangeBilling } from '~/lib/organizations/permissions';
+import { IfHasPermissions } from "~/components/IfHasPermissions";
+import { canChangeBilling } from "~/lib/organizations/permissions";
 
-import If from '~/core/ui/If';
-import PricingTable from '~/components/PricingTable';
-import Alert from '~/core/ui/Alert';
+import PricingTable from "~/components/PricingTable";
+import Alert from "~/core/ui/Alert";
+import Button from "~/core/ui/Button";
+import If from "~/core/ui/If";
 
 const PlanSelectionForm: React.FCC<{
   organization: WithId<Organization>;
@@ -19,14 +20,15 @@ const PlanSelectionForm: React.FCC<{
   const customerId = organization.customerId;
 
   return (
-    <div className={'flex flex-col space-y-6'}>
-      <IfHasPermissions
-        condition={canChangeBilling}
-        fallback={<NoPermissionsAlert />}
-      >
-        <div className={'flex w-full flex-col space-y-8'}>
+    <div className={"flex flex-col space-y-6"}>
+      <IfHasPermissions condition={canChangeBilling} fallback={<NoPermissionsAlert />}>
+        <div className={"flex w-full flex-col space-y-8"}>
           <PricingTable
             CheckoutButton={(props) => {
+              if (props.isFree) {
+                return <Button variant="outline">Enjoy!!</Button>;
+              }
+
               return (
                 <CheckoutRedirectButton
                   organizationId={organization.id}
@@ -34,23 +36,20 @@ const PlanSelectionForm: React.FCC<{
                   stripePriceId={props.stripePriceId}
                   recommended={props.recommended}
                 >
-                  <Trans
-                    i18nKey={'subscriptions:checkout'}
-                    defaults={'Checkout'}
-                  />
+                  <Trans i18nKey={"subscriptions:checkout"} defaults={"Checkout"} />
                 </CheckoutRedirectButton>
               );
             }}
           />
 
           <If condition={customerId}>
-            <div className={'flex flex-col space-y-2'}>
+            <div className={"flex flex-col space-y-2"}>
               <BillingPortalRedirectButton customerId={customerId as string}>
-                <Trans i18nKey={'subscription:manageBilling'} />
+                <Trans i18nKey={"subscription:manageBilling"} />
               </BillingPortalRedirectButton>
 
-              <span className={'text-xs text-gray-500 dark:text-gray-400'}>
-                <Trans i18nKey={'subscription:manageBillingDescription'} />
+              <span className={"text-xs text-gray-500 dark:text-gray-400"}>
+                <Trans i18nKey={"subscription:manageBillingDescription"} />
               </span>
             </div>
           </If>
@@ -64,12 +63,12 @@ export default PlanSelectionForm;
 
 function NoPermissionsAlert() {
   return (
-    <Alert type={'warn'}>
+    <Alert type={"warn"}>
       <Alert.Heading>
-        <Trans i18nKey={'subscription:noPermissionsAlertHeading'} />
+        <Trans i18nKey={"subscription:noPermissionsAlertHeading"} />
       </Alert.Heading>
 
-      <Trans i18nKey={'subscription:noPermissionsAlertBody'} />
+      <Trans i18nKey={"subscription:noPermissionsAlertBody"} />
     </Alert>
   );
 }
