@@ -86,6 +86,7 @@ const configuration = {
         name: "Free",
         description: "3 tokens",
         badge: "Enjoy!",
+        free: true,
         features: [
           "1-min file-lengh max",
           "Audio translation",

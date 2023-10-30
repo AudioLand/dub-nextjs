@@ -12,10 +12,11 @@ import configuration from "~/configuration";
 interface CheckoutButtonProps {
   readonly stripePriceId?: string;
   readonly recommended?: boolean;
+  readonly isFree?: boolean;
 }
 
 interface PricingItemProps {
-  selectable: boolean;
+  isFree?: boolean;
   product: {
     name: string;
     features: string[];
@@ -60,10 +61,11 @@ function PricingTable(
       <div className={"grid md:grid-cols-2 xl:grid-cols-3 gap-6"}>
         {STRIPE_PRODUCTS.map((product) => {
           const plan = product.plans.find((item) => item.name === planVariant) ?? product.plans[0];
+          const isFree = product.free;
 
           return (
             <PricingItem
-              selectable
+              isFree={isFree}
               key={plan.stripePriceId ?? plan.name}
               plan={plan}
               product={product}
@@ -143,15 +145,17 @@ function PricingItem(
         <FeaturesList features={props.product.features} />
       </div>
 
-      <If condition={props.selectable}>
-        <If
-          condition={props.plan.stripePriceId && props.CheckoutButton}
-          fallback={<DefaultCheckoutButton recommended={recommended} plan={props.plan} />}
-        >
-          {(CheckoutButton) => (
-            <CheckoutButton recommended={recommended} stripePriceId={props.plan.stripePriceId} />
-          )}
-        </If>
+      <If
+        condition={props.plan.stripePriceId && props.CheckoutButton}
+        fallback={<DefaultCheckoutButton recommended={recommended} plan={props.plan} />}
+      >
+        {(CheckoutButton) => (
+          <CheckoutButton
+            recommended={recommended}
+            isFree={props.isFree}
+            stripePriceId={props.plan.stripePriceId}
+          />
+        )}
       </If>
     </div>
   );
