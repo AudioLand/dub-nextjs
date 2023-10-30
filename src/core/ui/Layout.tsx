@@ -31,7 +31,6 @@ const Layout: React.FCC = ({ children }) => {
   useEffect(() => {
     //@ts-ignore
     const handleRouteChange = (url, { shallow }) => {
-      console.log(userId);
       window.dataLayer = window.dataLayer || [];
 
       window.dataLayer.push({
