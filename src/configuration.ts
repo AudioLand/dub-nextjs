@@ -196,7 +196,7 @@ const configuration = {
       {
         name: "Enterprise",
         badge: `Let's talk`,
-        recommended: true,
+        recommended: false,
         description: "From 1000 tokens/month",
         features: [
           "90-min file-lengh max",
@@ -216,66 +216,6 @@ const configuration = {
         ],
       },
     ],
-
-    // products: [
-    //   {
-    //     name: "Basic",
-    //     description: "1000 mins of translation",
-    //     badge: `Up to 20 users`,
-    //     features: ["1000 mins of translation", "Chat Support"],
-    //     plans: [
-    //       {
-    //         name: "Monthly",
-    //         price: "$10",
-    //         stripePriceId: "price_1O5dATLMDoxZURVetlMftktp",
-    //       },
-    //       {
-    //         name: "Yearly",
-    //         price: "$100",
-    //         stripePriceId: "price_1O5dATLMDoxZURVeJ8pbEq5t",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     name: "Pro",
-    //     badge: `Most Popular`,
-    //     recommended: true,
-    //     description: "Description of your Pro plan",
-    //     features: ["5000 mins of translation", "Chat Support"],
-    //     plans: [
-    //       {
-    //         name: "Monthly",
-    //         price: "$50",
-    //         stripePriceId: "pro-plan-mth",
-    //       },
-    //       {
-    //         name: "Yearly",
-    //         price: "$500",
-    //         stripePriceId: "pro-plan-yr",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     name: "Premium",
-    //     description: "5000 mins of translation",
-    //     badge: ``,
-    //     features: [
-    //       "Advanced Reporting",
-    //       "Unlimited users",
-    //       "50GB for each user",
-    //       "Account Manager",
-    //     ],
-    //     plans: [
-    //       {
-    //         name: "",
-    //         price: "Contact us",
-    //         stripePriceId: "",
-    //         label: `Contact us`,
-    //         href: `/contact`,
-    //       },
-    //     ],
-    //   },
-    // ],
   },
 };
 
