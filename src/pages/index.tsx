@@ -11,7 +11,7 @@ import Layout from "~/core/ui/Layout";
 import SiteHeader from "~/components/SiteHeader";
 import { withTranslationProps } from "~/lib/props/with-translation-props";
 import Footer from "~/components/Footer";
-import PricingTable from "~/components/PricingTable";
+//import FeedbackList from "~/components/FeedbackList";
 
 function Index() {
   return (
@@ -28,55 +28,74 @@ function Index() {
         >
           <div className={"flex w-full flex-1 flex-col items-center space-y-8"}>
             <Pill>
-              <span>Most advanced text to speech and voice cloning software ever</span>
+              <span>Fast. Fun. Magical.</span>
             </Pill>
 
             <HeroTitle>
-              <span>Translate video & audio</span>
+              <span>Make your content speak different languages</span>
               <span
                 className={
-                  "bg-gradient-to-br bg-clip-text text-transparent" +
+                  "bg-gradient-to-br bg-clip-text text-6xl text-transparent" +
                   " from-primary-400 to-primary-700 leading-[1.2]"
                 }
               >
-                Make your videos speak more languages
+                Enhance Your Video & Audio Content Global Reach at a click of a button
               </span>
             </HeroTitle>
 
             <SubHeading className={"text-center"}>
-              <span>AI-powered video dubbing</span>
-              <span>Advanced voice cloning technology</span>
-              <span>Human-like voices</span>
+              <span>Revolutionary AI-Powered Audio & Video Dubbing</span>
+              <span>Cutting-Edge Voice Cloning Technology</span>
+              <span>Achieve Natural, Human-Like Voices</span>
             </SubHeading>
 
             <div className={"flex flex-col items-center space-y-4"}>
               <MainCallToActionButton />
 
               <span className={"text-xs text-gray-500 dark:text-gray-400"}>
-                Free plan. No credit card required.
+                No credit card required
               </span>
             </div>
           </div>
         </div>
 
-        <div
-          className={
-            "flex justify-center py-12 max-w-5xl mx-auto animate-in fade-in " +
-            " duration-1000 slide-in-from-top-16 fill-mode-both delay-300"
-          }
-        >
-          <Image
-            priority
+        <div>
+          <SubHeading className={"text-center"}>
+            <span>
+              Audioland uses advanced AI technology to dub your video & audio content with the
+              original voice
+            </span>
+            <span>
+              {
+                "Whether you're a content creator, business owner, marketer, or educator, our tool brings your content Global Reach"
+              }
+            </span>
+          </SubHeading>
+          <div
             className={
-              "shadow-[0_0_1000px_0] rounded-2xl" +
-              " shadow-primary/40 animate-in fade-in" +
-              " zoom-in-50 delay-300 duration-1000 ease-out fill-mode-both"
+              "flex justify-center py-12 max-w-5xl mx-auto animate-in fade-in " +
+              " duration-1000 slide-in-from-top-16 fill-mode-both delay-300"
             }
-            width={2688}
-            height={1824}
-            src={`/assets/images/projects-dark.png`}
-            alt={`App Image`}
-          />
+          >
+            <Image
+              priority
+              className={
+                "shadow-[0_0_1000px_0] rounded-2xl" +
+                " shadow-primary/40 animate-in fade-in" +
+                " zoom-in-50 delay-300 duration-1000 ease-out fill-mode-both"
+              }
+              width={2688}
+              height={1824}
+              src={`/assets/images/projects-dark.png`}
+              alt={`App Image`}
+            />
+          </div>
+        </div>
+      </Container>
+
+      <Container>
+        <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
+          <Heading type={2}>Look at What our Users say about Audioland Dubbing service</Heading>
         </div>
       </Container>
 
@@ -85,19 +104,18 @@ function Index() {
           <div className={"flex flex-col items-center space-y-8 text-center"}>
             <Pill>Get started for free. No credit card required. Cancel anytime.</Pill>
 
-            <div className={"flex flex-col space-y-2.5"}>
-              <Heading type={1}>
-                Ready to make your videos and audios multilingual?
-              </Heading>
+            <div className={"flex flex-col space-y-6"}>
+              <Heading type={1}>Ready to make your video or audio multilingual?</Heading>
 
-              <SubHeading>
-                Get started on our free plan and upgrade when you are ready.
-              </SubHeading>
+              <SubHeading>FREE to TRY. Worth to keep.</SubHeading>
+              <div className={"flex flex-col items-center space-y-4"}>
+                <MainCallToActionButton />
+
+                <span className={"text-xs text-gray-500 dark:text-gray-400"}>
+                  Powered by Handpicked Technologies
+                </span>
+              </div>
             </div>
-          </div>
-
-          <div className={"w-full"}>
-            <PricingTable />
           </div>
         </div>
       </Container>
@@ -122,7 +140,7 @@ function HeroTitle({ children }: React.PropsWithChildren) {
     <h1
       className={
         "text-center text-4xl text-gray-600 dark:text-white md:text-5xl" +
-        " flex flex-col font-heading font-medium xl:text-7xl 2xl:text-[5.2rem]"
+        " flex flex-col font-heading font-medium xl:text-6xl 2xl:text-7xl"
       }
     >
       {children}
@@ -160,7 +178,7 @@ function MainCallToActionButton() {
       href={"/auth/sign-up"}
     >
       <span className={"flex items-center space-x-2"}>
-        <span>Get Started</span>
+        <span>Try now for Free</span>
         <ChevronRightIcon
           className={
             "h-4 animate-in fade-in slide-in-from-left-8" +
