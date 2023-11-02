@@ -50,7 +50,8 @@ function PricingTable(
     CheckoutButton?: React.ComponentType<CheckoutButtonProps>;
   }>,
 ) {
-  const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[0]);
+  //* Default plan - Yearly
+  const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[1]);
 
   return (
     <div className={"flex flex-col space-y-12"}>
@@ -210,13 +211,14 @@ function PlansSwitcher(
   }>,
 ) {
   return (
-    <div className={"flex"}>
+    //* Reversed to set Yearly plan the first
+    <div className={"flex flex-row-reverse"}>
       {props.plans.map((plan, index) => {
         const selected = plan === props.plan;
 
         const className = classNames("focus:!ring-0 !outline-none", {
-          "rounded-r-none": index === 0,
-          "rounded-l-none": index === props.plans.length - 1,
+          "rounded-l-none": index === 0,
+          "rounded-r-none": index === props.plans.length - 1,
           ["border-gray-100 dark:border-dark-800 hover:bg-gray-50" +
           " dark:hover:bg-background/80"]: !selected,
         });
