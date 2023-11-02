@@ -26,7 +26,12 @@ function Footer() {
 
               <div>
                 <p className={'text-sm text-gray-500 dark:text-gray-400'}>
-                  Add a short tagline about your product
+                {'Audioland is committed to delivering world-class audio, video, and text co-pilot tools for creators, educators, authors, bloggers, newsmakers, and other artists around the world with no borders. We\'re proud to bring this product to you.'}
+                </p>
+              </div>
+              <div>
+                <p className={'text-sm text-gray-500 dark:text-gray-400'}>
+                Hi there! If you need help with Audioland, please contact us on <a className='text-purple-700' href = "mailto:help@audioland.io">help@audioland.io</a>
                 </p>
               </div>
 
@@ -52,7 +57,7 @@ function Footer() {
 
                 <FooterSectionList>
                   <FooterLink>
-                    <Link href={'#'}>Who we are</Link>
+                    <Link href={'/about'}>Who we are</Link>
                   </FooterLink>
                   <FooterLink>
                     <Link href={'/blog'}>Blog</Link>
@@ -76,7 +81,7 @@ function Footer() {
                     <Link href={'#'}>Help Center</Link>
                   </FooterLink>
                   <FooterLink>
-                    <Link href={'#'}>Changelog</Link>
+                    <Link href={'#'}>FAQ</Link>
                   </FooterLink>
                 </FooterSectionList>
               </div>
@@ -92,9 +97,6 @@ function Footer() {
                   </FooterLink>
                   <FooterLink>
                     <Link href={'#'}>Privacy Policy</Link>
-                  </FooterLink>
-                  <FooterLink>
-                    <Link href={'#'}>Cookie Policy</Link>
                   </FooterLink>
                 </FooterSectionList>
               </div>

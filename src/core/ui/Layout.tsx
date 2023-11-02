@@ -13,7 +13,7 @@ const Layout: React.FCC = ({ children }) => {
   const structuredData = {
     name: configuration.site.name,
     url: siteUrl,
-    logo: `${siteUrl}/assets/images/favicon/favicon-150x150.png`,
+    logo: `${siteUrl}/assets/images/favicon/favicon.svg`,
     "@context": "https://schema.org",
     "@type": "Organization", // change to person for Personal websites
   };
@@ -23,33 +23,35 @@ const Layout: React.FCC = ({ children }) => {
       <Head>
         <title key={"title"}>{configuration.site.name}</title>
 
-        <link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" />
+        <link 
+          rel="icon"
+          type="image/svg" href="/assets/images/favicon/favicon.svg" />
 
         <link
           rel="apple-touch-icon"
-          sizes="144x144"
-          href="/assets/images/favicon/apple-touch-icon.png"
+          type="image/svg"
+          href="/assets/images/favicon/favicon.svg"
         />
 
         <link
           rel="icon"
-          type="image/png"
+          type="image/svg"
           sizes="16x16"
-          href="/assets/images/favicon/favicon-16x16.png"
+          href="/assets/images/favicon/favicon.svg"
         />
 
         <link
           rel="icon"
-          type="image/png"
+          type="image/svg"
           sizes="32x32"
-          href="/assets/images/favicon/favicon-32x32.png"
+          href="/assets/images/favicon/favicon.svg"
         />
 
         <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
 
         <link
           rel="mask-icon"
-          href="/assets/images/favicon/safari-pinned-tab.svg"
+          href="/assets/images/favicon/favicon.svg"
           color="#000000"
         />
 

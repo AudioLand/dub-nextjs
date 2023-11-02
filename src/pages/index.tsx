@@ -11,7 +11,7 @@ import Layout from "~/core/ui/Layout";
 import SiteHeader from "~/components/SiteHeader";
 import { withTranslationProps } from "~/lib/props/with-translation-props";
 import Footer from "~/components/Footer";
-//import FeedbackList from "~/components/FeedbackList";
+import FeedbackList from "~/components/FeedbackList";
 
 function Index() {
   return (
@@ -96,6 +96,7 @@ function Index() {
       <Container>
         <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
           <Heading type={2}>Look at What our Users say about Audioland Dubbing service</Heading>
+          <FeedbackList />
         </div>
       </Container>
 
@@ -113,6 +114,58 @@ function Index() {
 
                 <span className={"text-xs text-gray-500 dark:text-gray-400"}>
                   Powered by Handpicked Technologies
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Container>
+
+      <Container>
+        <div className={"flex flex-col items-center justify-center py-24 "}>
+          <div
+            className={
+              "flex justify-center py-12 max-w-5xl mx-auto animate-in fade-in " +
+              " duration-1000 slide-in-from-top-16 fill-mode-both delay-300"
+            }
+          >
+            <Image
+              priority
+              className={
+                "shadow-[0_0_1000px_0] rounded-2xl" +
+                " shadow-primary/40 animate-in fade-in" +
+                " zoom-in-50 delay-300 duration-1000 ease-out fill-mode-both"
+              }
+              width={2688}
+              height={1824}
+              src={`/assets/images/projects-dark.png`}
+              alt={`App Image`}
+            />
+          </div>
+          <SubHeading className={"text-center"}>
+            <span>Your own voice speak different languages</span>
+            <span>Multi cast dubbing</span>
+            <span>70+ languages</span>
+            <span>1,100+ stock voices to choose from</span>
+          </SubHeading>
+        </div>
+      </Container>
+
+      <Container>
+        <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
+          <div className={"flex flex-col items-center space-y-8 text-center"}>
+            <div className={"flex flex-col space-y-6 items-center"}>
+              <Heading type={1}>Seamlessly Translate Your Content into Multiple Languages.</Heading>
+
+              <SubHeading className="max-w-2xl">
+                Make your audience captivated by listening to you in their mother tongue with just a
+                couple of clicks.
+              </SubHeading>
+              <div className={"flex flex-col items-center space-y-4"}>
+                <MainCallToActionButton />
+
+                <span className={"text-xs text-gray-500 dark:text-gray-400"}>
+                  No credit card required
                 </span>
               </div>
             </div>

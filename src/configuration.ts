@@ -13,7 +13,7 @@ const configuration = {
     themeColor: "#ffffff",
     themeColorDark: "#0a0a0a",
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL as string,
-    siteName: "Awesomely",
+    siteName: "Audioland, Inc",
     twitterHandle: "",
     githubHandle: "",
     convertKitFormId: "",
