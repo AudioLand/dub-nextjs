@@ -10,7 +10,6 @@ import FileUploader from "./FileUploader";
 
 // hooks
 import { useUserId } from "~/core/hooks/use-user-id";
-import useCurrentOrganizationSubscriptionItemId from "~/lib/organizations/hooks/use-current-organization-subscription-item-id";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
@@ -32,7 +31,6 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const { handleClose } = props;
 
   const userId = useUserId()!;
-  const subscriptionItemId = useCurrentOrganizationSubscriptionItemId();
   const targetLanguages = useTargetLanguages();
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
@@ -142,10 +140,6 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         target_language: createdProject.targetLanguage,
         original_file_location: filePathInBucket,
       });
-
-      if (subscriptionItemId) {
-        requestParams.append("subscription_item_id", subscriptionItemId);
-      }
 
       const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
       const response = await fetch(url);
