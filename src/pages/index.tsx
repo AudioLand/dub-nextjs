@@ -122,7 +122,7 @@ function Index() {
       </Container>
 
       <Container>
-        <div className={"flex flex-col items-center justify-center py-24 "}>
+        <div className={"flex flex-col items-center justify-center py-[100px] "}>
           <div
             className={
               "flex justify-center py-12 max-w-5xl mx-auto animate-in fade-in " +
@@ -142,12 +142,6 @@ function Index() {
               alt={`App Image`}
             />
           </div>
-          <SubHeading className={"text-center"}>
-            <span>Your own voice speak different languages</span>
-            <span>Multi cast dubbing</span>
-            <span>70+ languages</span>
-            <span>1,100+ stock voices to choose from</span>
-          </SubHeading>
         </div>
       </Container>
 
