@@ -41,14 +41,14 @@ const ProjectsWrapper = () => {
     <div className={"flex flex-col space-y-6 pb-36"}>
       {isUserCanCreateNewDubs ? (
         <Button className="w-full" onClick={handleOpenCreateProjectModal}>
-          Create new dub
+          Create Project
         </Button>
       ) : (
         <FreePlanExceededAlert />
       )}
 
       <Modal
-        heading="Create a Dub"
+        heading="New Project"
         isOpen={isCreateProjectModalOpen}
         setIsOpen={setCreateProjectModalOpen}
       >
