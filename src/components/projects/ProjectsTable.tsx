@@ -8,7 +8,7 @@ import Button from "~/core/ui/Button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/core/ui/Table";
 
 // types
-import PROJECT_STATUSES from "~/lib/projects/statuses";
+import PROJECT_STATUSES, { ERROR_PROJECT_STATUSES } from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 
 interface ProjectsTableProps {
@@ -43,6 +43,13 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
     saveAs(translatedFileLink, filename);
   };
 
+  const isStatusWithError = (status: PROJECT_STATUSES) => {
+    if (ERROR_PROJECT_STATUSES.includes(status)) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -71,15 +78,21 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
 
             {/* Project Buttons */}
             <TableCell className="flex flex-row gap-5">
-              <Button
-                disabled={isButtonDisabled(status)}
-                onClick={() => handleDownloadTranslatedFile(translatedFileLink)}
-              >
-                Download
-              </Button>
-              <Button disabled={isButtonDisabled(status)} href={`/projects/${id}`}>
-                View
-              </Button>
+              {isStatusWithError(status) ? (
+                <Button variant="destructive">Report</Button>
+              ) : (
+                <>
+                  <Button
+                    disabled={isButtonDisabled(status)}
+                    onClick={() => handleDownloadTranslatedFile(translatedFileLink)}
+                  >
+                    Download
+                  </Button>
+                  <Button disabled={isButtonDisabled(status)} href={`/projects/${id}`}>
+                    View
+                  </Button>
+                </>
+              )}
             </TableCell>
           </TableRow>
         ))}
