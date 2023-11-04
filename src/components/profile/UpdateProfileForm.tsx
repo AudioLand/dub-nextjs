@@ -1,33 +1,27 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useStorage } from 'reactfire';
-import type { User } from 'firebase/auth';
-import { Trans, useTranslation } from 'next-i18next';
-import { toast } from 'sonner';
-import { useForm } from 'react-hook-form';
+import type { User } from "firebase/auth";
+import { Trans, useTranslation } from "next-i18next";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useStorage } from "reactfire";
+import { toast } from "sonner";
 
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  FirebaseStorage,
-} from 'firebase/storage';
+import { FirebaseStorage, deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-import { PhoneAuthProvider, unlink } from 'firebase/auth';
+import { PhoneAuthProvider, unlink } from "firebase/auth";
 
-import configuration from '~/configuration';
-import { getFirebaseErrorCode } from '~/core/firebase/utils/get-firebase-error-code';
-import { useRequestState } from '~/core/hooks/use-request-state';
+import configuration from "~/configuration";
+import { getFirebaseErrorCode } from "~/core/firebase/utils/get-firebase-error-code";
+import { useRequestState } from "~/core/hooks/use-request-state";
 
-import { useUpdateProfile } from '~/lib/profile/hooks/use-update-profile';
-import LinkPhoneNumberModal from '~/components/profile/accounts/LinkPhoneNumberModal';
-import AuthErrorMessage from '~/components/auth/AuthErrorMessage';
+import AuthErrorMessage from "~/components/auth/AuthErrorMessage";
+import LinkPhoneNumberModal from "~/components/profile/accounts/LinkPhoneNumberModal";
+import { useUpdateProfile } from "~/lib/profile/hooks/use-update-profile";
 
-import Button from '~/core/ui/Button';
-import TextField from '~/core/ui/TextField';
-import ImageUploadInput from '~/core/ui/ImageUploadInput';
-import If from '~/core/ui/If';
-import Modal from '~/core/ui/Modal';
+import Button from "~/core/ui/Button";
+import If from "~/core/ui/If";
+import ImageUploadInput from "~/core/ui/ImageUploadInput";
+import Modal from "~/core/ui/Modal";
+import TextField from "~/core/ui/TextField";
 
 interface ProfileData {
   photoURL?: string | null;
@@ -44,20 +38,19 @@ function UpdateProfileForm({
 }) {
   const [updateProfile, { loading }] = useUpdateProfile();
 
-  const [displayUpdatePhoneNumber, setDisplayUpdatePhoneNumber] =
-    useState(false);
+  const [displayUpdatePhoneNumber, setDisplayUpdatePhoneNumber] = useState(false);
 
   const storage = useStorage();
   const { t } = useTranslation();
 
-  const currentPhotoURL = user?.photoURL ?? '';
-  const currentDisplayName = user?.displayName ?? '';
-  const currentPhoneNumber = user?.phoneNumber ?? '';
+  const currentPhotoURL = user?.photoURL ?? "";
+  const currentDisplayName = user?.displayName ?? "";
+  const currentPhoneNumber = user?.phoneNumber ?? "";
 
   const { register, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       displayName: currentDisplayName,
-      photoURL: '',
+      photoURL: "",
     },
   });
 
@@ -65,7 +58,7 @@ function UpdateProfileForm({
 
   const onAvatarCleared = useCallback(() => {
     setAvatarIsDirty(true);
-    setValue('photoURL', '');
+    setValue("photoURL", "");
   }, [setValue]);
 
   const onSubmit = async (displayName: string, photoFile: Maybe<File>) => {
@@ -79,7 +72,7 @@ function UpdateProfileForm({
 
     const info = {
       displayName,
-      photoURL: isAvatarRemoved ? '' : photoUrl,
+      photoURL: isAvatarRemoved ? "" : photoUrl,
     };
 
     // delete existing photo if different
@@ -102,44 +95,44 @@ function UpdateProfileForm({
     });
   };
 
-  const displayNameControl = register('displayName', {
+  const displayNameControl = register("displayName", {
     value: currentDisplayName,
   });
 
-  const photoURLControl = register('photoURL');
+  const photoURLControl = register("photoURL");
 
   useEffect(() => {
     reset({
-      displayName: currentDisplayName ?? '',
-      photoURL: currentPhotoURL ?? '',
+      displayName: currentDisplayName ?? "",
+      photoURL: currentPhotoURL ?? "",
     });
   }, [currentDisplayName, currentPhotoURL, reset]);
 
   return (
     <>
       <form
-        data-cy={'update-profile-form'}
+        data-cy={"update-profile-form"}
         onSubmit={handleSubmit((value) => {
           return onSubmit(value.displayName, getPhotoFile(value.photoURL));
         })}
       >
-        <div className={'flex flex-col space-y-4'}>
+        <div className={"flex flex-col space-y-4"}>
           <TextField>
             <TextField.Label>
-              <Trans i18nKey={'profile:displayNameLabel'} />
+              <Trans i18nKey={"profile:displayNameLabel"} />
 
               <TextField.Input
                 {...displayNameControl}
-                data-cy={'profile-display-name'}
+                data-cy={"profile-display-name"}
                 minLength={2}
-                placeholder={''}
+                placeholder={""}
               />
             </TextField.Label>
           </TextField>
 
           <TextField>
             <TextField.Label>
-              <Trans i18nKey={'profile:profilePictureLabel'} />
+              <Trans i18nKey={"profile:profilePictureLabel"} />
 
               <ImageUploadInput
                 {...photoURLControl}
@@ -147,19 +140,19 @@ function UpdateProfileForm({
                 onClear={onAvatarCleared}
                 image={currentPhotoURL}
               >
-                <Trans i18nKey={'common:imageInputLabel'} />
+                <Trans i18nKey={"common:imageInputLabel"} />
               </ImageUploadInput>
             </TextField.Label>
           </TextField>
 
           <TextField>
             <TextField.Label>
-              <Trans i18nKey={'profile:emailLabel'} />
+              <Trans i18nKey={"profile:emailLabel"} />
 
-              <TextField.Input disabled value={user.email ?? ''} />
+              <TextField.Input disabled value={user.email ?? ""} />
             </TextField.Label>
 
-            <If condition={user.email}>
+            {/* <If condition={user.email}>
               <div>
                 <Button
                   type={'button'}
@@ -172,32 +165,31 @@ function UpdateProfileForm({
                   </span>
                 </Button>
               </div>
-            </If>
+            </If> */}
 
             <If condition={!user.email}>
               <div>
                 <Button
-                  type={'button'}
-                  variant={'ghost'}
-                  size={'small'}
+                  type={"button"}
+                  variant={"ghost"}
+                  size={"small"}
                   href={configuration.paths.settings.authentication}
                 >
-                  <span className={'text-xs font-normal'}>
-                    <Trans i18nKey={'profile:addEmailAddress'} />
+                  <span className={"text-xs font-normal"}>
+                    <Trans i18nKey={"profile:addEmailAddress"} />
                   </span>
                 </Button>
               </div>
             </If>
           </TextField>
 
-          <TextField>
+          {/* <TextField>
             <TextField.Label>
-              <Trans i18nKey={'profile:phoneNumberLabel'} />
+              <Trans i18nKey={"profile:phoneNumberLabel"} />
 
               <TextField.Input disabled value={currentPhoneNumber} />
             </TextField.Label>
 
-            {/* Only show this if phone number is enabled */}
             <If condition={configuration.auth.providers.phoneNumber}>
               <div>
                 <If
@@ -213,17 +205,15 @@ function UpdateProfileForm({
                     />
                   }
                 >
-                  <AddPhoneNumberButton
-                    onClick={() => setDisplayUpdatePhoneNumber(true)}
-                  />
+                  <AddPhoneNumberButton onClick={() => setDisplayUpdatePhoneNumber(true)} />
                 </If>
               </div>
             </If>
-          </TextField>
+          </TextField> */}
 
           <div>
-            <Button className={'w-full md:w-auto'} loading={loading}>
-              <Trans i18nKey={'profile:updateProfileSubmitLabel'} />
+            <Button className={"w-full md:w-auto"} loading={loading}>
+              <Trans i18nKey={"profile:updateProfileSubmitLabel"} />
             </Button>
           </div>
         </div>
@@ -251,18 +241,14 @@ function UpdateProfileForm({
  * It returns undefined when the user hasn't selected a file
  */
 function getPhotoFile(value: string | null | FileList) {
-  if (!value || typeof value === 'string') {
+  if (!value || typeof value === "string") {
     return;
   }
 
   return value.item(0) ?? undefined;
 }
 
-async function uploadUserProfilePhoto(
-  storage: FirebaseStorage,
-  photoFile: File,
-  userId: string,
-) {
+async function uploadUserProfilePhoto(storage: FirebaseStorage, photoFile: File, userId: string) {
   const url = `/profiles/${userId}/${photoFile.name}`;
   const bytes = await photoFile.arrayBuffer();
   const fileRef = ref(storage, url);
@@ -308,29 +294,24 @@ function RemovePhoneNumberButton({
 
   return (
     <>
-      <Button
-        type={'button'}
-        variant={'ghost'}
-        size={'small'}
-        onClick={() => setIsModalOpen(true)}
-      >
-        <span className={'text-xs font-normal'}>
-          <Trans i18nKey={'profile:removePhoneNumber'} />
+      <Button type={"button"} variant={"ghost"} size={"small"} onClick={() => setIsModalOpen(true)}>
+        <span className={"text-xs font-normal"}>
+          <Trans i18nKey={"profile:removePhoneNumber"} />
         </span>
       </Button>
 
       <Modal
-        heading={<Trans i18nKey={'profile:removePhoneNumber'} />}
+        heading={<Trans i18nKey={"profile:removePhoneNumber"} />}
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
       >
-        <div className={'flex flex-col space-y-3'}>
+        <div className={"flex flex-col space-y-3"}>
           <div>
-            <Trans i18nKey={'profile:confirmRemovePhoneNumberDescription'} />
+            <Trans i18nKey={"profile:confirmRemovePhoneNumberDescription"} />
           </div>
 
           <div>
-            <Trans i18nKey={'common:modalConfirmationQuestion'} />
+            <Trans i18nKey={"common:modalConfirmationQuestion"} />
           </div>
 
           <If condition={requestState.state.error}>
@@ -340,10 +321,10 @@ function RemovePhoneNumberButton({
           <Button
             block
             loading={requestState.state.loading}
-            variant={'destructive'}
+            variant={"destructive"}
             onClick={onUnlinkPhoneNumber}
           >
-            <Trans i18nKey={'profile:confirmRemovePhoneNumber'} />
+            <Trans i18nKey={"profile:confirmRemovePhoneNumber"} />
           </Button>
         </div>
       </Modal>
@@ -357,14 +338,9 @@ function AddPhoneNumberButton(
   }>,
 ) {
   return (
-    <Button
-      type={'button'}
-      variant={'ghost'}
-      size={'small'}
-      onClick={props.onClick}
-    >
-      <span className={'text-xs font-normal'}>
-        <Trans i18nKey={'profile:addPhoneNumber'} />
+    <Button type={"button"} variant={"ghost"} size={"small"} onClick={props.onClick}>
+      <span className={"text-xs font-normal"}>
+        <Trans i18nKey={"profile:addPhoneNumber"} />
       </span>
     </Button>
   );
