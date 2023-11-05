@@ -13,4 +13,5 @@ interface BaseOrganization {
 
 export interface Organization extends BaseOrganization {
   members: Record<UserId, FirestoreOrganizationMembership>;
+  usedTokens: number;
 }
