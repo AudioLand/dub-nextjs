@@ -1,9 +1,10 @@
-import type { Stripe } from 'stripe';
+import type { Stripe } from "stripe";
 
 export interface OrganizationSubscription {
   id: string;
   priceId: string;
 
+  product: string | null;
   subscriptionItemId: string;
 
   status: Stripe.Subscription.Status;

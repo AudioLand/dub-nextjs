@@ -8,11 +8,14 @@ export function buildOrganizationSubscription(
   const lineItem = subscription.items.data[0];
   const subscriptionItemId = lineItem.id;
   const price = lineItem.price;
+  const product = lineItem.plan.product as string;
 
   return {
     id: subscription.id,
-    subscriptionItemId: subscriptionItemId,
     priceId: price?.id,
+
+    product: product,
+    subscriptionItemId: subscriptionItemId,
     status: subscription.status,
     currency: lineItem.price.currency ?? null,
     interval: price?.recurring?.interval ?? null,
