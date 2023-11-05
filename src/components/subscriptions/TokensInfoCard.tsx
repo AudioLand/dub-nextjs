@@ -1,0 +1,119 @@
+// hooks
+import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
+
+// constants
+import { Progress, ProgressIndicator } from "@radix-ui/react-progress";
+import { FC, useState } from "react";
+import configuration from "~/configuration";
+import Button from "~/core/ui/Button";
+import If from "~/core/ui/If";
+
+const TokensInfoCard = () => {
+  // TODO: get used tokens from firebase
+  const userOrganization = useCurrentOrganization();
+
+  if (!userOrganization) return <></>;
+
+  const userSubscription = userOrganization.subscription;
+  const usedTokens = userOrganization.usedTokens!;
+
+  if (!userSubscription) {
+    const subscriptionProduct = configuration.stripe.products[0];
+
+    return (
+      <CardTemplate
+        subscriptionName={subscriptionProduct.name}
+        usedTokens={usedTokens}
+        totalSubscriptionTokens={subscriptionProduct.tokens!}
+      />
+    );
+  }
+
+  const subscriptionProductId = userSubscription.product;
+  const subscriptionProduct = configuration.stripe.products.find(
+    (product) => product.id === subscriptionProductId,
+  )!;
+
+  const totalSubscriptionTokens = subscriptionProduct.tokens!;
+
+  return (
+    <CardTemplate
+      subscriptionName={subscriptionProduct.name}
+      usedTokens={usedTokens}
+      totalSubscriptionTokens={totalSubscriptionTokens}
+    />
+  );
+};
+
+export default TokensInfoCard;
+
+interface CardTemplateProps {
+  subscriptionName: string;
+  usedTokens: number;
+  totalSubscriptionTokens: number;
+}
+
+const CardTemplate: FC<CardTemplateProps> = (props) => {
+  const { subscriptionName, usedTokens, totalSubscriptionTokens } = props;
+
+  const [isShowDetails, setShowDetails] = useState<boolean>(false);
+
+  const roundedUsedTokens = Math.ceil(usedTokens / 60);
+  const usedTokensMinutes = Math.floor(usedTokens / 60);
+  const usedTokensSeconds = usedTokens % 60;
+  const progressIndicatorWidthInPercentage = (roundedUsedTokens / totalSubscriptionTokens) * 100;
+
+  const handleShowDetailsOnHover = () => {
+    setShowDetails(true);
+  };
+
+  const handleHideDetailsOnHover = () => {
+    setShowDetails(false);
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div
+        className="flex flex-col gap-2 py-2 pb-3 px-4 bg-gray-900 rounded"
+        onMouseEnter={handleShowDetailsOnHover}
+        onMouseLeave={handleHideDetailsOnHover}
+      >
+        <div className="flex justify-between">
+          {/* Subscription Name */}
+          <span className="text-lg font-semibold">{subscriptionName}</span>
+
+          {/* Used tokens info */}
+          <div className="flex items-center gap-1 text-md">
+            <span>{roundedUsedTokens}</span>
+            <span>/</span>
+            <span>{totalSubscriptionTokens}</span>
+            <span>min</span>
+          </div>
+        </div>
+
+        <Progress className="h-2 w-full overflow-hidden rounded-full bg-gray-800">
+          <ProgressIndicator
+            style={{
+              width: `${progressIndicatorWidthInPercentage}%`,
+            }}
+            className="h-full bg-purple-600 duration-300 ease-in-out bg-white"
+          />
+        </Progress>
+
+        <If condition={isShowDetails}>
+          <div className="flex flex-col mt-1 text-gray-500 text-sm">
+            <span>
+              Used: {usedTokensMinutes} min{" "}
+              <If condition={usedTokensSeconds > 0}>{usedTokensSeconds} sec</If>
+            </span>
+            <span>Total: {totalSubscriptionTokens} min</span>
+          </div>
+        </If>
+      </div>
+
+      <Button className="font-semibold" href="/settings/subscription">
+        Upgrade Plan
+      </Button>
+    </div>
+  );
+};
