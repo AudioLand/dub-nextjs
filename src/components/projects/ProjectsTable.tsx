@@ -1,14 +1,17 @@
 // react
 import { saveAs } from "file-saver";
 import { FC } from "react";
+import { useUser } from "reactfire";
+import { toast } from "sonner";
 import Badge from "~/core/ui/Badge";
 
 // ui-components
 import Button from "~/core/ui/Button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/core/ui/Table";
+import useSendTicket from "~/lib/projects/hooks/use-send-ticket";
 
 // types
-import PROJECT_STATUSES, { ERROR_PROJECT_STATUSES } from "~/lib/projects/statuses";
+import PROJECT_STATUSES, { ERROR_PROJECT_STATUSES, TicketErrorType } from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 
 interface ProjectsTableProps {
@@ -17,6 +20,9 @@ interface ProjectsTableProps {
 
 export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
   const { projects } = props;
+
+  const { data: user, status: fetchUserStatus } = useUser();
+  const sendTicket = useSendTicket();
 
   const getStatusColor = (status: PROJECT_STATUSES) => {
     switch (status) {
@@ -50,6 +56,14 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
     return false;
   };
 
+  const handleReport = (projectId: string, status: PROJECT_STATUSES) => {
+    if (fetchUserStatus === "success" && user !== null) {
+      sendTicket(user.uid, user.email!, projectId, status as TicketErrorType);
+    } else {
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -79,7 +93,7 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
             {/* Project Buttons */}
             <TableCell className="flex flex-row gap-5">
               {isStatusWithError(status) ? (
-                <Button variant="destructive">Report</Button>
+                <Button onClick={() => handleReport(id, status)}>Report</Button>
               ) : (
                 <>
                   <Button
