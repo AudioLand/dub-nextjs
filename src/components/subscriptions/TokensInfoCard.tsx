@@ -17,6 +17,7 @@ const TokensInfoCard = () => {
   const userSubscription = userOrganization.subscription;
   const usedTokensInSeconds = userOrganization.usedTokensInSeconds!;
 
+  //* For free plan
   if (!userSubscription) {
     const subscriptionProduct = configuration.stripe.products[0];
 
@@ -29,6 +30,7 @@ const TokensInfoCard = () => {
     );
   }
 
+  //* For other plans
   const subscriptionProductId = userSubscription.product;
   const subscriptionProduct = configuration.stripe.products.find(
     (product) => product.id === subscriptionProductId,
@@ -87,7 +89,7 @@ const CardTemplate: FC<CardTemplateProps> = (props) => {
             <span>{roundedUsedTokens}</span>
             <span>/</span>
             <span>{totalSubscriptionTokens}</span>
-            <span>min</span>
+            <span>tokens</span>
           </div>
         </div>
 
@@ -96,7 +98,7 @@ const CardTemplate: FC<CardTemplateProps> = (props) => {
             style={{
               width: `${progressIndicatorWidthInPercentage}%`,
             }}
-            className="h-full bg-purple-600 duration-300 ease-in-out bg-white"
+            className="h-full bg-purple-700 duration-300 ease-in-out bg-white"
           />
         </Progress>
 

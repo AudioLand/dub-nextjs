@@ -4,6 +4,7 @@ export interface OrganizationSubscription {
   id: string;
   priceId: string;
 
+  // TODO: fix "product" name because it is id of the product
   product: string | null;
   subscriptionItemId: string;
 
