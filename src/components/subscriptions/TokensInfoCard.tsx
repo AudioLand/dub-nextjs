@@ -106,9 +106,9 @@ const CardTemplate: FC<CardTemplateProps> = (props) => {
 
         <If condition={isShowDetails}>
           <div className="flex mt-1 text-gray-500 text-sm">
-            {`Used ${usedTokensMinutes} min ${(
-              <If condition={usedTokensSeconds > 0}>{usedTokensSeconds} sec</If>
-            )} from ${totalSubscriptionTokens} min`}
+            {`Used ${usedTokensMinutes} min ${
+              usedTokensSeconds > 0 && usedTokensSeconds + "sec "
+            }from ${totalSubscriptionTokens} min`}
           </div>
         </If>
       </div>
