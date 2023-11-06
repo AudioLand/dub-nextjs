@@ -9,6 +9,8 @@ import { ACCEPTED_FILES } from "~/lib/projects/limits";
 
 // icons
 import { ArrowUpTrayIcon, DocumentCheckIcon } from "@heroicons/react/24/outline";
+import configuration from "~/configuration";
+import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
 
 const ICON_IN_DROPZONE_SIZE = 48;
 
@@ -24,6 +26,13 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
   const isFileExists = file !== undefined;
 
   const MAX_MEDIA_FILE_DURATION = useMaxMediaFileDuration();
+  // TODO start: add hook for these functions
+  const userOrganization = useCurrentOrganization()!;
+  const subscriptionProductId = userOrganization.subscription?.product;
+  const subscriptionProduct = configuration.stripe.products.find(
+    (product) => product.id === subscriptionProductId,
+  )!;
+  // TODO end
 
   const tryToSaveFile = (uploadedFile: File | null) => {
     setFileErrorMessage("");
@@ -33,12 +42,25 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
       const audio = new Audio(objectUrl);
 
       audio.addEventListener("loadedmetadata", () => {
-        if (audio.duration <= MAX_MEDIA_FILE_DURATION.inSeconds) {
-          const isFileTypeAccepted = ACCEPTED_FILES.includes(uploadedFile.type);
-          if (isFileTypeAccepted) {
-            handleUploadFile(uploadedFile);
+        const fileDuration = audio.duration;
+
+        const isFileDurationValid = fileDuration <= MAX_MEDIA_FILE_DURATION.inSeconds;
+
+        if (isFileDurationValid) {
+          const subscriptionTokensInSeconds = subscriptionProduct.tokens! * 60;
+          const userAvailableTokensCount =
+            subscriptionTokensInSeconds - userOrganization.usedTokensInSeconds;
+          const isUserHasEnoughTokens = userAvailableTokensCount - fileDuration >= 0;
+
+          if (isUserHasEnoughTokens) {
+            const isFileTypeAccepted = ACCEPTED_FILES.includes(uploadedFile.type);
+            if (isFileTypeAccepted) {
+              handleUploadFile(uploadedFile);
+            } else {
+              setFileErrorMessage("Wrong file type. Please, upload audio or video file");
+            }
           } else {
-            setFileErrorMessage("Wrong file type. Please, upload audio or video file");
+            setFileErrorMessage(`You don't have enough tokens for this file`);
           }
         } else {
           setFileErrorMessage(

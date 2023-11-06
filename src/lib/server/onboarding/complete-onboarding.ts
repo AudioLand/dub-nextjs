@@ -1,9 +1,9 @@
-import { getAuth } from 'firebase-admin/auth';
+import { getAuth } from "firebase-admin/auth";
 
-import { MembershipRole } from '~/lib/organizations/types/membership-role';
+import { MembershipRole } from "~/lib/organizations/types/membership-role";
 
-import { getOrganizationsCollection, getUsersCollection } from '../collections';
-import getRestFirestore from '~/core/firebase/admin/get-rest-firestore';
+import getRestFirestore from "~/core/firebase/admin/get-rest-firestore";
+import { getOrganizationsCollection, getUsersCollection } from "../collections";
 
 interface Params {
   organizationName: string;
@@ -38,6 +38,7 @@ export async function completeOnboarding({ userId, organizationName }: Params) {
   batch.create(organizationRef, {
     name: organizationName,
     members: organizationMembers,
+    usedTokensInSeconds: 0,
   });
 
   // Here we create the user's Firestore record
