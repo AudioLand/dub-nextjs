@@ -12,10 +12,11 @@ import configuration from "~/configuration";
 interface CheckoutButtonProps {
   readonly stripePriceId?: string;
   readonly recommended?: boolean;
+  readonly isFree?: boolean;
 }
 
 interface PricingItemProps {
-  selectable: boolean;
+  isFree?: boolean;
   product: {
     name: string;
     features: string[];
@@ -49,7 +50,8 @@ function PricingTable(
     CheckoutButton?: React.ComponentType<CheckoutButtonProps>;
   }>,
 ) {
-  const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[0]);
+  //* Default plan - Yearly
+  const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[1]);
 
   return (
     <div className={"flex flex-col space-y-12"}>
@@ -60,10 +62,11 @@ function PricingTable(
       <div className={"grid md:grid-cols-2 xl:grid-cols-3 gap-6"}>
         {STRIPE_PRODUCTS.map((product) => {
           const plan = product.plans.find((item) => item.name === planVariant) ?? product.plans[0];
+          const isFree = product.free;
 
           return (
             <PricingItem
-              selectable
+              isFree={isFree}
               key={plan.stripePriceId ?? plan.name}
               plan={plan}
               product={product}
@@ -143,15 +146,17 @@ function PricingItem(
         <FeaturesList features={props.product.features} />
       </div>
 
-      <If condition={props.selectable}>
-        <If
-          condition={props.plan.stripePriceId && props.CheckoutButton}
-          fallback={<DefaultCheckoutButton recommended={recommended} plan={props.plan} />}
-        >
-          {(CheckoutButton) => (
-            <CheckoutButton recommended={recommended} stripePriceId={props.plan.stripePriceId} />
-          )}
-        </If>
+      <If
+        condition={props.plan.stripePriceId && props.CheckoutButton}
+        fallback={<DefaultCheckoutButton recommended={recommended} plan={props.plan} />}
+      >
+        {(CheckoutButton) => (
+          <CheckoutButton
+            recommended={recommended}
+            isFree={props.isFree}
+            stripePriceId={props.plan.stripePriceId}
+          />
+        )}
       </If>
     </div>
   );
@@ -206,13 +211,14 @@ function PlansSwitcher(
   }>,
 ) {
   return (
-    <div className={"flex"}>
+    //* Reversed to set Yearly plan the first
+    <div className={"flex flex-row-reverse"}>
       {props.plans.map((plan, index) => {
         const selected = plan === props.plan;
 
         const className = classNames("focus:!ring-0 !outline-none", {
-          "rounded-r-none": index === 0,
-          "rounded-l-none": index === props.plans.length - 1,
+          "rounded-l-none": index === 0,
+          "rounded-r-none": index === props.plans.length - 1,
           ["border-gray-100 dark:border-dark-800 hover:bg-gray-50" +
           " dark:hover:bg-background/80"]: !selected,
         });

@@ -1,6 +1,6 @@
-import { Stripe } from 'stripe';
-import { URL } from 'url';
-import { getStripeInstance } from '~/core/stripe/get-stripe';
+import { Stripe } from "stripe";
+import { URL } from "url";
+import { getStripeInstance } from "~/core/stripe/get-stripe";
 
 interface CreateCheckoutParams {
   returnUrl: string;
@@ -20,11 +20,11 @@ interface CreateCheckoutParams {
  */
 export async function createStripeCheckout(params: CreateCheckoutParams) {
   const successUrl = getUrlWithParams(params.returnUrl, {
-    success: 'true',
+    success: "true",
   });
 
   const cancelUrl = getUrlWithParams(params.returnUrl, {
-    cancel: 'true',
+    cancel: "true",
   });
 
   // in MakerKit, a subscription belongs to an organization,
@@ -39,19 +39,19 @@ export async function createStripeCheckout(params: CreateCheckoutParams) {
   // if it's a one-time payment
   // you should change this to "payment"
   // docs: https://stripe.com/docs/billing/subscriptions/build-subscription
-  const mode: Stripe.Checkout.SessionCreateParams.Mode = 'subscription';
+  const mode: Stripe.Checkout.SessionCreateParams.Mode = "subscription";
 
   // get stripe instance
   const stripe = await getStripeInstance();
 
   const lineItem: Stripe.Checkout.SessionCreateParams.LineItem = {
+    quantity: 1,
     price: params.priceId,
   };
 
-  const subscriptionData: Stripe.Checkout.SessionCreateParams.SubscriptionData =
-    {
-      trial_period_days: params.trialPeriodDays,
-    };
+  const subscriptionData: Stripe.Checkout.SessionCreateParams.SubscriptionData = {
+    trial_period_days: params.trialPeriodDays,
+  };
 
   return stripe.checkout.sessions.create({
     mode,
@@ -62,6 +62,7 @@ export async function createStripeCheckout(params: CreateCheckoutParams) {
     client_reference_id: clientReferenceId,
     subscription_data: subscriptionData,
     customer_email: params.customerEmail,
+    allow_promotion_codes: true,
   });
 }
 
@@ -77,9 +78,9 @@ function getUrlWithParams(origin: string, params: StringObject) {
 }
 
 function cleanParams(returnUrl: URL) {
-  returnUrl.searchParams.delete('cancel');
-  returnUrl.searchParams.delete('success');
-  returnUrl.searchParams.delete('error');
+  returnUrl.searchParams.delete("cancel");
+  returnUrl.searchParams.delete("success");
+  returnUrl.searchParams.delete("error");
 
   return returnUrl;
 }

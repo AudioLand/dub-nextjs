@@ -2,16 +2,20 @@
 import { ChangeEvent, FC, useState } from "react";
 
 // ui-components
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import Button from "~/core/ui/Button";
+import If from "~/core/ui/If";
 import Modal from "~/core/ui/Modal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/core/ui/Select";
 import TextField from "~/core/ui/TextField";
 import FileUploader from "./FileUploader";
 
 // hooks
+import useCollapsible from "~/core/hooks/use-sidebar-state";
 import { useUserId } from "~/core/hooks/use-user-id";
-import useCurrentOrganizationSubscriptionItemId from "~/lib/organizations/hooks/use-current-organization-subscription-item-id";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
+import useMaxMediaFileDuration from "~/lib/projects/hooks/use-max-media-file-duration";
+import useRequirementsInfoTooltipText from "~/lib/projects/hooks/use-requirements-info-tooltip-text";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
@@ -24,6 +28,12 @@ import { Timestamp } from "firebase/firestore";
 import PROJECT_STATUSES from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 
+// icons
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
+
+const MAX_FILE_DURATION_STRING_TEMPLATE = "{max_media_file_duration_in_minutes}";
+
 interface CreateProjectFormProps {
   handleClose: () => void;
 }
@@ -32,11 +42,26 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const { handleClose } = props;
 
   const userId = useUserId()!;
-  const subscriptionItemId = useCurrentOrganizationSubscriptionItemId();
+  const currentOrganization = useCurrentOrganization()!;
   const targetLanguages = useTargetLanguages();
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
   const updateProject = useUpdateProject();
+  const [isCollapsed, setCollapsed] = useCollapsible();
+  const { isInfoTooltipEnabled, infoTooltipTexts } = useRequirementsInfoTooltipText();
+  const MAX_MEDIA_FILE_DURATION = useMaxMediaFileDuration();
+
+  //* Recommendations
+  const recommendations = infoTooltipTexts.recommendations;
+  const recommededPointsList = recommendations.recommedations_list.map((recommededPoint) => {
+    if (recommededPoint.includes(MAX_FILE_DURATION_STRING_TEMPLATE)) {
+      return recommededPoint.replace(
+        MAX_FILE_DURATION_STRING_TEMPLATE,
+        MAX_MEDIA_FILE_DURATION.inMinutes.toString(),
+      );
+    }
+    return recommededPoint;
+  });
 
   const [newProject, setNewProject] = useState<Project>({
     name: "",
@@ -141,11 +166,8 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         project_id: createdProject.id,
         target_language: createdProject.targetLanguage,
         original_file_location: filePathInBucket,
+        organization_id: currentOrganization.id,
       });
-
-      if (subscriptionItemId) {
-        requestParams.append("subscription_item_id", subscriptionItemId);
-      }
 
       const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
       const response = await fetch(url);
@@ -156,6 +178,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
       console.error("Failed to trigger ML pipeline", error);
       return;
     }
+  };
+
+  const handleCollapse = () => {
+    setCollapsed(!isCollapsed);
   };
 
   return (
@@ -171,7 +197,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         />
       </TextField>
 
-      {/* Target Lang Input */}
+      {/* Target Language Input */}
       <TextField>
         <TextField.Label>Target Language *</TextField.Label>
         <Select onValueChange={handleLanguageUpdate}>
@@ -206,6 +232,29 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         <TextField.Error error={fileErrorMessage} />
       </TextField>
 
+      {/* Requirements list */}
+      <If condition={isInfoTooltipEnabled}>
+        <Collapsible className="w-full pt-3 text-gray-500" onClick={handleCollapse}>
+          <CollapsibleTrigger className="w-full">
+            <div className="flex w-full justify-between items-center">
+              <span className="font-semibold">{recommendations.title}</span>
+              <ChevronDownIcon
+                className={`h-6 w-6 text-gray-500 rotate-${isCollapsed ? 180 : 0}`}
+              />
+            </div>
+          </CollapsibleTrigger>
+
+          <CollapsibleContent>
+            <div>
+              {recommededPointsList.map((recommendedPoint) => (
+                <div key={recommendedPoint}>- {recommendedPoint}</div>
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </If>
+
+      {/* Buttons */}
       <div className={"flex justify-end space-x-2"}>
         <Modal.CancelButton onClick={handleClose}>Cancel</Modal.CancelButton>
 

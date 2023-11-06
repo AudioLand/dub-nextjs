@@ -59,7 +59,7 @@ const SelectContent = React.forwardRef<
 							"h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]",
 					)}
 					style={{
-						height: 150,
+						height: 250,
 					}}
 				>
 					{children}

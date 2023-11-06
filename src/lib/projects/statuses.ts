@@ -7,4 +7,11 @@ enum PROJECT_STATUSES {
   translationError = "translationError",
 }
 
+export const ERROR_PROJECT_STATUSES = [
+  PROJECT_STATUSES.translationError,
+  PROJECT_STATUSES.uploadingError,
+];
+
+export type TicketErrorType = PROJECT_STATUSES.translationError | PROJECT_STATUSES.uploadingError;
+
 export default PROJECT_STATUSES;

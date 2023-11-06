@@ -1,5 +1,5 @@
 // react
-import { useState } from "react";
+import { FC, useState } from "react";
 
 // ui-components
 import Alert, { AlertHeading } from "~/core/ui/Alert";
@@ -10,15 +10,11 @@ import CreateProjectForm from "./CreateProjectForm";
 import ProjectsList from "./ProjectsList";
 
 // hooks
-import useIsUserCanCreateDubs from "~/lib/projects/hooks/use-is-user-can-create-dubs";
-
-// constants
 import { useUserId } from "~/core/hooks/use-user-id";
+import useIsUserCanCreateDubs from "~/lib/projects/hooks/use-is-user-can-create-dubs";
 
 const ProjectsWrapper = () => {
   const userId = useUserId();
-  const { isUserCanCreateNewDubs, fetchProjectsCountStatus } = useIsUserCanCreateDubs();
-
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
 
   const handleOpenCreateProjectModal = () => {
@@ -29,7 +25,7 @@ const ProjectsWrapper = () => {
     setCreateProjectModalOpen(false);
   };
 
-  if (userId === undefined || fetchProjectsCountStatus === "loading") {
+  if (userId === undefined) {
     return (
       <div className="flex justify-center items-center">
         <Spinner />
@@ -38,29 +34,46 @@ const ProjectsWrapper = () => {
   }
 
   return (
-    <div className={"flex flex-col space-y-6 pb-36"}>
-      {isUserCanCreateNewDubs ? (
-        <Button className="w-full" onClick={handleOpenCreateProjectModal}>
-          Create new dub
-        </Button>
-      ) : (
-        <FreePlanExceededAlert />
-      )}
+    <>
+      <div className={"flex flex-col space-y-6 pb-36"}>
+        <ProjectsWrapperHeader handleOpenCreateProjectModal={handleOpenCreateProjectModal} />
+        <ProjectsList userId={userId} />
+      </div>
 
       <Modal
-        heading="Create a Dub"
+        heading="New Project"
         isOpen={isCreateProjectModalOpen}
         setIsOpen={setCreateProjectModalOpen}
       >
         <CreateProjectForm handleClose={handleCloseCreateProjectModal} />
       </Modal>
-
-      <ProjectsList userId={userId} />
-    </div>
+    </>
   );
 };
 
 export default ProjectsWrapper;
+
+interface ProjectsWrapperHeaderProps {
+  handleOpenCreateProjectModal: () => void;
+}
+
+const ProjectsWrapperHeader: FC<ProjectsWrapperHeaderProps> = (props) => {
+  const { handleOpenCreateProjectModal } = props;
+
+  const { isUserCanCreateNewDubs, fetchProjectsCountStatus } = useIsUserCanCreateDubs();
+
+  return (
+    <>
+      {isUserCanCreateNewDubs ? (
+        <Button className="w-full" onClick={handleOpenCreateProjectModal}>
+          Create Project
+        </Button>
+      ) : (
+        <FreePlanExceededAlert />
+      )}
+    </>
+  );
+};
 
 const FreePlanExceededAlert = () => (
   <Alert type="warn">

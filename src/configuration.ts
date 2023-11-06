@@ -85,7 +85,9 @@ const configuration = {
       {
         name: "Free",
         description: "3 tokens",
+        tokens: 3,
         badge: "Enjoy!",
+        free: true,
         features: [
           "1-min file-lengh max",
           "Audio translation",
@@ -111,8 +113,10 @@ const configuration = {
       },
       //* Creator
       {
+        id: "prod_OuKnitbowAz4n4",
         name: "Creator",
         description: "10 tokens/month",
+        tokens: 10,
         features: [
           "1-min file-lengh max",
           "Audio translation",
@@ -138,8 +142,10 @@ const configuration = {
       },
       //* Standart
       {
+        id: "prod_OuKpA5o0s5ysTU",
         name: "Standard",
         description: "30 tokens/month",
+        tokens: 30,
         features: [
           "5-min file-lengh max",
           "Audio translation",
@@ -165,10 +171,12 @@ const configuration = {
       },
       //* Producer
       {
+        id: "prod_OuKubCASJyJPoR",
         name: "Producer",
         badge: `Most Popular`,
         recommended: true,
         description: "300 tokens/month",
+        tokens: 300,
         features: [
           "20-min file-lengh max",
           "Audio translation",
@@ -183,7 +191,7 @@ const configuration = {
           {
             name: "Monthly",
             price: "$349",
-            stripePriceId: "price_1O6WFKLMDoxZURVeg8G6igFL",
+            stripePriceId: "price_1O81jhLMDoxZURVeNz22ANJ3",
           },
           {
             name: "Yearly",
@@ -196,7 +204,7 @@ const configuration = {
       {
         name: "Enterprise",
         badge: `Let's talk`,
-        recommended: true,
+        recommended: false,
         description: "From 1000 tokens/month",
         features: [
           "90-min file-lengh max",
@@ -216,66 +224,6 @@ const configuration = {
         ],
       },
     ],
-
-    // products: [
-    //   {
-    //     name: "Basic",
-    //     description: "1000 mins of translation",
-    //     badge: `Up to 20 users`,
-    //     features: ["1000 mins of translation", "Chat Support"],
-    //     plans: [
-    //       {
-    //         name: "Monthly",
-    //         price: "$10",
-    //         stripePriceId: "price_1O5dATLMDoxZURVetlMftktp",
-    //       },
-    //       {
-    //         name: "Yearly",
-    //         price: "$100",
-    //         stripePriceId: "price_1O5dATLMDoxZURVeJ8pbEq5t",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     name: "Pro",
-    //     badge: `Most Popular`,
-    //     recommended: true,
-    //     description: "Description of your Pro plan",
-    //     features: ["5000 mins of translation", "Chat Support"],
-    //     plans: [
-    //       {
-    //         name: "Monthly",
-    //         price: "$50",
-    //         stripePriceId: "pro-plan-mth",
-    //       },
-    //       {
-    //         name: "Yearly",
-    //         price: "$500",
-    //         stripePriceId: "pro-plan-yr",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     name: "Premium",
-    //     description: "5000 mins of translation",
-    //     badge: ``,
-    //     features: [
-    //       "Advanced Reporting",
-    //       "Unlimited users",
-    //       "50GB for each user",
-    //       "Account Manager",
-    //     ],
-    //     plans: [
-    //       {
-    //         name: "",
-    //         price: "Contact us",
-    //         stripePriceId: "",
-    //         label: `Contact us`,
-    //         href: `/contact`,
-    //       },
-    //     ],
-    //   },
-    // ],
   },
 };
 

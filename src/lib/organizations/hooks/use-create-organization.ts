@@ -1,25 +1,16 @@
-import { useCallback } from 'react';
-import { useUser } from 'reactfire';
+import { useCallback } from "react";
+import { useUser } from "reactfire";
 
-import { FirebaseError } from 'firebase/app';
+import { FirebaseError } from "firebase/app";
 
-import {
-  getFirestore,
-  collection,
-  doc,
-  writeBatch,
-  DocumentReference,
-} from 'firebase/firestore';
+import { DocumentReference, collection, doc, getFirestore, writeBatch } from "firebase/firestore";
 
-import { useRequestState } from '~/core/hooks/use-request-state';
-import { MembershipRole } from '~/lib/organizations/types/membership-role';
-import { Organization } from '~/lib/organizations/types/organization';
-import { UserData } from '~/core/session/types/user-data';
+import { useRequestState } from "~/core/hooks/use-request-state";
+import { UserData } from "~/core/session/types/user-data";
+import { MembershipRole } from "~/lib/organizations/types/membership-role";
+import { Organization } from "~/lib/organizations/types/organization";
 
-import {
-  ORGANIZATIONS_COLLECTION,
-  USERS_COLLECTION,
-} from '~/lib/firestore-collections';
+import { ORGANIZATIONS_COLLECTION, USERS_COLLECTION } from "~/lib/firestore-collections";
 
 /**
  * @name useCreateOrganization
@@ -29,8 +20,7 @@ export function useCreateOrganization() {
   const user = useUser();
   const userId = user.data?.uid as string;
 
-  const { state, setError, setData, setLoading } =
-    useRequestState<WithId<Organization>>();
+  const { state, setError, setData, setLoading } = useRequestState<WithId<Organization>>();
 
   const createOrganizationCallback = useCallback(
     async (name: string) => {
@@ -42,11 +32,7 @@ export function useCreateOrganization() {
 
         const organizations = collection(firestore, ORGANIZATIONS_COLLECTION);
 
-        const userDoc = doc(
-          firestore,
-          USERS_COLLECTION,
-          userId
-        ) as DocumentReference<UserData>;
+        const userDoc = doc(firestore, USERS_COLLECTION, userId) as DocumentReference<UserData>;
 
         const organizationDoc = doc(organizations);
 
@@ -73,6 +59,7 @@ export function useCreateOrganization() {
               user: userDoc,
             },
           },
+          usedTokensInSeconds: 0,
         });
 
         return organizationDoc.id;
@@ -82,11 +69,8 @@ export function useCreateOrganization() {
         throw e;
       }
     },
-    [setData, setError, setLoading, userId]
+    [setData, setError, setLoading, userId],
   );
 
-  return [createOrganizationCallback, state] as [
-    typeof createOrganizationCallback,
-    typeof state
-  ];
+  return [createOrganizationCallback, state] as [typeof createOrganizationCallback, typeof state];
 }
