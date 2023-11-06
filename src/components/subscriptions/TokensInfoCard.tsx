@@ -65,6 +65,8 @@ const CardTemplate: FC<CardTemplateProps> = (props) => {
   const usedTokensSeconds = usedTokensInSeconds % 60;
   const progressIndicatorWidthInPercentage = (roundedUsedTokens / totalSubscriptionTokens) * 100;
 
+  const showUpgradePlanButton = progressIndicatorWidthInPercentage > 65;
+
   const handleShowDetailsOnHover = () => {
     setShowDetails(true);
   };
@@ -113,9 +115,11 @@ const CardTemplate: FC<CardTemplateProps> = (props) => {
         </If>
       </div>
 
-      <Button className="font-semibold" href="/settings/subscription">
-        Upgrade Plan
-      </Button>
+      <If condition={showUpgradePlanButton}>
+        <Button className="font-semibold" href="/settings/subscription">
+          Upgrade Plan
+        </Button>
+      </If>
     </div>
   );
 };
