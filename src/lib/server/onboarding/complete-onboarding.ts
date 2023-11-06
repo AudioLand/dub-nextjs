@@ -38,7 +38,7 @@ export async function completeOnboarding({ userId, organizationName }: Params) {
   batch.create(organizationRef, {
     name: organizationName,
     members: organizationMembers,
-    usedTokens: 0,
+    usedTokensInSeconds: 0,
   });
 
   // Here we create the user's Firestore record

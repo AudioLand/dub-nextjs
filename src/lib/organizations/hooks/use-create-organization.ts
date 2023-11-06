@@ -59,7 +59,7 @@ export function useCreateOrganization() {
               user: userDoc,
             },
           },
-          usedTokens: 0,
+          usedTokensInSeconds: 0,
         });
 
         return organizationDoc.id;

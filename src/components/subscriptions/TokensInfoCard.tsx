@@ -15,7 +15,7 @@ const TokensInfoCard = () => {
   if (!userOrganization) return <></>;
 
   const userSubscription = userOrganization.subscription;
-  const usedTokens = userOrganization.usedTokens!;
+  const usedTokensInSeconds = userOrganization.usedTokensInSeconds!;
 
   if (!userSubscription) {
     const subscriptionProduct = configuration.stripe.products[0];
@@ -23,7 +23,7 @@ const TokensInfoCard = () => {
     return (
       <CardTemplate
         subscriptionName={subscriptionProduct.name}
-        usedTokens={usedTokens}
+        usedTokensInSeconds={usedTokensInSeconds}
         totalSubscriptionTokens={subscriptionProduct.tokens!}
       />
     );
@@ -39,7 +39,7 @@ const TokensInfoCard = () => {
   return (
     <CardTemplate
       subscriptionName={subscriptionProduct.name}
-      usedTokens={usedTokens}
+      usedTokensInSeconds={usedTokensInSeconds}
       totalSubscriptionTokens={totalSubscriptionTokens}
     />
   );
@@ -49,18 +49,18 @@ export default TokensInfoCard;
 
 interface CardTemplateProps {
   subscriptionName: string;
-  usedTokens: number;
+  usedTokensInSeconds: number;
   totalSubscriptionTokens: number;
 }
 
 const CardTemplate: FC<CardTemplateProps> = (props) => {
-  const { subscriptionName, usedTokens, totalSubscriptionTokens } = props;
+  const { subscriptionName, usedTokensInSeconds, totalSubscriptionTokens } = props;
 
   const [isShowDetails, setShowDetails] = useState<boolean>(false);
 
-  const roundedUsedTokens = Math.ceil(usedTokens / 60);
-  const usedTokensMinutes = Math.floor(usedTokens / 60);
-  const usedTokensSeconds = usedTokens % 60;
+  const roundedUsedTokens = Math.ceil(usedTokensInSeconds / 60);
+  const usedTokensMinutes = Math.floor(usedTokensInSeconds / 60);
+  const usedTokensSeconds = usedTokensInSeconds % 60;
   const progressIndicatorWidthInPercentage = (roundedUsedTokens / totalSubscriptionTokens) * 100;
 
   const handleShowDetailsOnHover = () => {
