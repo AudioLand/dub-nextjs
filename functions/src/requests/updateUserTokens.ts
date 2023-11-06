@@ -24,11 +24,13 @@ export const updateUserTokens = onRequest(async (request, response) => {
     if (organizationSnap.exists) {
       const organizationData = organizationSnap.data();
       if (organizationData) {
-        const organizationPrevTokens = organizationData.usedTokensInSeconds;
+        const organizationPrevTokens = organizationData.usedTokensInSeconds as number || 0;
+        const newUsedTokensCount = organizationPrevTokens + tokens;
+        console.log(organizationPrevTokens);
         organizationRef.update({
-          usedTokensInSeconds: organizationPrevTokens + tokens,
+          usedTokensInSeconds: newUsedTokensCount,
         });
-        log(`Organization with id: ${organizationId} was updated with { usedTokensInSeconds: ${tokens} }`);
+        log(`Organization with id: ${organizationId} was updated with { usedTokensInSeconds: ${newUsedTokensCount} }`);
         response.status(200).send("User tokens was updated successfully!!");
       }
     } else {
