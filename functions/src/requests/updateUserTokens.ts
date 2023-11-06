@@ -20,13 +20,17 @@ export const updateUserTokens = onRequest(async (request, response) => {
 
     // Update project's status and translated file link
     const organizationRef = firestore.collection("organizations").doc(organizationId);
-    const organizationData = await organizationRef.get();
-    if (organizationData.exists) {
-      organizationRef.update({
-        usedTokensInSeconds: tokens,
-      });
-      log(`Organization with id: ${organizationId} was updated with { usedTokensInSeconds: ${tokens} }`);
-      response.status(200).send("User tokens was updated successfully!!");
+    const organizationSnap = await organizationRef.get();
+    if (organizationSnap.exists) {
+      const organizationData = organizationSnap.data();
+      if (organizationData) {
+        const organizationPrevTokens = organizationData.usedTokensInSeconds;
+        organizationRef.update({
+          usedTokensInSeconds: organizationPrevTokens + tokens,
+        });
+        log(`Organization with id: ${organizationId} was updated with { usedTokensInSeconds: ${tokens} }`);
+        response.status(200).send("User tokens was updated successfully!!");
+      }
     } else {
       log(`Organization with id ${organizationId} does not exist`);
       response.status(400).send(`Organization with id ${organizationId} does not exist`);
