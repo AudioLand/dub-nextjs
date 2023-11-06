@@ -93,7 +93,12 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
             {/* Project Buttons */}
             <TableCell className="flex flex-row gap-5">
               {isStatusWithError(status) ? (
-                <Button onClick={() => handleReport(id, status)}>Report</Button>
+                <Button
+                  href="mailto:help@audioland.io"
+                  // onClick={() => handleReport(id, status)}
+                >
+                  Report
+                </Button>
               ) : (
                 <>
                   <Button
