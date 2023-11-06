@@ -30,6 +30,7 @@ import { Project } from "~/lib/projects/types/project";
 
 // icons
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
 
 const MAX_FILE_DURATION_STRING_TEMPLATE = "{max_media_file_duration_in_minutes}";
 
@@ -41,6 +42,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const { handleClose } = props;
 
   const userId = useUserId()!;
+  const currentOrganization = useCurrentOrganization()!;
   const targetLanguages = useTargetLanguages();
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
@@ -164,6 +166,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         project_id: createdProject.id,
         target_language: createdProject.targetLanguage,
         original_file_location: filePathInBucket,
+        organization_id: currentOrganization.id,
       });
 
       const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
