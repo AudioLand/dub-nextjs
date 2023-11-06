@@ -15,7 +15,7 @@ export const updateUserTokens = onRequest(async (request, response) => {
   try {
     const data: UpdateUserTokensRequestData = request.body;
     const organizationId = data.organization_id;
-    const tokens = data.tokens;
+    const tokens = Number(data.tokens);
     log(`Got request body data. Start updating tokens to ${tokens} for user with organization id: ${organizationId}`);
 
     // Update project's status and translated file link
@@ -24,7 +24,7 @@ export const updateUserTokens = onRequest(async (request, response) => {
     if (organizationSnap.exists) {
       const organizationData = organizationSnap.data();
       if (organizationData) {
-        const organizationPrevTokens = organizationData.usedTokensInSeconds as number || 0;
+        const organizationPrevTokens = Number(organizationData.usedTokensInSeconds) || 0;
         const newUsedTokensCount = organizationPrevTokens + tokens;
         console.log(organizationPrevTokens);
         organizationRef.update({
