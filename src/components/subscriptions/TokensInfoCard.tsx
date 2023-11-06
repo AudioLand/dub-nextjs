@@ -100,17 +100,15 @@ const CardTemplate: FC<CardTemplateProps> = (props) => {
             style={{
               width: `${progressIndicatorWidthInPercentage}%`,
             }}
-            className="h-full bg-purple-700 duration-300 ease-in-out bg-white"
+            className="h-full bg-purple-500 duration-300 ease-in-out bg-white"
           />
         </Progress>
 
         <If condition={isShowDetails}>
-          <div className="flex flex-col mt-1 text-gray-500 text-sm">
-            <span>
-              Used: {usedTokensMinutes} min{" "}
+          <div className="flex mt-1 text-gray-500 text-sm">
+            {`Used ${usedTokensMinutes} min ${(
               <If condition={usedTokensSeconds > 0}>{usedTokensSeconds} sec</If>
-            </span>
-            <span>Total: {totalSubscriptionTokens} min</span>
+            )} from ${totalSubscriptionTokens} min`}
           </div>
         </If>
       </div>
