@@ -15,7 +15,7 @@ const TokensInfoCard = () => {
   if (!userOrganization) return <></>;
 
   const userSubscription = userOrganization.subscription;
-  const usedTokensInSeconds = userOrganization.usedTokensInSeconds!;
+  const usedTokensInSeconds = userOrganization.usedTokensInSeconds! || 0;
 
   //* For free plan
   if (!userSubscription) {
