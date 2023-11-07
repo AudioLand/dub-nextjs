@@ -35,11 +35,11 @@ function Index() {
               <span>Make your content speak different languages</span>
               <span
                 className={
-                  "bg-gradient-to-br bg-clip-text text-6xl text-transparent" +
+                  "bg-gradient-to-br bg-clip-text text-transparent" +
                   " from-primary-400 to-primary-700 leading-[1.2]"
                 }
               >
-                Enhance Your Video & Audio Content Global Reach at a click of a button
+                Enhance Your Video & Audio Content Global Reach <br /> at a click of a button
               </span>
             </HeroTitle>
 
@@ -58,8 +58,10 @@ function Index() {
             </div>
           </div>
         </div>
+      </Container>
 
-        <div>
+      <Container>
+        <div className={"py-24"}>
           <SubHeading className={"text-center"}>
             <span>
               Audioland uses advanced AI technology to dub your video & audio content with the
