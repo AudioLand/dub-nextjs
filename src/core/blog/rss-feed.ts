@@ -1,15 +1,15 @@
-import { Feed } from 'feed';
-import { writeFileSync } from 'fs';
-import Article from './types/post';
+import { Feed } from "feed";
+import { writeFileSync } from "fs";
+import Article from "./types/post";
 
 // load environment variables before importing the next files
-import '../load-env';
-import { getAllPosts } from './api';
-import configuration from '~/configuration';
+import "../load-env";
+import { getAllPosts } from "./api";
+import configuration from "~/configuration";
 
-const DEFAULT_RSS_PATH = 'public/rss.xml';
-const DEFAULT_JSON_PATH = 'public/rss.json';
-const DEFAULT_ATOM_PATH = 'public/atom.xml';
+const DEFAULT_RSS_PATH = "public/rss.xml";
+const DEFAULT_JSON_PATH = "public/rss.json";
+const DEFAULT_ATOM_PATH = "public/atom.xml";
 
 function generateRSSFeed(articles: Article[]) {
   const baseUrl = configuration.site.siteUrl;
@@ -25,7 +25,7 @@ function generateRSSFeed(articles: Article[]) {
     description,
     id: baseUrl,
     link: baseUrl,
-    favicon: `${baseUrl}/assets/favicon/favicon.ico`,
+    favicon: `${baseUrl}/assets/favicon/favicon.svg`,
     language: configuration.site.locale ?? `en`,
     feedLinks: {
       rss2: `${baseUrl}/rss.xml`,
@@ -33,7 +33,7 @@ function generateRSSFeed(articles: Article[]) {
       atom: `${baseUrl}/atom.xml`,
     },
     author,
-    copyright: '',
+    copyright: "",
   });
 
   articles.forEach((article) => {
