@@ -23,7 +23,6 @@ import { CsrfTokenContext } from "~/core/contexts/csrf-token";
 import { SidebarContext } from "~/core/contexts/sidebar";
 import { ThemeContext } from "~/core/contexts/theme";
 import { UserSessionContext } from "~/core/contexts/user-session";
-import FirebaseStorageProvider from "~/core/firebase/components/FirebaseStorageProvider";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import { UserData } from "~/core/session/types/user-data";
 import { UserSession } from "~/core/session/types/user-session";
@@ -106,22 +105,20 @@ function App(props: AppProps<DefaultPageProps> & { pageProps: DefaultPageProps }
           setUserSession={setUserSession}
           useEmulator={emulator}
         >
-          <FirebaseStorageProvider>
-            <UserSessionContext.Provider value={{ userSession, setUserSession }}>
-              <OrganizationContext.Provider value={{ organization, setOrganization }}>
-                <FirebaseAnalyticsProvider>
-                  <AppRouteLoadingIndicator />
+          <UserSessionContext.Provider value={{ userSession, setUserSession }}>
+            <OrganizationContext.Provider value={{ organization, setOrganization }}>
+              <FirebaseAnalyticsProvider>
+                <AppRouteLoadingIndicator />
 
-                  <UiStateProvider state={pageProps.ui}>
-                    <CsrfTokenContext.Provider value={pageProps.csrfToken}>
-                      <FontFamily />
-                      <Component {...pageProps} />
-                    </CsrfTokenContext.Provider>
-                  </UiStateProvider>
-                </FirebaseAnalyticsProvider>
-              </OrganizationContext.Provider>
-            </UserSessionContext.Provider>
-          </FirebaseStorageProvider>
+                <UiStateProvider state={pageProps.ui}>
+                  <CsrfTokenContext.Provider value={pageProps.csrfToken}>
+                    <FontFamily />
+                    <Component {...pageProps} />
+                  </CsrfTokenContext.Provider>
+                </UiStateProvider>
+              </FirebaseAnalyticsProvider>
+            </OrganizationContext.Provider>
+          </UserSessionContext.Provider>
         </FirebaseAuthProvider>
       </FirebaseAppCheckProvider>
     </FirebaseAppShell>
