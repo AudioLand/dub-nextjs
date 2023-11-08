@@ -2,14 +2,14 @@ import { StarIcon as EmptyStar } from "@heroicons/react/24/outline";
 import { StarIcon as FullStar } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
-export interface FeedbackCard {
+export interface FeedbackCardType {
   avatarUrl: string;
   name: string;
   rating: number;
   comment: string;
 }
 
-const FeedbackCard = ({ avatarUrl, name, rating, comment }: FeedbackCard) => {
+const FeedbackCard = ({ avatarUrl, name, rating, comment }: FeedbackCardType) => {
   const getStar = () => {
     const starArray = [];
     for (let i = 0; i < 5; i++) {
