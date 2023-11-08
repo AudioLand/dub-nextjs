@@ -9,6 +9,7 @@ const initFlagsmith = () => {
     flagsmith
       .init({
         environmentID: apiKey,
+        fetch,
       })
       .catch((error) => {
         console.error("Failed to initialize Flagsmith:", error);
