@@ -1,8 +1,8 @@
-import React from 'react';
-import configuration from '~/configuration';
+import React from "react";
+import configuration from "~/configuration";
 
-import type { FirebaseStorage } from 'firebase/storage';
-import { StorageProvider, useInitStorage } from 'reactfire';
+import type { FirebaseStorage } from "firebase/storage";
+import { StorageProvider, useInitStorage } from "reactfire";
 
 export default function FirebaseStorageProvider({
   children,
@@ -12,7 +12,7 @@ export default function FirebaseStorageProvider({
 
   const { data: sdk, status } = useInitStorage(async (app) => {
     const bucketUrl = configuration.firebase.storageBucket;
-    const { getStorage } = await import('firebase/storage');
+    const { getStorage } = await import("firebase/storage");
     const storage = getStorage(app, bucketUrl);
 
     if (emulator) {
@@ -22,7 +22,7 @@ export default function FirebaseStorageProvider({
     return storage;
   });
 
-  const loading = status === 'loading';
+  const loading = status === "loading";
 
   // while loading, we display an indicator
   // this will avoid issue where the SDK was not initialized
@@ -36,10 +36,10 @@ export default function FirebaseStorageProvider({
 }
 
 async function connectToEmulator(storage: FirebaseStorage) {
-  const { connectStorageEmulator } = await import('firebase/storage');
+  const { connectStorageEmulator } = await import("firebase/storage");
 
   const port = 9199;
-  const emulatorHost = configuration.emulatorHost ?? 'localhost';
+  const emulatorHost = configuration.emulatorHost ?? "localhost";
 
   connectStorageEmulator(storage, emulatorHost, port);
 }
