@@ -84,9 +84,11 @@ const configuration = {
       //* Free
       {
         name: "Free",
+        badge: "Enjoy!",
         description: "3 tokens",
         tokens: 3,
-        badge: "Enjoy!",
+        isTokensPerMonth: false,
+        maxFileDurationInMinutes: 1,
         free: true,
         features: [
           "1-min file-lengh max",
@@ -113,10 +115,13 @@ const configuration = {
       },
       //* Creator
       {
-        id: "prod_OuKnitbowAz4n4",
+        stripeProductId: "prod_OuKnitbowAz4n4",
         name: "Creator",
         description: "10 tokens/month",
         tokens: 10,
+        isTokensPerMonth: true,
+        maxFileDurationInMinutes: 1,
+        free: false,
         features: [
           "1-min file-lengh max",
           "Audio translation",
@@ -142,10 +147,13 @@ const configuration = {
       },
       //* Standart
       {
-        id: "prod_OuKpA5o0s5ysTU",
+        stripeProductId: "prod_OuKpA5o0s5ysTU",
         name: "Standard",
         description: "30 tokens/month",
         tokens: 30,
+        isTokensPerMonth: true,
+        maxFileDurationInMinutes: 5,
+        free: false,
         features: [
           "5-min file-lengh max",
           "Audio translation",
@@ -171,12 +179,15 @@ const configuration = {
       },
       //* Producer
       {
-        id: "prod_OuKubCASJyJPoR",
+        stripeProductId: "prod_OuKubCASJyJPoR",
         name: "Producer",
         badge: `Most Popular`,
         recommended: true,
         description: "300 tokens/month",
         tokens: 300,
+        isTokensPerMonth: true,
+        maxFileDurationInMinutes: 20,
+        free: false,
         features: [
           "20-min file-lengh max",
           "Audio translation",
@@ -206,6 +217,10 @@ const configuration = {
         badge: `Let's talk`,
         recommended: false,
         description: "From 1000 tokens/month",
+        tokens: 1000,
+        isTokensPerMonth: true,
+        maxFileDurationInMinutes: 90,
+        free: false,
         features: [
           "90-min file-lengh max",
           "Everything in Producer",

@@ -13,9 +13,7 @@ import { Project } from "../types/project";
 const useFetchProject = (projectId: string) => {
   const firestore = useFirestore();
 
-  const ref = doc(firestore, PROJECTS_COLLECTION, projectId) as DocumentReference<
-  WithId<Project>
->;;
+  const ref = doc(firestore, PROJECTS_COLLECTION, projectId) as DocumentReference<WithId<Project>>;
 
   return useFirestoreDocData<WithId<Project>>(ref, { idField: "id" });
 };

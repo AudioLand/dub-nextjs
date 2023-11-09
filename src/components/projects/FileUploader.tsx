@@ -9,8 +9,7 @@ import { ACCEPTED_FILES } from "~/lib/projects/limits";
 
 // icons
 import { ArrowUpTrayIcon, DocumentCheckIcon } from "@heroicons/react/24/outline";
-import configuration from "~/configuration";
-import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
+import useUserTokens from "~/lib/user/hooks/use-user-tokens";
 
 const ICON_IN_DROPZONE_SIZE = 48;
 
@@ -26,13 +25,7 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
   const isFileExists = file !== undefined;
 
   const MAX_MEDIA_FILE_DURATION = useMaxMediaFileDuration();
-  // TODO start: add hook for these functions
-  const userOrganization = useCurrentOrganization()!;
-  const subscriptionProductId = userOrganization.subscription?.product;
-  const subscriptionProduct = configuration.stripe.products.find(
-    (product) => product.id === subscriptionProductId,
-  )!;
-  // TODO end
+  const { usedTokens, availableTokensInSubscription } = useUserTokens();
 
   const tryToSaveFile = (uploadedFile: File | null) => {
     setFileErrorMessage("");
@@ -42,15 +35,16 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
       const audio = new Audio(objectUrl);
 
       audio.addEventListener("loadedmetadata", () => {
-        const fileDuration = audio.duration;
-
-        const isFileDurationValid = fileDuration <= MAX_MEDIA_FILE_DURATION.inSeconds;
+        const fileDuration = {
+          inSeconds: audio.duration,
+          roundedInMinutes: Math.floor(audio.duration / 60),
+        };
+        const isFileDurationValid = fileDuration.inSeconds <= MAX_MEDIA_FILE_DURATION.inSeconds;
 
         if (isFileDurationValid) {
-          const subscriptionTokensInSeconds = subscriptionProduct.tokens! * 60;
-          const userAvailableTokensCount =
-            subscriptionTokensInSeconds - userOrganization.usedTokensInSeconds;
-          const isUserHasEnoughTokens = userAvailableTokensCount - fileDuration >= 0;
+          const isUserHasEnoughTokens =
+            availableTokensInSubscription.inMinutes >
+            usedTokens.roundedInMinutes + fileDuration.roundedInMinutes;
 
           if (isUserHasEnoughTokens) {
             const isFileTypeAccepted = ACCEPTED_FILES.includes(uploadedFile.type);
