@@ -1,7 +1,7 @@
-import { FieldValue } from 'firebase-admin/firestore';
+import { FieldValue } from "firebase-admin/firestore";
 
-import { getOrganizationsCollection } from '~/lib/server/collections';
-import { OrganizationSubscription } from '~/lib/organizations/types/organization-subscription';
+import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
+import { getOrganizationsCollection } from "~/lib/server/collections";
 
 interface AddSubscriptionProps {
   organizationId: string;
@@ -20,6 +20,7 @@ export function setOrganizationSubscription(props: AddSubscriptionProps) {
   return organization.update({
     subscription,
     customerId,
+    usedTokensInSeconds: 0,
   });
 }
 
@@ -46,12 +47,22 @@ export async function deleteOrganizationSubscription(subscriptionId: string) {
  */
 export async function updateSubscriptionById(
   subscriptionId: string,
-  subscription: OrganizationSubscription
+  subscription: OrganizationSubscription,
 ) {
   const organization = await getOrganizationBySubscriptionId(subscriptionId);
 
   return organization.update({
     subscription,
+    usedTokensInSeconds: 0,
+  });
+}
+
+export async function resetTokensByCustomerId(customerId: string) {
+  const organizationSnap = await getOrganizationByCustomerId(customerId);
+  const organization = organizationSnap.ref;
+
+  return organization.update({
+    usedTokensInSeconds: 0,
   });
 }
 
@@ -62,8 +73,8 @@ export async function updateSubscriptionById(
  * @param subscriptionId
  */
 async function getOrganizationBySubscriptionId(subscriptionId: string) {
-  const path = 'subscription.id';
-  const op = '==';
+  const path = "subscription.id";
+  const op = "==";
 
   const { docs, size } = await getOrganizationsCollection()
     .where(path, op, subscriptionId)
@@ -71,9 +82,7 @@ async function getOrganizationBySubscriptionId(subscriptionId: string) {
     .get();
 
   if (!size) {
-    throw new Error(
-      `No organization found with subscription ${subscriptionId}`
-    );
+    throw new Error(`No organization found with subscription ${subscriptionId}`);
   }
 
   return docs[0].ref;
@@ -87,7 +96,7 @@ async function getOrganizationBySubscriptionId(subscriptionId: string) {
 export async function getOrganizationByCustomerId(customerId: string) {
   const organizations = getOrganizationsCollection();
   const path = `customerId`;
-  const op = '==';
+  const op = "==";
 
   const result = await organizations.where(path, op, customerId).get();
 
