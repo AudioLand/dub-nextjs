@@ -5,6 +5,7 @@ import { z } from "zod";
 import configuration from "~/configuration";
 import logger from "~/core/logger";
 
+import { sendEmail } from "~/core/email/send-email";
 import { getApiRefererPath } from "~/core/generic/get-api-referer-path";
 import { HttpStatusCode } from "~/core/generic/http-status-code.enum";
 import { withAuthedUser } from "~/core/middleware/with-authed-user";
@@ -52,6 +53,13 @@ async function billingPortalRedirectHandler(req: NextApiRequest, res: NextApiRes
     const finalUrl = needToRedirectToPaywall
       ? `${url}/subscriptions/${subscriptionId}/update`
       : url;
+
+    sendEmail({
+      from: "AudioLand.DUB",
+      to: "sakh.alexandr@gmail.com",
+      subject: "Test Subject",
+      text: "Test text",
+    });
 
     res.redirect(HttpStatusCode.SeeOther, finalUrl);
   } catch (error) {
