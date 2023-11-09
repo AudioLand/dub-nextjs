@@ -23,6 +23,7 @@ import {
   updateSubscriptionById,
 } from "~/lib/server/organizations/subscriptions";
 
+import { sendEmail } from "~/core/email/send-email";
 import { buildOrganizationSubscription } from "~/lib/stripe/build-organization-subscription";
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
@@ -76,6 +77,13 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
         await onCheckoutCompleted(session, subscription);
+
+        sendEmail({
+          from: "AudioLand.DUB",
+          to: "sakh.alexandr@gmail.com",
+          subject: "Test Subject",
+          text: "Test text",
+        });
 
         break;
       }
