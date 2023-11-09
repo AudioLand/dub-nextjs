@@ -19,7 +19,11 @@ const useUserSubscriptionPlan = () => {
   //* For other plans
   const userSubscriptionPlan = STRIPE_PRODUCTS.find(
     (product) => product.stripeProductId === userSubscriptionProductId,
-  )!;
+  );
+
+  if (!userSubscriptionPlan) {
+    throw new Error(`No product found with ID ${userSubscriptionProductId}`);
+  }
 
   return {
     userSubscriptionPlan: userSubscriptionPlan,
