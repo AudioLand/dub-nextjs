@@ -1,26 +1,23 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { z } from 'zod';
-import { join } from 'path';
+import { NextApiRequest, NextApiResponse } from "next";
+import { join } from "path";
+import { z } from "zod";
 
-import logger from '~/core/logger';
-import configuration from '~/configuration';
+import configuration from "~/configuration";
+import logger from "~/core/logger";
 
-import { createBillingPortalSession } from '~/lib/stripe/create-billing-portal-session';
-import { withAuthedUser } from '~/core/middleware/with-authed-user';
-import { canChangeBilling } from '~/lib/organizations/permissions';
-import { withPipe } from '~/core/middleware/with-pipe';
-import { withMethodsGuard } from '~/core/middleware/with-methods-guard';
-import { getApiRefererPath } from '~/core/generic/get-api-referer-path';
-import { getUserRoleByOrganization } from '~/lib/server/organizations/memberships';
-import { getOrganizationByCustomerId } from '~/lib/server/organizations/subscriptions';
-import { HttpStatusCode } from '~/core/generic/http-status-code.enum';
+import { getApiRefererPath } from "~/core/generic/get-api-referer-path";
+import { HttpStatusCode } from "~/core/generic/http-status-code.enum";
+import { withAuthedUser } from "~/core/middleware/with-authed-user";
+import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
+import { withPipe } from "~/core/middleware/with-pipe";
+import { canChangeBilling } from "~/lib/organizations/permissions";
+import { getUserRoleByOrganization } from "~/lib/server/organizations/memberships";
+import { getOrganizationByCustomerId } from "~/lib/server/organizations/subscriptions";
+import { createBillingPortalSession } from "~/lib/stripe/create-billing-portal-session";
 
-const SUPPORTED_HTTP_METHODS: HttpMethod[] = ['POST'];
+const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
-async function billingPortalRedirectHandler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function billingPortalRedirectHandler(req: NextApiRequest, res: NextApiResponse) {
   const { firebaseUser, headers } = req;
   const userId = firebaseUser.uid;
   const schemaResult = getBodySchema().safeParse(req.body);
@@ -29,7 +26,7 @@ async function billingPortalRedirectHandler(
     return redirectToErrorPage(req, res);
   }
 
-  const { customerId } = schemaResult.data;
+  const { customerId, subscriptionId, redirectToStripePaywall } = schemaResult.data;
 
   // we check that the user is authorized to access the portal
   const canAccess = await getUserCanAccessCustomerPortal({
@@ -42,29 +39,29 @@ async function billingPortalRedirectHandler(
   }
 
   try {
-    const returnUrl =
-      headers.referer || headers.origin || configuration.paths.appHome;
+    const returnUrl = headers.referer || headers.origin || configuration.paths.appHome;
 
     const { url } = await createBillingPortalSession({
       returnUrl,
       customerId,
     });
 
-    res.redirect(HttpStatusCode.SeeOther, url);
+    //* Convert '1' to true or '0' to false
+    const needToRedirectToPaywall = Boolean(Number(redirectToStripePaywall));
+
+    const finalUrl = needToRedirectToPaywall
+      ? `${url}/subscriptions/${subscriptionId}/update`
+      : url;
+
+    res.redirect(HttpStatusCode.SeeOther, finalUrl);
   } catch (error) {
     return onError(req, res, error);
   }
 }
 
-export default async function stripePortalHandler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function stripePortalHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    await withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), withAuthedUser)(
-      req,
-      res
-    );
+    await withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), withAuthedUser)(req, res);
 
     return billingPortalRedirectHandler(req, res);
   } catch (error) {
@@ -77,10 +74,7 @@ export default async function stripePortalHandler(
  * @description Returns whether a user {@link userId} has access to the
  * Stripe portal of an organization with customer ID {@link customerId}
  */
-async function getUserCanAccessCustomerPortal(params: {
-  customerId: string;
-  userId: string;
-}) {
+async function getUserCanAccessCustomerPortal(params: { customerId: string; userId: string }) {
   try {
     const organization = await getOrganizationByCustomerId(params.customerId);
 
@@ -104,6 +98,8 @@ async function getUserCanAccessCustomerPortal(params: {
 function getBodySchema() {
   return z.object({
     customerId: z.string(),
+    subscriptionId: z.string(),
+    redirectToStripePaywall: z.string(),
   });
 }
 
