@@ -27,7 +27,6 @@ import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-stor
 
 // constants
 import PIPELINE_URL from "~/core/ml-pipeline/url";
-import { MAX_FILE_DURATION_STRING_TEMPLATE } from "~/lib/projects/limits";
 
 // types
 import { Timestamp } from "firebase/firestore";
