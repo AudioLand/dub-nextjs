@@ -1,16 +1,16 @@
-import { addDays } from 'date-fns';
+import { addDays } from "date-fns";
 
-import { MembershipRole } from '~/lib/organizations/types/membership-role';
-import { canInviteUser } from '~/lib/organizations/permissions';
-import renderInviteEmail from '~/lib/emails/invite';
-import { MembershipInvite } from '~/lib/organizations/types/membership-invite';
+import renderInviteEmail from "~/lib/emails/invite";
+import { canInviteUser } from "~/lib/organizations/permissions";
+import { MembershipInvite } from "~/lib/organizations/types/membership-invite";
+import { MembershipRole } from "~/lib/organizations/types/membership-role";
 
-import { sendEmail } from '~/core/email/send-email';
-import configuration from '~/configuration';
-import { getUserInfoById } from '~/core/firebase/admin/auth/get-user-info-by-id';
+import configuration from "~/configuration";
+import { sendEmail } from "~/core/email/send-email";
+import { getUserInfoById } from "~/core/firebase/admin/auth/get-user-info-by-id";
 
-import { getOrganizationById } from '../queries';
-import logger from '~/core/logger';
+import logger from "~/core/logger";
+import { getOrganizationById } from "../queries";
 
 interface Invite {
   email: string;
@@ -35,9 +35,7 @@ export async function inviteMembers(params: Params) {
   const organizationData = organization.data();
 
   if (!organizationData) {
-    throw new Error(
-      `Organization data with ID ${organizationId} was not found`,
-    );
+    throw new Error(`Organization data with ID ${organizationId} was not found`);
   }
 
   const organizationName = organizationData.name;
@@ -45,9 +43,7 @@ export async function inviteMembers(params: Params) {
 
   // validate that the inviter is currently in the organization
   if (inviterRole === undefined) {
-    throw new Error(
-      `Invitee with ID ${inviterId} does not belong to the organization`,
-    );
+    throw new Error(`Invitee with ID ${inviterId} does not belong to the organization`);
   }
 
   const invitesCollection = organization.ref.collection(`invites`);
@@ -64,8 +60,7 @@ export async function inviteMembers(params: Params) {
       return;
     }
 
-    const inviterDisplayName =
-      inviter?.displayName ?? inviter?.email ?? undefined;
+    const inviterDisplayName = inviter?.displayName ?? inviter?.email ?? undefined;
 
     const organizationLogo = organizationData?.logoURL ?? undefined;
 
@@ -78,12 +73,10 @@ export async function inviteMembers(params: Params) {
         inviter: inviterDisplayName,
       });
 
-    const field: keyof MembershipInvite = 'email';
-    const op = '==';
+    const field: keyof MembershipInvite = "email";
+    const op = "==";
 
-    const existingInvite = await invitesCollection
-      .where(field, op, invite.email)
-      .get();
+    const existingInvite = await invitesCollection.where(field, op, invite.email).get();
 
     const inviteExists = !existingInvite.empty;
 
@@ -131,7 +124,7 @@ export async function inviteMembers(params: Params) {
           expiresAt,
           organization: {
             id: organizationId,
-            name: organizationData?.name ?? '',
+            name: organizationData?.name ?? "",
           },
         };
 
@@ -161,22 +154,11 @@ function sendInviteEmail(props: {
   organizationLogo: Maybe<string>;
   inviter: Maybe<string>;
 }) {
-  const {
-    invitedUserEmail,
-    inviteCode,
-    organizationName,
-    organizationLogo,
-    inviter,
-  } = props;
+  const { invitedUserEmail, inviteCode, organizationName, organizationLogo, inviter } = props;
 
-  const sender = process.env.EMAIL_SENDER;
   const productName = configuration.site.siteName;
 
-  if (!sender) {
-    throw new Error(`Please configure the "EMAIL_SENDER" environment variable`);
-  }
-
-  const subject = 'You have been invited to join an organization!';
+  const subject = "You have been invited to join an organization!";
   const link = getInvitePageFullUrl(inviteCode);
 
   const html = renderInviteEmail({
@@ -190,7 +172,6 @@ function sendInviteEmail(props: {
 
   return sendEmail({
     to: invitedUserEmail,
-    from: sender,
     subject,
     html,
   });
@@ -211,7 +192,7 @@ function getInvitePageFullUrl(inviteCode: string) {
 
   assertSiteUrl(siteUrl);
 
-  return [siteUrl, 'auth', 'invite', inviteCode].join('/');
+  return [siteUrl, "auth", "invite", inviteCode].join("/");
 }
 
 function assertSiteUrl(siteUrl: Maybe<string>): asserts siteUrl is string {
@@ -226,5 +207,5 @@ function getEmulatorHost() {
   const host = `http://localhost`;
   const port = 3000;
 
-  return [host, port].join(':');
+  return [host, port].join(":");
 }
