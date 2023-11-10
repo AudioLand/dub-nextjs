@@ -7,7 +7,6 @@ import { TargetVoice } from "../types/target-voice";
 const VOICES_11LABS_API_URL = "https://api.elevenlabs.io/v1/voices";
 
 const ELEVENLABS_API_KEY = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
-console.log(ELEVENLABS_API_KEY);
 
 const useTargetVoices = () => {
   const fetcher = useApiRequest<{ voices: TargetVoice[] }>();
