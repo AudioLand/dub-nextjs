@@ -5,7 +5,6 @@ import { z } from "zod";
 import configuration from "~/configuration";
 import logger from "~/core/logger";
 
-import { sendEmail } from "~/core/email/send-email";
 import { getApiRefererPath } from "~/core/generic/get-api-referer-path";
 import { HttpStatusCode } from "~/core/generic/http-status-code.enum";
 import { withAuthedUser } from "~/core/middleware/with-authed-user";
@@ -15,7 +14,6 @@ import { canChangeBilling } from "~/lib/organizations/permissions";
 import { getUserRoleByOrganization } from "~/lib/server/organizations/memberships";
 import { getOrganizationByCustomerId } from "~/lib/server/organizations/subscriptions";
 import { createBillingPortalSession } from "~/lib/stripe/create-billing-portal-session";
-
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 async function billingPortalRedirectHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -53,13 +51,6 @@ async function billingPortalRedirectHandler(req: NextApiRequest, res: NextApiRes
     const finalUrl = needToRedirectToPaywall
       ? `${url}/subscriptions/${subscriptionId}/update`
       : url;
-
-    sendEmail({
-      from: "AudioLand.DUB",
-      to: "sakh.alexandr@gmail.com",
-      subject: "Test Subject",
-      text: "Test text",
-    });
 
     res.redirect(HttpStatusCode.SeeOther, finalUrl);
   } catch (error) {
