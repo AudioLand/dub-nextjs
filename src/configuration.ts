@@ -8,8 +8,9 @@ enum Themes {
 
 const configuration = {
   site: {
-    name: "DUB - Translate video & audio",
-    description: "Make your videos speak more languages",
+    name: "Audioland: Ultimate AI Dubbing for Video and Audio Translation",
+    description:
+      "Discover the future of content creation with Audioland's cutting-edge AI dubber and dubbing software. Our online AI dubbing service offers seamless audio and video dubbing, empowering you to dub audio over video effortlessly. Transform your YouTube videos with AI voice dubbing, video translation, and audio translation services. Join the revolution in content production with Audioland!",
     themeColor: "#ffffff",
     themeColorDark: "#0a0a0a",
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL as string,
