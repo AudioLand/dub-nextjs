@@ -15,7 +15,7 @@ interface IInfoTooltipTexts {
   };
   recommendations: {
     title: string;
-    recommedations_list: string[];
+    recommendations_list: string[];
   };
 }
 
