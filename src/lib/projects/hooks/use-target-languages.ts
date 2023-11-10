@@ -8,7 +8,7 @@ const useTargetLanguages = () => {
   const valueString: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
   const targetLanguages: string[] = JSON.parse(valueString);
 
-  return targetLanguages;
+  return targetLanguages || [];
 };
 
 export default useTargetLanguages;
