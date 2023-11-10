@@ -1,7 +1,7 @@
-import configuration from '../../configuration';
+import { Address } from "nodemailer/lib/mailer";
+import configuration from "../../configuration";
 
 interface SendEmailParams {
-  from: string;
   to: string;
   subject: string;
   text?: string;
@@ -11,7 +11,24 @@ interface SendEmailParams {
 export async function sendEmail(config: SendEmailParams) {
   const transporter = await getTransporter();
 
-  return transporter.sendMail(config);
+  if (!process.env.EMAIL_SENDER || !process.env.EMAIL_USER) {
+    throw new Error(
+      `Missing email configuration. Please add the following environment variables:
+      EMAIL_SENDER
+      EMAIL_USER
+      `,
+    );
+  }
+
+  const emailFrom: Address = {
+    name: process.env.EMAIL_SENDER,
+    address: process.env.EMAIL_USER,
+  };
+
+  return transporter.sendMail({
+    ...config,
+    from: emailFrom,
+  });
 }
 
 function getTransporter() {
@@ -31,7 +48,7 @@ function getTransporter() {
  * API details (Mailgun, Sendgrid, etc.) to the configuration.
  */
 async function getSMTPTransporter() {
-  const nodemailer = await import('nodemailer');
+  const nodemailer = await import("nodemailer");
 
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASSWORD;
@@ -68,10 +85,10 @@ async function getSMTPTransporter() {
  * debug your emails for free. It's the default for the dev environment
  */
 async function getEtherealMailTransporter() {
-  const nodemailer = await import('nodemailer');
+  const nodemailer = await import("nodemailer");
   const testAccount = await getEtherealTestAccount();
 
-  const host = 'smtp.ethereal.email';
+  const host = "smtp.ethereal.email";
   const port = 587;
 
   return nodemailer.createTransport({
@@ -88,10 +105,7 @@ async function getEtherealMailTransporter() {
 function getMockMailTransporter() {
   return {
     sendMail(params: SendEmailParams) {
-      console.log(
-        `Using mock email transporter with params`,
-        JSON.stringify(params, null, 2),
-      );
+      console.log(`Using mock email transporter with params`, JSON.stringify(params, null, 2));
     },
   };
 }
@@ -116,7 +130,7 @@ async function getEtherealTestAccount() {
 }
 
 async function createEtherealTestAccount() {
-  const nodemailer = await import('nodemailer');
+  const nodemailer = await import("nodemailer");
   const newAccount = await nodemailer.createTestAccount();
 
   console.warn(`
@@ -125,9 +139,7 @@ async function createEtherealTestAccount() {
     To do so, please use the guide at https://makerkit.dev/docs/next-fire/emails
   `);
 
-  console.log(
-    `Created Ethereal test account: ${JSON.stringify(newAccount, null, 2)}`,
-  );
+  console.log(`Created Ethereal test account: ${JSON.stringify(newAccount, null, 2)}`);
 
   console.log(`Consider adding these credentials to your configuration file`);
 
