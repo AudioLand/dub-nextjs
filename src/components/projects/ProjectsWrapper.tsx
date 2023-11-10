@@ -11,10 +11,12 @@ import ProjectsList from "./ProjectsList";
 
 // hooks
 import { useUserId } from "~/core/hooks/use-user-id";
+import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
 import useIsUserCanCreateDubs from "~/lib/projects/hooks/use-is-user-can-create-dubs";
 
 const ProjectsWrapper = () => {
   const userId = useUserId();
+  const userOrganization = useCurrentOrganization();
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
 
   const handleOpenCreateProjectModal = () => {
@@ -25,7 +27,7 @@ const ProjectsWrapper = () => {
     setCreateProjectModalOpen(false);
   };
 
-  if (userId === undefined) {
+  if (userId === undefined || userOrganization === undefined) {
     return (
       <div className="flex justify-center items-center">
         <Spinner />
@@ -45,7 +47,11 @@ const ProjectsWrapper = () => {
         isOpen={isCreateProjectModalOpen}
         setIsOpen={setCreateProjectModalOpen}
       >
-        <CreateProjectForm handleClose={handleCloseCreateProjectModal} />
+        <CreateProjectForm
+          userId={userId}
+          organizationId={userOrganization.id}
+          handleClose={handleCloseCreateProjectModal}
+        />
       </Modal>
     </>
   );

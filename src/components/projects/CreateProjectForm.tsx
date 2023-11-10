@@ -1,27 +1,37 @@
 // react
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useRef, useState } from "react";
 
 // ui-components
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import Button from "~/core/ui/Button";
+import IconButton from "~/core/ui/IconButton";
 import If from "~/core/ui/If";
 import Modal from "~/core/ui/Modal";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/core/ui/Select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/core/ui/Select";
 import TextField from "~/core/ui/TextField";
 import FileUploader from "./FileUploader";
 
 // hooks
 import useCollapsible from "~/core/hooks/use-sidebar-state";
-import { useUserId } from "~/core/hooks/use-user-id";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
 import useMaxMediaFileDuration from "~/lib/projects/hooks/use-max-media-file-duration";
 import useRequirementsInfoTooltipText from "~/lib/projects/hooks/use-requirements-info-tooltip-text";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
+import useTargetVoices from "~/lib/projects/hooks/use-target-voices";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 
 // constants
 import PIPELINE_URL from "~/core/ml-pipeline/url";
+import { MAX_FILE_DURATION_STRING_TEMPLATE } from "~/lib/projects/limits";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -29,25 +39,27 @@ import PROJECT_STATUSES from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 
 // icons
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
-
-const MAX_FILE_DURATION_STRING_TEMPLATE = "{max_media_file_duration_in_minutes}";
+import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
+  userId: string;
+  organizationId: string;
 }
 
 const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
-  const { handleClose } = props;
+  const { handleClose, userId, organizationId } = props;
 
-  const userId = useUserId()!;
-  const currentOrganization = useCurrentOrganization()!;
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isCollapsed, setCollapsed] = useCollapsible();
+
   const targetLanguages = useTargetLanguages();
+  const { targetVoices, fetchTargetVoicesStatus } = useTargetVoices();
+
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
   const updateProject = useUpdateProject();
-  const [isCollapsed, setCollapsed] = useCollapsible();
+
   const { isInfoTooltipEnabled, infoTooltipTexts } = useRequirementsInfoTooltipText();
   const MAX_MEDIA_FILE_DURATION = useMaxMediaFileDuration();
 
@@ -86,6 +98,13 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     setNewProject((prevProject) => ({
       ...prevProject,
       targetLanguage: language,
+    }));
+  };
+
+  const handleVoiceUpdate = (voice: string) => {
+    setNewProject((prevProject) => ({
+      ...prevProject,
+      targetVoice: voice,
     }));
   };
 
@@ -166,7 +185,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         project_id: createdProject.id,
         target_language: createdProject.targetLanguage,
         original_file_location: filePathInBucket,
-        organization_id: currentOrganization.id,
+        organization_id: organizationId,
       });
 
       const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
@@ -184,7 +203,17 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     setCollapsed(!isCollapsed);
   };
 
+  const handlePreviewAudioClick = (audioUrl: string) => {
+    if (!audioRef.current) return;
+
+    audioRef.current.pause();
+    audioRef.current.src = audioUrl;
+    audioRef.current.play();
+  };
+
   return (
+    // TODO: use form tag, without onChange events
+    // Notion task: https://www.notion.so/krenels/onChange-5524544683f34f9f8b009daa959f03a6?pvs=4
     <div className={"flex flex-col space-y-4"}>
       {/* Project Name Input */}
       <TextField>
@@ -193,33 +222,72 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
           value={newProject.name}
           type="text"
           placeholder="Untitled"
+          name="name"
           onChange={handleNameUpdate}
         />
       </TextField>
 
-      {/* Target Language Input */}
-      <TextField>
-        <TextField.Label>Target Language *</TextField.Label>
-        <Select onValueChange={handleLanguageUpdate}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select target language" />
-          </SelectTrigger>
+      <div className="grid grid-cols-2 gap-5">
+        {/* Target Language Select */}
+        <TextField>
+          <TextField.Label>Target Language *</TextField.Label>
+          <Select name="targetLanguage" onValueChange={handleLanguageUpdate}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select target language" />
+            </SelectTrigger>
 
-          <SelectContent>
-            {targetLanguages?.map((language) => (
-              <SelectItem
-                key={language}
-                value={language}
-                defaultChecked={newProject.targetLanguage === language}
-              >
-                {language}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+            <SelectContent>
+              {targetLanguages?.map((language) => (
+                <SelectItem
+                  key={language}
+                  value={language}
+                  defaultChecked={newProject.targetLanguage === language}
+                >
+                  {language}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <TextField.Error error={languageErrorMessage} />
-      </TextField>
+          <TextField.Error error={languageErrorMessage} />
+        </TextField>
+
+        {/* Target Voice Select */}
+        <TextField>
+          <TextField.Label>Target Voice</TextField.Label>
+          <Select name="targetVoice" onValueChange={handleVoiceUpdate}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select target voice" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Powered with 11labs</SelectLabel>
+                {targetVoices?.map(({ voice_id, name, preview_url }) => (
+                  <div key={voice_id} className="flex items-center gap-1">
+                    <IconButton
+                      className="pl-1 hover:border-0 focus:border-0"
+                      onClick={() => handlePreviewAudioClick(preview_url)}
+                    >
+                      <PlayIcon className="h-5" />
+                    </IconButton>
+
+                    <SelectItem
+                      value={name}
+                      defaultChecked={newProject.targetVoice === name}
+                      showSelectedIcon={false}
+                    >
+                      {name}
+                    </SelectItem>
+                  </div>
+                ))}
+              </SelectGroup>
+
+              <audio ref={audioRef} hidden />
+            </SelectContent>
+          </Select>
+        </TextField>
+      </div>
 
       {/* Source media Input */}
       <TextField>
