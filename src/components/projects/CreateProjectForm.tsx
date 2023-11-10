@@ -54,7 +54,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [isCollapsed, setCollapsed] = useCollapsible();
 
   const targetLanguages = useTargetLanguages();
-  const { targetVoices, fetchTargetVoicesStatus } = useTargetVoices();
+  const { targetVoices } = useTargetVoices();
 
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
@@ -186,6 +186,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         target_language: createdProject.targetLanguage,
         original_file_location: filePathInBucket,
         organization_id: organizationId,
+        voice_id: createdProject.targetVoice,
       });
 
       const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
@@ -203,7 +204,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     setCollapsed(!isCollapsed);
   };
 
-  const handlePreviewAudioClick = (audioUrl: string) => {
+  const handlePlayPreviewAudio = (audioUrl: string) => {
     if (!audioRef.current) return;
 
     audioRef.current.pause();
@@ -267,14 +268,14 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
                   <div key={voice_id} className="flex items-center gap-1">
                     <IconButton
                       className="pl-1 hover:border-0 focus:border-0"
-                      onClick={() => handlePreviewAudioClick(preview_url)}
+                      onClick={() => handlePlayPreviewAudio(preview_url)}
                     >
                       <PlayIcon className="h-5" />
                     </IconButton>
 
                     <SelectItem
-                      value={name}
-                      defaultChecked={newProject.targetVoice === name}
+                      value={voice_id}
+                      defaultChecked={newProject.targetVoice === voice_id}
                       showSelectedIcon={false}
                     >
                       {name}
