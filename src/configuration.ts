@@ -18,6 +18,7 @@ const configuration = {
     twitterHandle: "",
     githubHandle: "",
     convertKitFormId: "",
+    emailOctopisFormId: process.env.NEXT_PUBLIC_EMAIL_OCTOPUS_FORM_ID,
     locale: process.env.DEFAULT_LOCALE,
   },
   firebase: {
