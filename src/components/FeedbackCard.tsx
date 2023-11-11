@@ -14,9 +14,9 @@ const FeedbackCard = ({ avatarUrl, name, rating, comment }: FeedbackCard) => {
     const starArray = [];
     for (let i = 0; i < 5; i++) {
       if (i < rating) {
-        starArray.push(<FullStar width={20} height={20} />);
+        starArray.push(<FullStar key={i} width={20} height={20} />);
       } else {
-        starArray.push(<EmptyStar width={20} height={20} />);
+        starArray.push(<EmptyStar key={i} width={20} height={20} />);
       }
     }
     return starArray;
