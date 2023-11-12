@@ -1,15 +1,11 @@
-// react
-
 // ui-components
 import { Progress, ProgressIndicator } from "@radix-ui/react-progress";
 import Button from "~/core/ui/Button";
 import If from "~/core/ui/If";
 
 // hooks
-import useUserTokens from "~/lib/user/hooks/use-user-tokens";
-
-// constants
 import useUserSubscriptionPlan from "~/lib/user/hooks/use-user-subscription-plan";
+import useUserTokens from "~/lib/user/hooks/use-user-tokens";
 
 const TokensInfoCard = () => {
   const { userSubscriptionPlan, isFreePlan } = useUserSubscriptionPlan();

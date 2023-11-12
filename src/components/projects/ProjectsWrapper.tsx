@@ -13,6 +13,7 @@ import ProjectsList from "./ProjectsList";
 
 // hooks
 import { useUserId } from "~/core/hooks/use-user-id";
+import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
 import useIsUserCanCreateDubs from "~/lib/projects/hooks/use-is-user-can-create-dubs";
 import useMaxMediaFileDuration from "~/lib/projects/hooks/use-max-media-file-duration";
 import useRequirementsInfoTooltipText from "~/lib/projects/hooks/use-requirements-info-tooltip-text";
@@ -25,6 +26,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 const ProjectsWrapper = () => {
   const userId = useUserId();
+  const userOrganization = useCurrentOrganization();
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
 
   const handleOpenCreateProjectModal = () => {
@@ -35,7 +37,10 @@ const ProjectsWrapper = () => {
     setCreateProjectModalOpen(false);
   };
 
-  if (userId === undefined) {
+  // User's organization constains used tokens
+  // If no info about tokens => user cannot create project
+  // So we need wait until user org will loaded
+  if (userId === undefined || userOrganization === undefined) {
     return (
       <div className="flex justify-center items-center">
         <Spinner />
@@ -55,7 +60,11 @@ const ProjectsWrapper = () => {
         isOpen={isCreateProjectModalOpen}
         setIsOpen={setCreateProjectModalOpen}
       >
-        <CreateProjectForm handleClose={handleCloseCreateProjectModal} />
+        <CreateProjectForm
+          userId={userId}
+          organizationId={userOrganization.id}
+          handleClose={handleCloseCreateProjectModal}
+        />
       </Modal>
     </>
   );
