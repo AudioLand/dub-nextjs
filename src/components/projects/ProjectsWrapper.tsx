@@ -37,6 +37,9 @@ const ProjectsWrapper = () => {
     setCreateProjectModalOpen(false);
   };
 
+  // User's organization constains used tokens
+  // If no info about tokens => user cannot create project
+  // So we need wait until user org will loaded
   if (userId === undefined || userOrganization === undefined) {
     return (
       <div className="flex justify-center items-center">

@@ -8,6 +8,10 @@ import AppSidebarNavigation from "./AppSidebarNavigation";
 
 const AppSidebar = () => {
   const { collapsed } = useContext(SidebarContext);
+
+  // User's organization constains used tokens
+  // Unless user org is not loaded => TokensInfoCard throw error
+  // So we need wait until user org will loaded
   const userOrganization = useCurrentOrganization();
 
   const showTokensInfoCard = userOrganization !== undefined && !collapsed;
