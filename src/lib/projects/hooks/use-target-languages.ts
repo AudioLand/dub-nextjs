@@ -6,9 +6,15 @@ import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
 
 const useTargetLanguages = () => {
   const valueString: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
-  const targetLanguages: string[] = JSON.parse(valueString);
+  let targetLanguages: string[];
+  try {
+    targetLanguages = JSON.parse(valueString);
+  } catch (error) {
+    console.error("Failed to parse json of target languages:", error);
+    targetLanguages = [];
+  }
 
-  return targetLanguages || [];
+  return targetLanguages;
 };
 
 export default useTargetLanguages;
