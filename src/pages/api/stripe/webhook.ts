@@ -116,8 +116,23 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
       case StripeWebhooks.InvoicePaid: {
         const invoice = event.data.object as Stripe.Invoice;
+        const userEmail = invoice.customer_email;
 
         await onSubscriptionContinued(invoice);
+
+        if (userEmail) {
+          const subscriptionRenewalEmail = getEventEmailText(
+            FEATURES_IDS_LIST.emailTexts.notification_of_successful_registration,
+          );
+
+          sendEmail({
+            to: userEmail,
+            subject: subscriptionRenewalEmail.subject,
+            text: subscriptionRenewalEmail.text,
+          });
+        } else {
+          console.error("User email is not defined in Stripe paid invoice event");
+        }
 
         break;
       }
