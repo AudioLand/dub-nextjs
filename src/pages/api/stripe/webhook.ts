@@ -121,6 +121,27 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
         break;
       }
+
+      case StripeWebhooks.InvoicePaymentFailed: {
+        const invoice = event.data.object as Stripe.Invoice;
+        const userEmail = invoice.customer_email;
+
+        if (userEmail) {
+          const paymentFailedEmail = getEventEmailText(
+            FEATURES_IDS_LIST.emailTexts.notification_of_successful_registration,
+          );
+
+          sendEmail({
+            to: userEmail,
+            subject: paymentFailedEmail.subject,
+            text: paymentFailedEmail.text,
+          });
+        } else {
+          console.error("User email is not defined in Stripe failed invoice event");
+        }
+
+        break;
+      }
     }
 
     return respondOk(res);
