@@ -122,7 +122,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
         if (userEmail) {
           const subscriptionRenewalEmail = getEventEmailText(
-            FEATURES_IDS_LIST.emailTexts.notification_of_successful_registration,
+            FEATURES_IDS_LIST.emailTexts.successful_subscription_renewal,
           );
 
           sendEmail({
@@ -143,7 +143,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
         if (userEmail) {
           const paymentFailedEmail = getEventEmailText(
-            FEATURES_IDS_LIST.emailTexts.notification_of_successful_registration,
+            FEATURES_IDS_LIST.emailTexts.notification_of_a_failed_payment_attempt,
           );
 
           sendEmail({
