@@ -22,10 +22,6 @@ async function onboardingHandler(req: NextApiRequest, res: NextApiResponse) {
   const userId = req.firebaseUser.uid;
   const userEmail = req.firebaseUser.email;
 
-  if (!userEmail) {
-    return res.send({ success: false });
-  }
-
   const data = {
     userId,
     organizationName: body.organization,
