@@ -23,6 +23,9 @@ import {
   updateSubscriptionById,
 } from "~/lib/server/organizations/subscriptions";
 
+import { sendEmail } from "~/core/email/send-email";
+import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
+import getEventEmailText from "~/lib/emails/get-event-emails-texts";
 import { buildOrganizationSubscription } from "~/lib/stripe/build-organization-subscription";
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
@@ -72,10 +75,25 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
       case StripeWebhooks.Completed: {
         const session = event.data.object as Stripe.Checkout.Session;
         const subscriptionId = session.subscription as string;
+        const userEmail = session.customer_email;
 
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
         await onCheckoutCompleted(session, subscription);
+
+        if (userEmail) {
+          const subscriptionEmail = getEventEmailText(
+            FEATURES_IDS_LIST.emailTexts.successful_subscription,
+          );
+
+          sendEmail({
+            to: userEmail,
+            subject: subscriptionEmail.subject,
+            text: subscriptionEmail.text,
+          });
+        } else {
+          console.error("User email is not defined in Stripe session");
+        }
 
         break;
       }
