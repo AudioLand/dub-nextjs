@@ -11,6 +11,7 @@ const FEATURES_IDS_LIST = {
     successful_subscription: "successful_subscription",
     successful_translation_of_the_project: "successful_translation_of_the_project",
     warning_about_the_end_of_the_subscription: "warning_about_the_end_of_the_subscription",
+    successful_subscription_renewal: "successful_subscription_renewal",
   },
 };
 
