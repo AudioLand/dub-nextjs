@@ -3,7 +3,7 @@ import "../styles/index.css";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { Inter as SansFont } from "next/font/google";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { User as AuthUser } from "firebase/auth";
 import { appWithTranslation, SSRConfig, useTranslation } from "next-i18next";
@@ -19,13 +19,11 @@ import { isBrowser } from "~/core/generic/is-browser";
 import useCollapsible from "~/core/hooks/use-sidebar-state";
 import { loadSelectedTheme } from "~/core/theming";
 
-import { createFlagsmithInstance } from "flagsmith";
-import { FlagsmithProvider } from "flagsmith/react";
-import { IState as FlagsmithState } from "flagsmith/types";
 import { CsrfTokenContext } from "~/core/contexts/csrf-token";
 import { SidebarContext } from "~/core/contexts/sidebar";
 import { ThemeContext } from "~/core/contexts/theme";
 import { UserSessionContext } from "~/core/contexts/user-session";
+import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import { UserData } from "~/core/session/types/user-data";
 import { UserSession } from "~/core/session/types/user-session";
 import { OrganizationContext } from "~/lib/contexts/organization";
@@ -63,14 +61,14 @@ interface DefaultPageProps extends SSRConfig {
 function App(
   props: AppProps<DefaultPageProps> & {
     pageProps: DefaultPageProps;
-    flagsmithState: FlagsmithState;
+    // flagsmithState: FlagsmithState;
   },
 ) {
-  const { Component, flagsmithState } = props;
+  const { Component } = props;
   const pageProps = props.pageProps as DefaultPageProps;
   const { emulator, firebase } = configuration;
   const { i18n } = useTranslation();
-  const flagsmithRef = useRef(createFlagsmithInstance());
+  // const flagsmithRef = useRef(createFlagsmithInstance());
 
   const userSessionContext: UserSession = useMemo(() => {
     return {
@@ -99,58 +97,56 @@ function App(
   useEffect(updateCurrentUser, [updateCurrentUser]);
 
   //* Init Flagsmith API to get feature flags
-  // initFlagsmith();
+  initFlagsmith();
 
   return (
-    <FlagsmithProvider flagsmith={flagsmithRef.current} serverState={flagsmithState}>
-      <FirebaseAppShell config={firebase}>
-        <FirebaseAppCheckProvider>
-          <FirebaseAuthProvider
-            language={i18n.language}
-            userSession={userSession}
-            setUserSession={setUserSession}
-            useEmulator={emulator}
-          >
-            <UserSessionContext.Provider value={{ userSession, setUserSession }}>
-              <OrganizationContext.Provider value={{ organization, setOrganization }}>
-                <FirebaseAnalyticsProvider>
-                  <AppRouteLoadingIndicator />
+    // <FlagsmithProvider flagsmith={flagsmithRef.current} serverState={flagsmithState}>
+    <FirebaseAppShell config={firebase}>
+      <FirebaseAppCheckProvider>
+        <FirebaseAuthProvider
+          language={i18n.language}
+          userSession={userSession}
+          setUserSession={setUserSession}
+          useEmulator={emulator}
+        >
+          <UserSessionContext.Provider value={{ userSession, setUserSession }}>
+            <OrganizationContext.Provider value={{ organization, setOrganization }}>
+              <FirebaseAnalyticsProvider>
+                <AppRouteLoadingIndicator />
 
-                  <UiStateProvider state={pageProps.ui}>
-                    <CsrfTokenContext.Provider value={pageProps.csrfToken}>
-                      <FontFamily />
-                      <Component {...pageProps} />
-                    </CsrfTokenContext.Provider>
-                  </UiStateProvider>
-                </FirebaseAnalyticsProvider>
-              </OrganizationContext.Provider>
-            </UserSessionContext.Provider>
-          </FirebaseAuthProvider>
-        </FirebaseAppCheckProvider>
-      </FirebaseAppShell>
-    </FlagsmithProvider>
+                <UiStateProvider state={pageProps.ui}>
+                  <CsrfTokenContext.Provider value={pageProps.csrfToken}>
+                    <FontFamily />
+                    <Component {...pageProps} />
+                  </CsrfTokenContext.Provider>
+                </UiStateProvider>
+              </FirebaseAnalyticsProvider>
+            </OrganizationContext.Provider>
+          </UserSessionContext.Provider>
+        </FirebaseAuthProvider>
+      </FirebaseAppCheckProvider>
+    </FirebaseAppShell>
+    // </FlagsmithProvider>
   );
 }
 
-App.getInitialProps = async () => {
-  const flagsmithSSR = createFlagsmithInstance();
+// App.getInitialProps = async () => {
+//   const flagsmithSSR = createFlagsmithInstance();
 
-  const apiKey = process.env.NEXT_PUBLIC_FLAGSMITH_API_KEY;
+//   const apiKey = process.env.NEXT_PUBLIC_FLAGSMITH_API_KEY;
 
-  if (apiKey) {
-    await flagsmithSSR.init({
-      environmentID: apiKey,
-      fetch,
-    });
-    return { flagsmithState: flagsmithSSR.getState() };
-  } else {
-    throw new Error("Flagsmith API key is not defined");
-  }
-};
+//   if (apiKey) {
+//     await flagsmithSSR.init({
+//       environmentID: apiKey,
+//       fetch,
+//     });
+//     return { flagsmithState: flagsmithSSR.getState() };
+//   } else {
+//     throw new Error("Flagsmith API key is not defined");
+//   }
+// };
 
-export default appWithTranslation<
-  AppProps & { pageProps: DefaultPageProps; flagsmithState: FlagsmithState }
->(App);
+export default appWithTranslation<AppProps & { pageProps: DefaultPageProps }>(App);
 
 function UiStateProvider(
   props: React.PropsWithChildren<{

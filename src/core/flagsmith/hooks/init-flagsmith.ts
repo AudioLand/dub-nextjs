@@ -1,4 +1,4 @@
-import flagsmith from "flagsmith";
+import flagsmith from "flagsmith/next-middleware";
 
 const initFlagsmith = () => {
   const apiKey = process.env.NEXT_PUBLIC_FLAGSMITH_API_KEY;
