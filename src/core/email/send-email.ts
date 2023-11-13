@@ -1,9 +1,10 @@
-import { Address } from "nodemailer/lib/mailer";
+import Mail, { Address } from "nodemailer/lib/mailer";
 import configuration from "../../configuration";
 
 interface SendEmailParams {
   to: string;
   subject: string;
+  priority?: Mail.Options["priority"];
   text?: string;
   html?: string;
 }
