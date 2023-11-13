@@ -126,7 +126,7 @@ const CreateProjectModalHeading = () => {
 
   //* Recommendations
   const recommendationsSection = infoTooltipTexts.recommendations;
-  const recommededPointsList = recommendationsSection.recommendations_list.map(
+  const recommededPointsList = recommendationsSection.recommendations_list?.map(
     (recommededPoint) => {
       if (recommededPoint.includes(MAX_FILE_DURATION_STRING_TEMPLATE)) {
         return recommededPoint.replace(
@@ -162,7 +162,7 @@ const CreateProjectModalHeading = () => {
               {/* Recommendations */}
               <div className="flex flex-col">
                 <span>{recommendationsSection.title}:</span>
-                {recommededPointsList.map((recommendedPoint) => (
+                {recommededPointsList?.map((recommendedPoint) => (
                   <span key={recommendedPoint}>- {recommendedPoint}</span>
                 ))}
               </div>
