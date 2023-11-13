@@ -23,9 +23,6 @@ import {
   updateSubscriptionById,
 } from "~/lib/server/organizations/subscriptions";
 
-import { sendEmail } from "~/core/email/send-email";
-import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
-import getEventEmailText from "~/lib/emails/get-event-emails-texts";
 import { buildOrganizationSubscription } from "~/lib/stripe/build-organization-subscription";
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
@@ -75,25 +72,25 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
       case StripeWebhooks.Completed: {
         const session = event.data.object as Stripe.Checkout.Session;
         const subscriptionId = session.subscription as string;
-        const userEmail = session.customer_email;
+        // const userEmail = session.customer_email;
 
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
         await onCheckoutCompleted(session, subscription);
 
-        if (userEmail) {
-          const subscriptionEmail = getEventEmailText(
-            FEATURES_IDS_LIST.emailTexts.successful_subscription,
-          );
+        // if (userEmail) {
+        //   const subscriptionEmail = getEventEmailText(
+        //     FEATURES_IDS_LIST.emailTexts.successful_subscription,
+        //   );
 
-          sendEmail({
-            to: userEmail,
-            subject: subscriptionEmail.subject,
-            text: subscriptionEmail.text,
-          });
-        } else {
-          console.error("User email is not defined in Stripe session");
-        }
+        //   sendEmail({
+        //     to: userEmail,
+        //     subject: subscriptionEmail.subject,
+        //     text: subscriptionEmail.text,
+        //   });
+        // } else {
+        //   console.error("User email is not defined in Stripe session");
+        // }
 
         break;
       }
@@ -116,44 +113,44 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
       case StripeWebhooks.InvoicePaid: {
         const invoice = event.data.object as Stripe.Invoice;
-        const userEmail = invoice.customer_email;
+        // const userEmail = invoice.customer_email;
 
         await onSubscriptionContinued(invoice);
 
-        if (userEmail) {
-          const subscriptionRenewalEmail = getEventEmailText(
-            FEATURES_IDS_LIST.emailTexts.successful_subscription_renewal,
-          );
+        // if (userEmail) {
+        //   const subscriptionRenewalEmail = getEventEmailText(
+        //     FEATURES_IDS_LIST.emailTexts.successful_subscription_renewal,
+        //   );
 
-          sendEmail({
-            to: userEmail,
-            subject: subscriptionRenewalEmail.subject,
-            text: subscriptionRenewalEmail.text,
-          });
-        } else {
-          console.error("User email is not defined in Stripe paid invoice event");
-        }
+        //   sendEmail({
+        //     to: userEmail,
+        //     subject: subscriptionRenewalEmail.subject,
+        //     text: subscriptionRenewalEmail.text,
+        //   });
+        // } else {
+        //   console.error("User email is not defined in Stripe paid invoice event");
+        // }
 
         break;
       }
 
       case StripeWebhooks.InvoicePaymentFailed: {
-        const invoice = event.data.object as Stripe.Invoice;
-        const userEmail = invoice.customer_email;
+        // const invoice = event.data.object as Stripe.Invoice;
+        // const userEmail = invoice.customer_email;
 
-        if (userEmail) {
-          const paymentFailedEmail = getEventEmailText(
-            FEATURES_IDS_LIST.emailTexts.notification_of_a_failed_payment_attempt,
-          );
+        // if (userEmail) {
+        //   const paymentFailedEmail = getEventEmailText(
+        //     FEATURES_IDS_LIST.emailTexts.notification_of_a_failed_payment_attempt,
+        //   );
 
-          sendEmail({
-            to: userEmail,
-            subject: paymentFailedEmail.subject,
-            text: paymentFailedEmail.text,
-          });
-        } else {
-          console.error("User email is not defined in Stripe failed invoice event");
-        }
+        //   sendEmail({
+        //     to: userEmail,
+        //     subject: paymentFailedEmail.subject,
+        //     text: paymentFailedEmail.text,
+        //   });
+        // } else {
+        //   console.error("User email is not defined in Stripe failed invoice event");
+        // }
 
         break;
       }

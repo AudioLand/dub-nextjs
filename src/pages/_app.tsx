@@ -61,14 +61,12 @@ interface DefaultPageProps extends SSRConfig {
 function App(
   props: AppProps<DefaultPageProps> & {
     pageProps: DefaultPageProps;
-    // flagsmithState: FlagsmithState;
   },
 ) {
   const { Component } = props;
   const pageProps = props.pageProps as DefaultPageProps;
   const { emulator, firebase } = configuration;
   const { i18n } = useTranslation();
-  // const flagsmithRef = useRef(createFlagsmithInstance());
 
   const userSessionContext: UserSession = useMemo(() => {
     return {
@@ -100,7 +98,6 @@ function App(
   initFlagsmith();
 
   return (
-    // <FlagsmithProvider flagsmith={flagsmithRef.current} serverState={flagsmithState}>
     <FirebaseAppShell config={firebase}>
       <FirebaseAppCheckProvider>
         <FirebaseAuthProvider
@@ -126,26 +123,8 @@ function App(
         </FirebaseAuthProvider>
       </FirebaseAppCheckProvider>
     </FirebaseAppShell>
-    // </FlagsmithProvider>
   );
 }
-
-// App.getInitialProps = async () => {
-//   const flagsmithSSR = createFlagsmithInstance();
-
-//   const apiKey = process.env.NEXT_PUBLIC_FLAGSMITH_API_KEY;
-
-//   if (apiKey) {
-//     await flagsmithSSR.init({
-//       environmentID: apiKey,
-//       fetch,
-//     });
-//     return { flagsmithState: flagsmithSSR.getState() };
-//   } else {
-//     throw new Error("Flagsmith API key is not defined");
-//   }
-// };
-
 export default appWithTranslation<AppProps & { pageProps: DefaultPageProps }>(App);
 
 function UiStateProvider(
