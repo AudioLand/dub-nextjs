@@ -79,25 +79,23 @@ function Index() {
               " duration-1000 slide-in-from-top-16 fill-mode-both delay-300"
             }
           >
-            <Image
-              priority
-              className={
-                "shadow-[0_0_1000px_0] rounded-2xl" +
-                " shadow-primary/40 animate-in fade-in" +
-                " zoom-in-50 delay-300 duration-1000 ease-out fill-mode-both"
-              }
-              width={2688}
-              height={1824}
-              src={`/assets/images/projects-dark.png`}
-              alt={`App Image`}
-            />
+            {/* Видео с пиздящим Димой */}
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/iy0mfAiQ3Zk?si=wrGr48AvlK5_eH-L"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            ></iframe>
           </div>
         </div>
       </Container>
 
       <Container>
         <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
-          <Heading type={2}>Look at What our Users say about Audioland Dubbing service</Heading>
+          <div className={"text-center"}>
+            <Heading type={1}>Look at What our Users say about Audioland Dubbing service</Heading>
+          </div>
           <FeedbackList />
         </div>
       </Container>
@@ -134,13 +132,13 @@ function Index() {
             <Image
               priority
               className={
-                "shadow-[0_0_1000px_0] rounded-2xl" +
-                " shadow-primary/40 animate-in fade-in" +
+                " rounded-2xl" +
+                " animate-in fade-in" +
                 " zoom-in-50 delay-300 duration-1000 ease-out fill-mode-both"
               }
               width={2688}
               height={1824}
-              src={`/assets/images/projects-dark.png`}
+              src={`/assets/images/features-collage-dark4.png`}
               alt={`App Image`}
             />
           </div>
