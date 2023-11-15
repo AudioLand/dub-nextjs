@@ -4,9 +4,9 @@ import flagsmith from "flagsmith";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 
 // types
-import { EventEmail } from "./types/event-email";
+import { EventEmail } from "../types/event-email";
 
-const getEventEmailText = async (textsFlagId: string) => {
+const fetchEventEmailText = async (textsFlagId: string) => {
   await initFlagsmith();
 
   const valueString: string = flagsmith.getValue(textsFlagId);
@@ -18,4 +18,4 @@ const getEventEmailText = async (textsFlagId: string) => {
   }
 };
 
-export default getEventEmailText;
+export default fetchEventEmailText;
