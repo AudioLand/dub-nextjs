@@ -25,11 +25,10 @@ const About = () => {
 
           <div className="flex-col space-y-10 md:mt-8 max-w-[800px]">
             <p>
-              <span className="text-purple-700">Back in 2017</span>, a group of passionate and
-              seasoned individuals set out on a remarkable journey into the world of{" "}
-              <span className="text-purple-700"> generative AI</span>. Their mission was clear: to
-              build a product that would not just meet the needs of users but also create genuine
-              love and appreciation.
+              Back in 2017, a group of passionate and seasoned individuals set out on a remarkable
+              journey into the world of generative AI. Their mission was clear: to build a product
+              that would not just meet the needs of users but also create genuine love and
+              appreciation.
             </p>
             <p>
               This story is engaging, but in simple words we are dedicated to the mission you will
@@ -51,8 +50,7 @@ const About = () => {
               insights, thoughts, and experiences with your friends, your audience, or even with the
               people you meet along your journey. Together, we'll craft a story that's grounded in
               reality, filled with determination, and steeped in the inspirational essence of what
-              can be achieved through innovation and the `}
-              <span className="text-purple-700">magic of AI</span>.
+              can be achieved through innovation and the magic of AI.`}
             </p>
             <p>
               Welcome to our world, where dreams become reality, and where every click, every
@@ -60,9 +58,9 @@ const About = () => {
               ingenuity.
             </p>
             <div>
-              <p className="text-purple-700">Dima Abramov,</p>
-              <p>CEO & co-founder of <span className="text-purple-700">Audioland</span></p>
-              <p>With love from <span className="text-purple-700">Austin, Texas</span></p>
+              <p>Dima Abramov,</p>
+              <p>CEO & co-founder of Audioland</p>
+              <p>With love from Austin, Texas</p>
             </div>
           </div>
         </div>
