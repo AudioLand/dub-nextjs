@@ -14,4 +14,10 @@ export const mg = mailgun.client({
   key: MAILGUN_APY_KEY,
 });
 
-export const MAILING_LIST = process.env.NEXT_PUBLIC_MAILGUN_MAILING_LIST!;
+const MAILING_LIST_ENV = process.env.NEXT_PUBLIC_MAILGUN_MAILING_LIST;
+
+if (!MAILING_LIST_ENV) {
+  throw new Error("Mailgun mailing list is not defined");
+}
+
+export const MAILING_LIST = MAILING_LIST_ENV;
