@@ -2,8 +2,8 @@ import configuration from "~/configuration";
 
 const SEND_EMAIL_API_URL = `${configuration.site.siteUrl}/api/emails/send`;
 
-const sendEmailWithApi = (userEmail: string, textsFlagId: string) => {
-  fetch(SEND_EMAIL_API_URL, {
+const sendEmailWithApi = async (userEmail: string, textsFlagId: string) => {
+  const response = await fetch(SEND_EMAIL_API_URL, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -14,6 +14,10 @@ const sendEmailWithApi = (userEmail: string, textsFlagId: string) => {
       textsFlagId,
     }),
   });
+
+  if (!response.ok) {
+    throw new Error(`Email sending failed with status ${response.status}`);
+  }
 };
 
 export default sendEmailWithApi;
