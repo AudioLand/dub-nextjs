@@ -6,8 +6,8 @@ import TextField from "~/core/ui/TextField";
 
 const EMAIL_FIELD_NAME = "email_address";
 
-const MailgunSignupForm: React.FCC = ({ children }) => {
-  const [success, setSuccess] = useState<boolean>(false);
+const MailgunSignupForm: React.FC<{ buttonLabel: string }> = ({ buttonLabel }) => {
+  const [subscribed, setSubscribed] = useState<boolean>(false);
   const mailingListMembers = mg.lists.members;
 
   const checkIfUserSubscribed = async (userEmail: string) => {
@@ -24,28 +24,28 @@ const MailgunSignupForm: React.FCC = ({ children }) => {
         address: userEmail,
         subscribed: true,
       });
-      setSuccess(true);
+      setSubscribed(true);
     } catch (e) {
       toast.error("Something wrong, try later");
-      setSuccess(false);
+      setSubscribed(false);
     }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = new FormData(e.target as HTMLFormElement);
-    const userEmail = data.get(EMAIL_FIELD_NAME)!.toString();
+    const signUpFormData = new FormData(e.target as HTMLFormElement);
+    const userEmail = signUpFormData.get(EMAIL_FIELD_NAME)!.toString();
 
     const isSubscribed = await checkIfUserSubscribed(userEmail);
     if (!isSubscribed) {
       await subscribeUser(userEmail);
     } else {
-      setSuccess(true);
+      setSubscribed(true);
     }
   };
 
-  if (success) {
+  if (subscribed) {
     return <p>You&apos;re in! Thank you for subscribing.</p>;
   }
 
@@ -65,7 +65,7 @@ const MailgunSignupForm: React.FCC = ({ children }) => {
         required
       />
 
-      <Button>{children}</Button>
+      <Button>{buttonLabel}</Button>
     </form>
   );
 };
