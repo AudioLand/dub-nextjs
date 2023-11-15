@@ -7,7 +7,7 @@ import TextField from "~/core/ui/TextField";
 const EMAIL_FIELD_NAME = "email_address";
 
 const MailgunSignupForm: React.FCC = ({ children }) => {
-  const [success, setSuccess] = useState<boolean>(false);
+  const [subscribed, setSubscribed] = useState<boolean>(false);
   const mailingListMembers = mg.lists.members;
 
   const checkIfUserSubscribed = async (userEmail: string) => {
@@ -24,10 +24,10 @@ const MailgunSignupForm: React.FCC = ({ children }) => {
         address: userEmail,
         subscribed: true,
       });
-      setSuccess(true);
+      setSubscribed(true);
     } catch (e) {
       toast.error("Something wrong, try later");
-      setSuccess(false);
+      setSubscribed(false);
     }
   };
 
@@ -41,11 +41,11 @@ const MailgunSignupForm: React.FCC = ({ children }) => {
     if (!isSubscribed) {
       await subscribeUser(userEmail);
     } else {
-      setSuccess(true);
+      setSubscribed(true);
     }
   };
 
-  if (success) {
+  if (subscribed) {
     return <p>You&apos;re in! Thank you for subscribing.</p>;
   }
 
