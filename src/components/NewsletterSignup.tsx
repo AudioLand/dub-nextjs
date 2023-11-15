@@ -13,7 +13,7 @@ function NewsletterSignup() {
       </div>
 
       <div>
-        <MailgunSignupForm>Subscribe</MailgunSignupForm>
+        <MailgunSignupForm buttonLabel="Subscribe" />
       </div>
     </div>
   );
