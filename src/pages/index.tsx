@@ -138,7 +138,7 @@ function Index() {
               }
               width={2688}
               height={1824}
-              src={`/assets/images/features-collage-dark4.png`}
+              src={`/assets/images/features-collage-dark.png`}
               alt={`App Image`}
             />
           </div>
