@@ -60,7 +60,8 @@ const SelectContent = React.forwardRef<
               "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]",
           )}
           style={{
-            height: 250,
+            height: "fit-content",
+            maxHeight: 250,
           }}
         >
           {children}
