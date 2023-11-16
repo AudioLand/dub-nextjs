@@ -19,7 +19,6 @@ const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 async function sendEmailHandler(req: NextApiRequest, res: NextApiResponse) {
   const { userEmail, htmlTemplate } = await Body.parseAsync(req.body);
 
-  // const eventEmailTexts = await fetchEventEmailText(textsFlagId);
   await sendEmail({
     to: userEmail,
     subject: htmlTemplate.subject,

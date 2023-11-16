@@ -23,6 +23,11 @@ import {
   updateSubscriptionById,
 } from "~/lib/server/organizations/subscriptions";
 
+import sendEmailWithApi from "~/lib/emails/hooks/send-email-with-api";
+import { getSubscriptionAutoRenewEmailTemplate } from "~/lib/emails/templates/subscription-auto-renew";
+import { getSubscriptionExpirationEmailTemplate } from "~/lib/emails/templates/subscription-expiration";
+import { getSuccessfulSubscriptionEmailTemplate } from "~/lib/emails/templates/successful-subscription";
+import { getUnsuccessfulPaymentEmailTemplate } from "~/lib/emails/templates/unsuccessful-payment";
 import { buildOrganizationSubscription } from "~/lib/stripe/build-organization-subscription";
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
@@ -72,25 +77,20 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
       case StripeWebhooks.Completed: {
         const session = event.data.object as Stripe.Checkout.Session;
         const subscriptionId = session.subscription as string;
-        // const userEmail = session.customer_email;
+        const userEmail = session.customer_email;
 
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
         await onCheckoutCompleted(session, subscription);
 
-        // if (userEmail) {
-        //   const subscriptionEmail = getEventEmailText(
-        //     FEATURES_IDS_LIST.emailTexts.successful_subscription,
-        //   );
-
-        //   sendEmail({
-        //     to: userEmail,
-        //     subject: subscriptionEmail.subject,
-        //     text: subscriptionEmail.text,
-        //   });
-        // } else {
-        //   console.error("User email is not defined in Stripe session");
-        // }
+        //* Send email that subscription is successful
+        if (userEmail) {
+          const organizationSubscription = buildOrganizationSubscription(subscription);
+          const emailTemplate = getSuccessfulSubscriptionEmailTemplate(organizationSubscription);
+          sendEmailWithApi(userEmail, emailTemplate);
+        } else {
+          console.error("User email is not defined in Stripe session");
+        }
 
         break;
       }
@@ -113,44 +113,52 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
       case StripeWebhooks.InvoicePaid: {
         const invoice = event.data.object as Stripe.Invoice;
-        // const userEmail = invoice.customer_email;
+        const subscriptionId = invoice.subscription as string;
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const userEmail = invoice.customer_email;
 
         await onSubscriptionContinued(invoice);
 
-        // if (userEmail) {
-        //   const subscriptionRenewalEmail = getEventEmailText(
-        //     FEATURES_IDS_LIST.emailTexts.successful_subscription_renewal,
-        //   );
+        //* Send email that subscription renew payment is successful
+        if (userEmail) {
+          const organizationSubscription = buildOrganizationSubscription(subscription);
+          const emailTemplate = getSubscriptionAutoRenewEmailTemplate(organizationSubscription);
+          sendEmailWithApi(userEmail, emailTemplate);
+        } else {
+          console.error("User email is not defined in Stripe paid invoice event");
+        }
 
-        //   sendEmail({
-        //     to: userEmail,
-        //     subject: subscriptionRenewalEmail.subject,
-        //     text: subscriptionRenewalEmail.text,
-        //   });
-        // } else {
-        //   console.error("User email is not defined in Stripe paid invoice event");
-        // }
+        break;
+      }
+
+      case StripeWebhooks.InvoiceUpcoming: {
+        const invoice = event.data.object as Stripe.Invoice;
+        const userEmail = invoice.customer_email;
+
+        await onSubscriptionContinued(invoice);
+
+        //* Send email that subscription payment is upcoming
+        if (userEmail) {
+          const emailTemplate = getSubscriptionExpirationEmailTemplate();
+          sendEmailWithApi(userEmail, emailTemplate);
+        } else {
+          console.error("User email is not defined in Stripe upcoming invoice event");
+        }
 
         break;
       }
 
       case StripeWebhooks.InvoicePaymentFailed: {
-        // const invoice = event.data.object as Stripe.Invoice;
-        // const userEmail = invoice.customer_email;
+        const invoice = event.data.object as Stripe.Invoice;
+        const userEmail = invoice.customer_email;
 
-        // if (userEmail) {
-        //   const paymentFailedEmail = getEventEmailText(
-        //     FEATURES_IDS_LIST.emailTexts.notification_of_a_failed_payment_attempt,
-        //   );
-
-        //   sendEmail({
-        //     to: userEmail,
-        //     subject: paymentFailedEmail.subject,
-        //     text: paymentFailedEmail.text,
-        //   });
-        // } else {
-        //   console.error("User email is not defined in Stripe failed invoice event");
-        // }
+        //* Send email that subscription payment is failed
+        if (userEmail) {
+          const emailTemplate = getUnsuccessfulPaymentEmailTemplate();
+          sendEmailWithApi(userEmail, emailTemplate);
+        } else {
+          console.error("User email is not defined in Stripe failed invoice event");
+        }
 
         break;
       }
