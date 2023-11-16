@@ -1,8 +1,9 @@
 import configuration from "~/configuration";
+import { EmailHtmlTemplate } from "../types/event-email";
 
 const SEND_EMAIL_API_URL = `${configuration.site.siteUrl}/api/emails/send`;
 
-const sendEmailWithApi = async (userEmail: string, textsFlagId: string) => {
+const sendEmailWithApi = async (userEmail: string, htmlTemplate: EmailHtmlTemplate) => {
   const response = await fetch(SEND_EMAIL_API_URL, {
     method: "POST",
     headers: {
@@ -11,7 +12,7 @@ const sendEmailWithApi = async (userEmail: string, textsFlagId: string) => {
     },
     body: JSON.stringify({
       userEmail,
-      textsFlagId,
+      htmlTemplate,
     }),
   });
 
