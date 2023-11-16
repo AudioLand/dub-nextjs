@@ -6,6 +6,8 @@ import withCsrf from "~/core/middleware/with-csrf";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
+import sendEmailWithApi from "~/lib/emails/hooks/send-email-with-api";
+import { getWelcomeEmailTemplate } from "~/lib/emails/templates/welcome";
 import { completeOnboarding } from "~/lib/server/onboarding/complete-onboarding";
 
 const Body = z.object({
@@ -17,7 +19,7 @@ const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 async function onboardingHandler(req: NextApiRequest, res: NextApiResponse) {
   const body = await Body.parseAsync(req.body);
   const userId = req.firebaseUser.uid;
-  // const userEmail = req.firebaseUser.email;
+  const userEmail = req.firebaseUser.email;
 
   const data = {
     userId,
@@ -26,19 +28,13 @@ async function onboardingHandler(req: NextApiRequest, res: NextApiResponse) {
 
   await completeOnboarding(data);
 
-  // if (userEmail) {
-  //   const registrationEmail = getEventEmailText(
-  //     FEATURES_IDS_LIST.emailTexts.notification_of_successful_registration,
-  //   );
-
-  //   sendEmail({
-  //     to: userEmail,
-  //     subject: registrationEmail.subject,
-  //     text: registrationEmail.text,
-  //   });
-  // } else {
-  //   console.error("User email is not defined in registration request");
-  // }
+  //* Send welcome email to user
+  if (userEmail) {
+    const emailTemplate = getWelcomeEmailTemplate();
+    sendEmailWithApi(userEmail, emailTemplate);
+  } else {
+    console.error("User email is not defined in registration request");
+  }
 
   return res.send({ success: true });
 }
