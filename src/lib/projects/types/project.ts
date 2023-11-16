@@ -7,7 +7,7 @@ import PROJECT_STATUSES from "../statuses";
 export type Project = {
   name: string;
   targetLanguage: string;
-  targetVoice: string;
+  targetVoice: number;
   status: PROJECT_STATUSES;
   userId: string;
   originalFileLink: string;
