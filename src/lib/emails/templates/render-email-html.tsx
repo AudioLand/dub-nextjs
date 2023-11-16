@@ -45,7 +45,11 @@ export const renderEmailHtml = (htmlChildren: ReactNode) => {
       <Body>
         <Container className="container">
           <Section className="header">
-            <Img src="/public/logo_purple.svg" alt="Audioland Logo" width="100" />
+            <Img
+              src="https://drive.google.com/uc?export=view&id=10awze4te_4duLl61wgkYfebPyRfTL6GF"
+              alt="Audioland Logo"
+              width={200}
+            />
           </Section>
 
           {htmlChildren}
