@@ -11,7 +11,7 @@ import {
 } from "@react-email/components";
 import { ReactNode } from "react";
 
-export const renderEmailHtml = (htmlChilren: ReactNode) => {
+export const renderEmailHtml = (htmlChildren: ReactNode) => {
   return render(
     <Html lang="en">
       <Head>
