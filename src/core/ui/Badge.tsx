@@ -1,8 +1,9 @@
-import { cva } from 'cva';
-import classNames from 'clsx';
+import classNames from "clsx";
+import { cva } from "cva";
+import { CSSProperties } from "react";
 
-type Color = `normal` | 'success' | 'warn' | 'error' | 'info' | 'custom';
-type Size = `normal` | `small` | 'custom';
+type Color = `normal` | "success" | "warn" | "error" | "info" | "custom";
+type Size = `normal` | `small` | `verySmall` | "custom";
 
 const classNameBuilder = getClassNameBuilder();
 
@@ -10,14 +11,17 @@ const Badge: React.FCC<{
   color?: Color;
   size?: Size;
   className?: string;
-}> = ({ children, color, size, ...props }) => {
+  style?: CSSProperties;
+}> = ({ children, color, size, style, ...props }) => {
   const className = classNameBuilder({
     color,
     size,
   });
 
   return (
-    <div className={classNames(className, props.className)}>{children}</div>
+    <div className={classNames(className, props.className)} style={style}>
+      {children}
+    </div>
   );
 };
 
@@ -30,12 +34,13 @@ function getClassNameBuilder() {
         warn: `bg-yellow-50 dark:bg-yellow-100/10 text-yellow-800`,
         error: `bg-red-50 dark:bg-red-500/10 text-red-800 dark:text-red-600`,
         info: `bg-sky-50 dark:bg-sky-500/10 text-sky-800 dark:text-sky-600`,
-        custom: '',
+        custom: "",
       },
       size: {
         normal: `rounded-lg px-3 py-2 text-sm`,
         small: `rounded px-2 py-1 text-xs`,
-        custom: '',
+        verySmall: `rounded px-1 py-0`,
+        custom: "",
       },
     },
     defaultVariants: {

@@ -2,6 +2,7 @@
 import { ChangeEvent, FC, useRef, useState } from "react";
 
 // ui-components
+import Badge from "~/core/ui/Badge";
 import Button from "~/core/ui/Button";
 import IconButton from "~/core/ui/IconButton";
 import If from "~/core/ui/If";
@@ -188,6 +189,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     audioRef.current.play();
   };
 
+  const isShowPoweredBadge = (voice_id: number, provider: string) => {
+    return provider === "eleven_labs" && newProject.targetVoice !== voice_id;
+  };
+
   return (
     // TODO: use form tag, without onChange events
     // Notion task: https://www.notion.so/krenels/onChange-5524544683f34f9f8b009daa959f03a6?pvs=4
@@ -244,7 +249,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
                   <span className="px-1">Select any language to see avaliable voices</span>
                 </If>
 
-                {avaialableVoices?.map(({ voice_id, voice_name, sample }) => (
+                {avaialableVoices?.map(({ voice_id, voice_name, provider, sample }) => (
                   <div key={voice_id} className="flex items-center">
                     <IconButton
                       className="pl-1 hover:border-0 focus:border-0"
@@ -259,7 +264,19 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
                       defaultChecked={newProject.targetVoice === voice_id}
                       showSelectedIcon={false}
                     >
-                      {voice_name}
+                      <div className="flex w-full items-center gap-5">
+                        <span>{voice_name}</span>
+                        <If condition={provider === "eleven_labs"}>
+                          <Badge
+                            size="verySmall"
+                            style={{
+                              fontSize: 9,
+                            }}
+                          >
+                            Powered by IIElevenLabs
+                          </Badge>
+                        </If>
+                      </div>
                     </SelectItem>
                   </div>
                 ))}
