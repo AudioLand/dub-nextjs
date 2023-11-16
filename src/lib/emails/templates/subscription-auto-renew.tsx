@@ -2,9 +2,7 @@ import { Text } from "@react-email/components";
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
 import { renderEmailHtml } from "./render-email-html";
 
-export const getSuccessfulSubscriptionAutoRenewEmailTemplate = (
-  subscription: OrganizationSubscription,
-) => {
+export const getSubscriptionAutoRenewEmailTemplate = (subscription: OrganizationSubscription) => {
   const periodEndAsDate = new Date(subscription.periodEndsAt * 1000);
   const nextBillingDate = periodEndAsDate.toDateString();
 

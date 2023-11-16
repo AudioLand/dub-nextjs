@@ -5,7 +5,7 @@ import { renderEmailHtml } from "./render-email-html";
 
 const STRIPE_PRODUCTS = configuration.stripe.products;
 
-export const getSuccessfulSubscriptionWithPlanDetailsEmailTemplate = (
+export const getSuccessfulSubscriptionEmailTemplate = (
   subscription: OrganizationSubscription,
 ) => {
   const userSubscriptionPlan = STRIPE_PRODUCTS.find(
