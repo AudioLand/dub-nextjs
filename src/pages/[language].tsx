@@ -1,8 +1,9 @@
 import Image from "next/image";
 import type { GetStaticPropsContext, GetStaticPathsContext } from "next";
-
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import flagsmith from "flagsmith";
 
+import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import Container from "~/core/ui/Container";
 import SubHeading from "~/core/ui/SubHeading";
 import Button from "~/core/ui/Button";
@@ -12,13 +13,13 @@ import SiteHeader from "~/components/SiteHeader";
 import { withTranslationProps } from "~/lib/props/with-translation-props";
 import Footer from "~/components/Footer";
 import FeedbackList from "~/components/FeedbackList";
-import { config } from "process";
 
 type LanguagePairProps = {
   languageFrom: string;
   languageTo: string;
 };
 
+// TODO: change the landing blocks
 function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
   return (
     <Layout>
@@ -179,10 +180,11 @@ function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
 
 export default LanguagePair;
 
-//#region SSG (is slowly todo: ISR)
+//#region ISR
 
 const pathPrefix = "online-audio-video-dubbing-";
 
+//TODO: ISR
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
   const seoLanguagePair = (params?.language as string)?.slice(pathPrefix.length).split("-to-");
@@ -196,9 +198,11 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
   };
 }
 
-const languageList: string[] = ["en", "ru", "esp", "ch"];
-
 export async function getStaticPaths({}: GetStaticPathsContext) {
+  await initFlagsmith();
+  const languageList: string[] = flagsmith.getValue("languages_list");
+  console.log("languageList", languageList);
+  // TODO: separate input & output languages
   // languageList -> pairs
   let languagePathes: string[] = [];
   for (let i = 0; i < languageList.length; i++) {
