@@ -39,22 +39,19 @@ function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
             </Pill>
 
             <HeroTitle>
-              <span>Make your content speak different languages</span>
+              <span>
+                Online Audio and Video Dubbing from {languageFrom} to {languageTo}
+              </span>
               <span
                 className={
                   "bg-gradient-to-br bg-clip-text text-transparent" +
                   " from-primary-400 to-primary-700 leading-[1.2]"
                 }
               >
-                Enhance Your Video & Audio Content Global Reach <br /> at a click of a button
+                Our Translation technology can dub any {languageFrom} video and audio into{" "}
+                {languageTo}.
               </span>
             </HeroTitle>
-
-            <SubHeading className={"text-center"}>
-              <span>Revolutionary AI-Powered Audio & Video Dubbing</span>
-              <span>Cutting-Edge Voice Cloning Technology</span>
-              <span>Achieve Natural, Human-Like Voices</span>
-            </SubHeading>
 
             <div className={"flex flex-col items-center space-y-4"}>
               <MainCallToActionButton />
@@ -200,16 +197,15 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
 
 export async function getStaticPaths({}: GetStaticPathsContext) {
   await initFlagsmith();
-  const languageList: string[] = flagsmith.getValue("languages_list");
-  console.log("languageList", languageList);
-  // TODO: separate input & output languages
+  const inputLanguageList: string[] = flagsmith.getValue("requirements_info_tooltip");
+  const outputLanguageList: string[] = flagsmith.getValue("languages_list");
+
   // languageList -> pairs
   let languagePathes: string[] = [];
-  for (let i = 0; i < languageList.length; i++) {
-    for (let j = 0; j < languageList.length; j++) {
-      if (i == j) continue;
-      const from = languageList[i].toLowerCase();
-      const to = languageList[j].toLowerCase();
+  for (let i = 0; i < inputLanguageList.length; i++) {
+    for (let o = 0; o < outputLanguageList.length; o++) {
+      const from = inputLanguageList[i].toLowerCase();
+      const to = outputLanguageList[o].toLowerCase();
       languagePathes.push(`${pathPrefix}${from}-to-${to}`);
     }
   }
