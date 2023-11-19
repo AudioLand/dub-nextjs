@@ -212,6 +212,7 @@ export async function getStaticPaths({}: GetStaticPathsContext) {
     for (let o = 0; o < outputLanguageList.length; o++) {
       const from = inputLanguageList[i].toLowerCase();
       const to = outputLanguageList[o].toLowerCase();
+      if (from === to) continue;
       languagePaths.push(`${pathPrefix}${from}-to-${to}`);
     }
   }
