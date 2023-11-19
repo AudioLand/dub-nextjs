@@ -181,37 +181,42 @@ export default LanguagePair;
 
 const pathPrefix = "online-audio-video-dubbing-";
 
-//TODO: ISR
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
   const seoLanguagePair = (params?.language as string)?.slice(pathPrefix.length).split("-to-");
-  console.log(params?.language);
   return {
     props: {
       ...props,
       languageFrom: seoLanguagePair[0],
       languageTo: seoLanguagePair[1],
     } satisfies LanguagePairProps,
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 1 hour
+    revalidate: 60 * 60,
   };
 }
 
 export async function getStaticPaths({}: GetStaticPathsContext) {
   await initFlagsmith();
-  const inputLanguageList: string[] = flagsmith.getValue("requirements_info_tooltip");
-  const outputLanguageList: string[] = flagsmith.getValue("languages_list");
+  const inputLanguageListFlagsmith: string = flagsmith.getValue("requirements_info_tooltip");
+  const inputLanguageList: string[] = JSON.parse(inputLanguageListFlagsmith).supported_languages
+    .for_source_file.languages_list;
+
+  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
+  const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
 
   // languageList -> pairs
-  let languagePathes: string[] = [];
+  let languagePaths: string[] = [];
   for (let i = 0; i < inputLanguageList.length; i++) {
     for (let o = 0; o < outputLanguageList.length; o++) {
       const from = inputLanguageList[i].toLowerCase();
       const to = outputLanguageList[o].toLowerCase();
-      languagePathes.push(`${pathPrefix}${from}-to-${to}`);
+      languagePaths.push(`${pathPrefix}${from}-to-${to}`);
     }
   }
-
   return {
-    paths: languagePathes.map((language) => ({ params: { language } })),
+    paths: languagePaths.map((language) => ({ params: { language } })),
     fallback: true, // false or "blocking"
   };
 }
