@@ -180,8 +180,8 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
     } satisfies LanguagePairProps,
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
-    // - At most once every 1 hour
-    revalidate: 60 * 60,
+    // - At most once every 1 day
+    revalidate: 60 * 60 * 24,
   };
 }
 
