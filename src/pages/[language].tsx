@@ -17,10 +17,10 @@ import FeedbackList from "~/components/FeedbackList";
 type LanguagePairProps = {
   languageFrom: string;
   languageTo: string;
+  outputLanguagesAmount: number;
 };
 
-// TODO: change the landing blocks
-function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
+function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: LanguagePairProps) {
   return (
     <Layout>
       <SiteHeader />
@@ -39,9 +39,11 @@ function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
             </Pill>
 
             <HeroTitle>
-              <span>
+              <>
                 Online Audio and Video Dubbing from {languageFrom} to {languageTo}
-              </span>
+              </>
+            </HeroTitle>
+            <SubHeading className={"text-center"}>
               <span
                 className={
                   "bg-gradient-to-br bg-clip-text text-transparent" +
@@ -51,7 +53,7 @@ function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
                 Our Translation technology can dub any {languageFrom} video and audio into{" "}
                 {languageTo}.
               </span>
-            </HeroTitle>
+            </SubHeading>
 
             <div className={"flex flex-col items-center space-y-4"}>
               <MainCallToActionButton />
@@ -67,38 +69,46 @@ function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
       <Container>
         <div className={"py-24"}>
           <SubHeading className={"text-center"}>
-            <span>
-              Audioland uses advanced AI technology to dub your video & audio content with the
-              original voice
-            </span>
-            <span>
-              Whether you&apos;re a content creator, business owner, marketer, or educator, our tool
-              brings your content Global Reach
-            </span>
+            <Heading type={2}>
+              <span className="font-heading text-4xl font-semibold tracking-tight">
+                How to translate {languageFrom} video or audio to {languageTo}?
+              </span>
+            </Heading>
+            <ol className={"list-decimal max-w-2xl mx-auto !mt-10"}>
+              <li className="text-left mb-4">
+                <Heading type={3}>
+                  <span className="font-extrabold">Upload your file</span>
+                </Heading>
+                <span>Upload your {languageFrom} video or audio in the dashboard</span>
+              </li>
+              <li className="text-left mb-4">
+                <Heading type={3}>
+                  <span className="font-extrabold">
+                    Select languages from {languageFrom} to {languageTo}
+                  </span>
+                </Heading>
+                <span>
+                  From the dropdown menu, choose Source and Target languages i.e., {languageFrom}{" "}
+                  video translation to {languageTo}
+                </span>
+              </li>
+              <li className="text-left mb-4">
+                <Heading type={3}>
+                  <span className="font-extrabold">Click Create button</span>
+                </Heading>
+                <span>
+                  Wait for the magic to happen, you will see Transcripts, Translations, Audio and
+                  Video Dubbing of {languageFrom} and {languageTo}
+                </span>
+              </li>
+            </ol>
           </SubHeading>
-          <div
-            className={
-              "flex justify-center py-12 max-w-5xl mx-auto animate-in fade-in " +
-              " duration-1000 slide-in-from-top-16 fill-mode-both delay-300"
-            }
-          >
-            {/* Видео с пиздящим Димой */}
-            <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/iy0mfAiQ3Zk?si=wrGr48AvlK5_eH-L"
-              title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            />
-          </div>
         </div>
       </Container>
 
       <Container>
-        <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
-          <div className={"text-center"}>
-            <Heading type={1}>Look at What our Users say about Audioland Dubbing service</Heading>
-          </div>
+        <div className={"flex flex-col items-center justify-center py-16 space-y-16 text-center"}>
+          <Heading type={1}>Look at What our Users say about Audioland Dubbing service</Heading>
           <FeedbackList />
         </div>
       </Container>
@@ -106,67 +116,36 @@ function LanguagePair({ languageFrom, languageTo }: LanguagePairProps) {
       <Container>
         <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
           <div className={"flex flex-col items-center space-y-8 text-center"}>
-            <Pill>Get started for free. No credit card required. Cancel anytime.</Pill>
-
-            <div className={"flex flex-col space-y-6"}>
-              <Heading type={1}>Ready to make your video or audio multilingual?</Heading>
-
-              <SubHeading>FREE to TRY. Worth to keep.</SubHeading>
-              <div className={"flex flex-col items-center space-y-4"}>
-                <MainCallToActionButton />
-
-                <span className={"text-xs text-gray-500 dark:text-gray-400"}>
-                  Powered by Handpicked Technologies
-                </span>
-              </div>
-            </div>
+            <p>
+              TODO: Вывести три смэпла голосов таргет языка из базы. Нужно решить по какому правилу
+              выводить, можно из “рекомендованных” выбирать первые три. Тогда у нас наиболее
+              качественные будут показываться всегда
+            </p>
+            <MainCallToActionButton />
           </div>
         </div>
       </Container>
 
       <Container>
         <div className={"flex flex-col items-center justify-center py-[100px] "}>
-          <div
-            className={
-              "flex justify-center py-12 max-w-5xl mx-auto animate-in fade-in " +
-              " duration-1000 slide-in-from-top-16 fill-mode-both delay-300"
-            }
-          >
-            <Image
-              priority
-              className={
-                " rounded-2xl" +
-                " animate-in fade-in" +
-                " zoom-in-50 delay-300 duration-1000 ease-out fill-mode-both"
-              }
-              width={2688}
-              height={1824}
-              src={`/assets/images/features-collage-dark.png`}
-              alt={`App Image`}
-            />
-          </div>
+          <Heading type={3}>
+            <span className="font-heading text-4xl font-semibold tracking-tight">
+              Translate {languageFrom} to {outputLanguagesAmount} languages
+            </span>
+          </Heading>
+          <p>TODO: Сделать иконки разных языков со ссылкой на страницы сгенерированные</p>
         </div>
       </Container>
 
       <Container>
         <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
-          <div className={"flex flex-col items-center space-y-8 text-center"}>
-            <div className={"flex flex-col space-y-6 items-center"}>
-              <Heading type={1}>Seamlessly Translate Your Content into Multiple Languages.</Heading>
-
-              <SubHeading className="max-w-2xl">
-                Make your audience captivated by listening to you in their mother tongue with just a
-                couple of clicks.
-              </SubHeading>
-              <div className={"flex flex-col items-center space-y-4"}>
-                <MainCallToActionButton />
-
-                <span className={"text-xs text-gray-500 dark:text-gray-400"}>
-                  No credit card required
-                </span>
-              </div>
-            </div>
+          <div
+            className={"space-y-8 font-heading text-4xl font-semibold tracking-tight text-center"}
+          >
+            Create your first Audio or Video translation from {languageFrom} to {languageTo} right
+            now!
           </div>
+          <MainCallToActionButton />
         </div>
       </Container>
 
@@ -183,12 +162,17 @@ const pathPrefix = "online-audio-video-dubbing-";
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
+
+  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
+  const outputLanguageListLength: number = JSON.parse(outputLanguageListFlagsmith).length;
+
   const seoLanguagePair = (params?.language as string)?.slice(pathPrefix.length).split("-to-");
   return {
     props: {
       ...props,
       languageFrom: seoLanguagePair[0],
       languageTo: seoLanguagePair[1],
+      outputLanguagesAmount: outputLanguageListLength,
     } satisfies LanguagePairProps,
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
@@ -269,7 +253,7 @@ function MainCallToActionButton() {
       href={"/auth/sign-up"}
     >
       <span className={"flex items-center space-x-2"}>
-        <span>Try now for Free</span>
+        <span>Try for free dub</span>
         <ChevronRightIcon
           className={
             "h-4 animate-in fade-in slide-in-from-left-8" +
