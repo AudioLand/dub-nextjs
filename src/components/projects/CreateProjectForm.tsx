@@ -2,15 +2,16 @@
 import { ChangeEvent, FC, useRef, useState } from "react";
 
 // ui-components
+import Badge from "~/core/ui/Badge";
 import Button from "~/core/ui/Button";
 import IconButton from "~/core/ui/IconButton";
+import If from "~/core/ui/If";
 import Modal from "~/core/ui/Modal";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/core/ui/Select";
@@ -18,7 +19,6 @@ import TextField from "~/core/ui/TextField";
 import FileUploader from "./FileUploader";
 
 // hooks
-import useCollapsible from "~/core/hooks/use-sidebar-state";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useTargetVoices from "~/lib/projects/hooks/use-target-voices";
@@ -27,6 +27,7 @@ import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-stor
 
 // constants
 import PIPELINE_URL from "~/core/ml-pipeline/url";
+import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -46,10 +47,6 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const { handleClose, userId, organizationId } = props;
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [isCollapsed, setCollapsed] = useCollapsible();
-
-  const targetLanguages = useTargetLanguages();
-  const { targetVoices } = useTargetVoices();
 
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
@@ -63,6 +60,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [userMediaFile, setUserMediaFile] = useState<File>();
   const [languageErrorMessage, setLanguageErrorMessage] = useState<string>("");
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
+
+  const targetLanguages = useTargetLanguages();
+  const avaialableVoices = useTargetVoices(newProject.targetLanguage);
+  const isLanguageSelected = avaialableVoices.length === 0;
 
   const handleNameUpdate = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
@@ -81,10 +82,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     }));
   };
 
-  const handleVoiceUpdate = (voice: string) => {
+  const handleVoiceUpdate = (voiceId: string) => {
     setNewProject((prevProject) => ({
       ...prevProject,
-      targetVoice: voice,
+      targetVoice: Number(voiceId),
     }));
   };
 
@@ -166,7 +167,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         target_language: createdProject.targetLanguage,
         original_file_location: filePathInBucket,
         organization_id: organizationId,
-        voice_id: createdProject.targetVoice,
+        voice_id: createdProject.targetVoice.toString(),
       });
 
       const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
@@ -180,16 +181,16 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     }
   };
 
-  const handleCollapse = () => {
-    setCollapsed(!isCollapsed);
-  };
-
-  const handlePlayPreviewAudio = (audioUrl: string) => {
+  const handlePlayPreviewAudio = (sampleAudioUrl: string) => {
     if (!audioRef.current) return;
 
     audioRef.current.pause();
-    audioRef.current.src = audioUrl;
+    audioRef.current.src = `${PREVIEW_HOST_URL}/${sampleAudioUrl}`;
     audioRef.current.play();
+  };
+
+  const isShowPoweredBadge = (voice_id: number, provider: string) => {
+    return provider === "eleven_labs" && newProject.targetVoice !== voice_id;
   };
 
   return (
@@ -243,22 +244,39 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
 
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Powered with 11labs</SelectLabel>
-                {targetVoices?.map(({ voice_id, name, preview_url }) => (
-                  <div key={voice_id} className="flex items-center gap-1">
+                {/* <SelectLabel>Powered with 11labs</SelectLabel> */}
+                <If condition={isLanguageSelected}>
+                  <span className="px-1">Select any language to see avaliable voices</span>
+                </If>
+
+                {avaialableVoices?.map(({ voice_id, voice_name, provider, sample }) => (
+                  <div key={voice_id} className="flex items-center">
                     <IconButton
                       className="pl-1 hover:border-0 focus:border-0"
-                      onClick={() => handlePlayPreviewAudio(preview_url)}
+                      onClick={() => handlePlayPreviewAudio(sample)}
                     >
                       <PlayIcon className="h-5" />
                     </IconButton>
 
                     <SelectItem
-                      value={voice_id}
+                      className="px-2"
+                      value={voice_id.toString()}
                       defaultChecked={newProject.targetVoice === voice_id}
                       showSelectedIcon={false}
                     >
-                      {name}
+                      <div className="flex w-full items-center gap-5">
+                        <span>{voice_name}</span>
+                        <If condition={provider === "eleven_labs"}>
+                          <Badge
+                            size="verySmall"
+                            style={{
+                              fontSize: 9,
+                            }}
+                          >
+                            Powered by IIElevenLabs
+                          </Badge>
+                        </If>
+                      </div>
                     </SelectItem>
                   </div>
                 ))}
