@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { GetStaticPropsContext, GetStaticPathsContext } from "next";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import flagsmith from "flagsmith";
@@ -162,17 +161,13 @@ const pathPrefix = "online-audio-video-dubbing-";
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
-
-  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
-  const outputLanguageListLength: number = JSON.parse(outputLanguageListFlagsmith).length;
-
   const seoLanguagePair = (params?.language as string)?.slice(pathPrefix.length).split("-to-");
   return {
     props: {
       ...props,
       languageFrom: seoLanguagePair[0],
       languageTo: seoLanguagePair[1],
-      outputLanguagesAmount: outputLanguageListLength,
+      outputLanguagesAmount: outputLanguageList.length,
     } satisfies LanguagePairProps,
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
@@ -181,6 +176,8 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
   };
 }
 
+let outputLanguageList: string[] = [];
+
 export async function getStaticPaths({}: GetStaticPathsContext) {
   await initFlagsmith();
   const inputLanguageListFlagsmith: string = flagsmith.getValue("requirements_info_tooltip");
@@ -188,7 +185,7 @@ export async function getStaticPaths({}: GetStaticPathsContext) {
     .for_source_file.languages_list;
 
   const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
-  const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
+  outputLanguageList = JSON.parse(outputLanguageListFlagsmith);
 
   // languageList -> pairs
   let languagePaths: string[] = [];
