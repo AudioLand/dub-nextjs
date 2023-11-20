@@ -246,24 +246,31 @@ const configuration = {
   feedback: [
     {
       avatarUrl: "/assets/images/google.png",
-      name: "Dan",
+      name: "Elena R.",
       rating: 5,
       comment:
-        "“Excepteur consectetur deserunt id incididunt veniam mollit officia sint qui aute duis sit cillum. Reprehenderit fugiat amet aliqua in commodo minim sunt laborum.“",
+        "“I used Audioland for dubbing my documentary from English to Spanish, and I'm blown away by the quality. The AI voice actors were incredibly natural, capturing the essence of each character with remarkable accuracy. The lip-syncing was flawless, and the customer service team was helpful throughout the process. Audioland has set a new standard for dubbing services!“",
     } as FeedbackCardType,
     {
       avatarUrl: "/assets/images/google.png",
-      name: "Dan",
+      name: "Michael D.",
       rating: 5,
       comment:
-        "“Excepteur consectetur deserunt id incididunt veniam mollit officia sint qui aute duis sit cillum. Reprehenderit fugiat amet aliqua in commodo minim sunt laborum.“",
+        "“Top-notch dubbing service with a wide range of voice options. The final product for our corporate videos was exceptional. There was a slight delay in processing the whole batch, but the quality made up for it. Did Spanish to Italian and Portuguese.“",
     } as FeedbackCardType,
     {
       avatarUrl: "/assets/images/google.png",
-      name: "Dan",
+      name: "Priya K.",
       rating: 4,
       comment:
-        "“Excepteur consectetur deserunt id incididunt veniam mollit officia sint qui aute duis sit cillum. Reprehenderit fugiat amet aliqua in commodo minim sunt laborum.“",
+        "“I'm thoroughly impressed with Audioland's dubbing service. Efficient, fast, affordable“",
+    } as FeedbackCardType,
+    {
+      avatarUrl: "/assets/images/google.png",
+      name: "Connor Williamson",
+      rating: 4,
+      comment:
+        "“I used Audioland for dubbing my web series, and the outcome was fantastic. The voices matched our characters' personalities perfectly even they were cloned with AI, and the emotional delivery was spot on. The process was smooth, although pricing was a bit higher than expected. However, the quality justifies the cost. Highly recommended for anyone looking to dub entertainment content...“",
     } as FeedbackCardType,
   ],
 };
