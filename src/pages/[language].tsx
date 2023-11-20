@@ -1,6 +1,7 @@
 import type { GetStaticPropsContext, GetStaticPathsContext } from "next";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import flagsmith from "flagsmith";
+import Head from "next/head";
 
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import Container from "~/core/ui/Container";
@@ -22,6 +23,14 @@ type LanguagePairProps = {
 function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: LanguagePairProps) {
   return (
     <Layout>
+      <Head>
+        <title>{`Online Audio and Video Dubbing from ${languageFrom} to ${languageTo}`}</title>
+        <meta
+          name="description"
+          content={`Welcome to Audioland premier online dubbing service for translating your ${languageFrom} audio and video content into ${languageTo}. Our specialized service is meticulously crafted to cater to diverse requirements, ranging from professional business presentations and educational materials to captivating entertainment media and personal projects.`}
+        />
+      </Head>
+
       <SiteHeader />
 
       <Container>
