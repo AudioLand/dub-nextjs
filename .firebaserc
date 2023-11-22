@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "audioland-dub",
-    "dev": "audioland-dub-dev"
+    "dev": "audioland-dub-dev",
+    "prod": "audioland-dub"
   }
 }
