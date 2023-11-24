@@ -1,7 +1,7 @@
 import { Text } from "@react-email/components";
 import configuration from "~/configuration";
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
-import { renderEmailHtml } from "./render-email-html";
+import { renderEmailHtml } from "../hooks/render-email-html";
 
 const STRIPE_PRODUCTS = configuration.stripe.products;
 

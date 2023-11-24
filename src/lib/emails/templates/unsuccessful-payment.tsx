@@ -1,5 +1,5 @@
 import { Text } from "@react-email/components";
-import { renderEmailHtml } from "./render-email-html";
+import { renderEmailHtml } from "../hooks/render-email-html";
 
 export const getUnsuccessfulPaymentEmailTemplate = () => {
   const subject = "Oops! There's a Hitch with Your Payment 🤔";
