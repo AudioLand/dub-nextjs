@@ -1,5 +1,5 @@
 import { Text } from "@react-email/components";
-import { renderEmailHtml } from "./render-email-html";
+import { renderEmailHtml } from "../hooks/render-email-html";
 
 export const getResetPasswordEmailTemplate = (returnUrl: string) => {
   const subject = "Reset Your Audioland Password 🔒";

@@ -1,23 +1,24 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { z } from "zod";
 import { sendEmail } from "~/core/email/send-email";
 
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
-
-const Body = z.object({
-  userEmail: z.string(),
-  htmlTemplate: z.object({
-    subject: z.string(),
-    html: z.string(),
-  }),
-});
+import {
+  EmailTemplateArgs,
+  getEventEmailTemplate,
+} from "~/lib/emails/hooks/get-event-email-template";
+import { EmailTemplate } from "~/lib/emails/templates";
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 async function sendEmailHandler(req: NextApiRequest, res: NextApiResponse) {
-  const { userEmail, htmlTemplate } = await Body.parseAsync(req.body);
+  const { userEmail, emailTemplate, args } = await req.body;
+
+  const htmlTemplate = getEventEmailTemplate(
+    emailTemplate as EmailTemplate,
+    args as EmailTemplateArgs,
+  );
 
   await sendEmail({
     to: userEmail,

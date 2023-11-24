@@ -1,5 +1,5 @@
 import { Text } from "@react-email/components";
-import { renderEmailHtml } from "./render-email-html";
+import { renderEmailHtml } from "../hooks/render-email-html";
 
 export const getSubscriptionExpirationEmailTemplate = () => {
   const subject = "Heads Up! Your Audioland Subscription Expires in 3 Days ⏳";

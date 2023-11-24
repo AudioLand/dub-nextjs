@@ -1,5 +1,5 @@
 import { Text } from "@react-email/components";
-import { renderEmailHtml } from "./render-email-html";
+import { renderEmailHtml } from "../hooks/render-email-html";
 
 export const getProjectErrorEmailTemplate = () => {
   const subject = "Attention Needed: Your Project Hit a Snag 🛠️";
