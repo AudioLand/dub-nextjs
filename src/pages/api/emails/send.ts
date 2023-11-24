@@ -20,7 +20,7 @@ async function sendEmailHandler(req: NextApiRequest, res: NextApiResponse) {
     args as EmailTemplateArgs,
   );
 
-  sendEmail({
+  await sendEmail({
     to: userEmail,
     subject: htmlTemplate.subject,
     html: htmlTemplate.html,
