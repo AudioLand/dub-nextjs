@@ -36,6 +36,7 @@ import { Project } from "~/lib/projects/types/project";
 
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
+import { useUserSession } from "~/core/hooks/use-user-session";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
@@ -51,6 +52,8 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const createNewProject = useCreateProject();
   const uploadFileToStorage = useUploadFileToStorage();
   const updateProject = useUpdateProject();
+  const user = useUserSession();
+  const userEmail = user?.auth?.email!;
 
   const [newProject, setNewProject] = useState<Project>({
     name: "",
@@ -168,6 +171,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         original_file_location: filePathInBucket,
         organization_id: organizationId,
         voice_id: createdProject.targetVoice.toString(),
+        user_email: userEmail,
       });
 
       const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
@@ -187,10 +191,6 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     audioRef.current.pause();
     audioRef.current.src = `${PREVIEW_HOST_URL}/${sampleAudioUrl}`;
     audioRef.current.play();
-  };
-
-  const isShowPoweredBadge = (voice_id: number, provider: string) => {
-    return provider === "eleven_labs" && newProject.targetVoice !== voice_id;
   };
 
   return (
