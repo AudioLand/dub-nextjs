@@ -13,14 +13,14 @@ import { EmailTemplate } from "~/lib/emails/templates";
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 async function sendEmailHandler(req: NextApiRequest, res: NextApiResponse) {
-  const { userEmail, emailTemplate, args } = await req.body;
+  const { userEmail, emailTemplate, args } = req.body;
 
   const htmlTemplate = getEventEmailTemplate(
     emailTemplate as EmailTemplate,
     args as EmailTemplateArgs,
   );
 
-  await sendEmail({
+  sendEmail({
     to: userEmail,
     subject: htmlTemplate.subject,
     html: htmlTemplate.html,
