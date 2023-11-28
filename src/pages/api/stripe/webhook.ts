@@ -134,8 +134,6 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
         const invoice = event.data.object as Stripe.Invoice;
         const userEmail = invoice.customer_email;
 
-        await onSubscriptionContinued(invoice);
-
         //* Send email that subscription payment is upcoming
         if (userEmail) {
           sendEmailWithApi(userEmail, EmailTemplate.SubscriptionExpiration);
