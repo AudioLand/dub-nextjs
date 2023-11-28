@@ -89,3 +89,5 @@ vcs.xml
 !.env.test
 .vercel
 .env*.local
+
+.vscode/
