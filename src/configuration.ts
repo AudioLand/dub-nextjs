@@ -105,12 +105,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$0",
+            price: "0",
             stripePriceId: "price_1O5dATLMDoxZURVetlMftktp",
           },
           {
             name: "Annually",
-            price: "$0",
+            price: "0",
             stripePriceId: "price_1O5dATLMDoxZURVeJ8pbEq5t",
           },
         ],
@@ -137,12 +137,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$20",
+            price: "20",
             stripePriceId: "price_1O6W81LMDoxZURVe5SPXElmm",
           },
           {
             name: "Annually",
-            price: "$189",
+            price: "189",
             stripePriceId: "price_1O6W81LMDoxZURVevB2MwM3Z",
           },
         ],
@@ -169,12 +169,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$49",
+            price: "49",
             stripePriceId: "price_1O6WA2LMDoxZURVe3FYhuzEy",
           },
           {
             name: "Annually",
-            price: "$470",
+            price: "470",
             stripePriceId: "price_1O6WA2LMDoxZURVe2ZmelB28",
           },
         ],
@@ -203,12 +203,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$349",
+            price: "349",
             stripePriceId: "price_1O81jhLMDoxZURVeNz22ANJ3",
           },
           {
             name: "Annually",
-            price: "$3,349",
+            price: "3349",
             stripePriceId: "price_1O6WF3LMDoxZURVecqdybl5W",
           },
         ],

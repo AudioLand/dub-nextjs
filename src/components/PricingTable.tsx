@@ -53,7 +53,7 @@ function PricingTable(
 ) {
   //* Default plan - Annually
   const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[1]);
-  console.log("STRIPE_PLANS", STRIPE_PLANS);
+
   return (
     <div className={"flex flex-col space-y-12"}>
       <div className={"flex justify-center"}>
@@ -86,6 +86,23 @@ PricingTable.Item = PricingItem;
 PricingTable.Price = Price;
 PricingTable.FeaturesList = FeaturesList;
 
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 2,
+});
+
+function getPrice(planPrice: string, planName: string, productName: string): string {
+  // текстовка для "Contact us"
+  if (productName === "Enterprise") return planPrice;
+
+  // "Annually"
+  if (planName === STRIPE_PLANS[1]) return formatter.format(+planPrice / 12);
+
+  // "Monthly"
+  return formatter.format(+planPrice);
+}
+
 function PricingItem(
   props: React.PropsWithChildren<
     PricingItemProps & {
@@ -94,7 +111,7 @@ function PricingItem(
   >,
 ) {
   const recommended = props.product.recommended ?? false;
-
+  const price = getPrice(props.plan.price, props.plan.name, props.product.name);
   return (
     <div
       data-cy={"subscription-plan"}
@@ -136,12 +153,12 @@ function PricingItem(
       </div>
 
       <div className={"flex items-end space-x-1"}>
-        <Price>{props.plan.price}</Price>
+        <Price>{price}</Price>
 
         <If condition={props.plan.name}>
           <span className={classNames(`text-lg lowercase text-gray-500 dark:text-gray-400`)}>
             <span>/</span>
-            <span>{props.plan.name}</span>
+            <span>{STRIPE_PLANS[0]}</span>
           </span>
         </If>
       </div>
@@ -212,7 +229,6 @@ function PlansSwitcher(
     setPlan: (plan: string) => void;
   }>,
 ) {
-  console.log("PlansSwitcher", props);
   return (
     //* Reversed to set Annually plan the first
     <div className={"flex flex-row-reverse"}>
@@ -242,7 +258,7 @@ function PlansSwitcher(
                 <Trans i18nKey={`common:plans.${plan}`} defaults={plan} />
               </span>
 
-              <If condition={plan.toLowerCase() === "annually"}>&nbsp;-20%</If>
+              <If condition={plan.toLowerCase() === STRIPE_PLANS[1].toLowerCase()}>&nbsp;-20%</If>
             </span>
           </Button>
         );
