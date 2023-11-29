@@ -149,11 +149,11 @@ function Index() {
         <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
           <div className={"flex flex-col items-center space-y-8 text-center"}>
             <div className={"flex flex-col space-y-6 items-center"}>
-              <Heading type={1}>Seamlessly Translate Your Content into Multiple Languages.</Heading>
+              <Heading type={1}>Seamlessly Translate Your Content into Multiple Languages</Heading>
 
               <SubHeading className="max-w-2xl">
                 Make your audience captivated by listening to you in their mother tongue with just a
-                couple of clicks.
+                couple of clicks
               </SubHeading>
               <div className={"flex flex-col items-center space-y-4"}>
                 <MainCallToActionButton />
