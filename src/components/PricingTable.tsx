@@ -8,6 +8,7 @@ import Heading from "~/core/ui/Heading";
 import If from "~/core/ui/If";
 
 import configuration from "~/configuration";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/core/ui/Tooltip";
 
 interface CheckoutButtonProps {
   readonly stripePriceId?: string;
@@ -126,9 +127,12 @@ function PricingItem(
           </If>
         </div>
 
-        <span className={"text-sm text-gray-500 dark:text-gray-400"}>
-          {props.product.description}
-        </span>
+        <Tooltip>
+          <TooltipContent>Each token equals a minute</TooltipContent>
+          <TooltipTrigger className={"text-sm w-fit text-gray-500 dark:text-gray-400"}>
+            {props.product.description}
+          </TooltipTrigger>
+        </Tooltip>
       </div>
 
       <div className={"flex items-end space-x-1"}>
@@ -169,13 +173,11 @@ function FeaturesList(
 ) {
   return (
     <ul className={"grid w-fit space-y-2"}>
-      {props.features.map((feature) => {
-        return (
-          <ListItem key={feature}>
-            <Trans i18nKey={`common:plans.features.${feature}`} defaults={feature} />
-          </ListItem>
-        );
-      })}
+      {props.features.map((feature) => (
+        <ListItem key={feature}>
+          <Trans i18nKey={`common:plans.features.${feature}`} defaults={feature} />
+        </ListItem>
+      ))}
     </ul>
   );
 }
