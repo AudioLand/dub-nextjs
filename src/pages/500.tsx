@@ -50,7 +50,7 @@ const InternalServerErrorPage = () => {
                 </div>
 
                 <div className={'flex space-x-4'}>
-                  <Button variant={'secondary'} href={'/'}>
+                  <Button variant={'secondary'} href={'/faq'}>
                     <Trans i18nKey={'common:contactUs'} />
                   </Button>
 
