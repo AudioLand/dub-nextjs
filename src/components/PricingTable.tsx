@@ -191,7 +191,7 @@ function FeaturesList(
   return (
     <ul className={"grid w-fit space-y-2"}>
       {props.features.map((feature) => (
-        <ListItem key={feature}>
+        <ListItem key={feature} isAvailable={!configuration.unavailableFeatures.includes(feature)}>
           <Trans i18nKey={`common:plans.features.${feature}`} defaults={feature} />
         </ListItem>
       ))}
@@ -210,14 +210,27 @@ function Price({ children }: React.PropsWithChildren) {
   );
 }
 
-function ListItem({ children }: React.PropsWithChildren) {
+function ListItem(
+  props: React.PropsWithChildren<{
+    isAvailable: boolean;
+  }>,
+) {
   return (
     <li className={"flex items-center space-x-3 font-medium"}>
       <div>
-        <CheckCircleIcon className={"h-5"} />
+        <CheckCircleIcon className={"h-5"} color={props.isAvailable ? "#62cd71" : "#585858"} />
       </div>
-
-      <span className={"text-sm text-gray-600 dark:text-gray-300"}>{children}</span>
+      <If condition={props.isAvailable}>
+        <span className={"text-sm text-[#62cd71]"}>{props.children}</span>
+      </If>
+      <If condition={!props.isAvailable}>
+        <Tooltip>
+          <TooltipContent>Coming soon!</TooltipContent>
+          <TooltipTrigger className={"text-sm text-[#585858]"}>
+            ⧖&nbsp;{props.children}
+          </TooltipTrigger>
+        </Tooltip>
+      </If>
     </li>
   );
 }

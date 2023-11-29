@@ -242,6 +242,12 @@ const configuration = {
       },
     ],
   },
+  unavailableFeatures: [
+    "Visual editor",
+    "Your own voice in 29 languages",
+    "Lip-syncing",
+    "SRT sources",
+  ],
 
   feedback: [
     {
