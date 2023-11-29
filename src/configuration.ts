@@ -109,7 +109,7 @@ const configuration = {
             stripePriceId: "price_1O5dATLMDoxZURVetlMftktp",
           },
           {
-            name: "Yearly",
+            name: "Annually",
             price: "$0",
             stripePriceId: "price_1O5dATLMDoxZURVeJ8pbEq5t",
           },
@@ -141,7 +141,7 @@ const configuration = {
             stripePriceId: "price_1O6W81LMDoxZURVe5SPXElmm",
           },
           {
-            name: "Yearly",
+            name: "Annually",
             price: "$189",
             stripePriceId: "price_1O6W81LMDoxZURVevB2MwM3Z",
           },
@@ -173,7 +173,7 @@ const configuration = {
             stripePriceId: "price_1O6WA2LMDoxZURVe3FYhuzEy",
           },
           {
-            name: "Yearly",
+            name: "Annually",
             price: "$470",
             stripePriceId: "price_1O6WA2LMDoxZURVe2ZmelB28",
           },
@@ -207,7 +207,7 @@ const configuration = {
             stripePriceId: "price_1O81jhLMDoxZURVeNz22ANJ3",
           },
           {
-            name: "Yearly",
+            name: "Annually",
             price: "$3,349",
             stripePriceId: "price_1O6WF3LMDoxZURVecqdybl5W",
           },

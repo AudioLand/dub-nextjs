@@ -51,9 +51,9 @@ function PricingTable(
     CheckoutButton?: React.ComponentType<CheckoutButtonProps>;
   }>,
 ) {
-  //* Default plan - Yearly
+  //* Default plan - Annually
   const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[1]);
-
+  console.log("STRIPE_PLANS", STRIPE_PLANS);
   return (
     <div className={"flex flex-col space-y-12"}>
       <div className={"flex justify-center"}>
@@ -212,8 +212,9 @@ function PlansSwitcher(
     setPlan: (plan: string) => void;
   }>,
 ) {
+  console.log("PlansSwitcher", props);
   return (
-    //* Reversed to set Yearly plan the first
+    //* Reversed to set Annually plan the first
     <div className={"flex flex-row-reverse"}>
       {props.plans.map((plan, index) => {
         const selected = plan === props.plan;
@@ -240,6 +241,8 @@ function PlansSwitcher(
               <span>
                 <Trans i18nKey={`common:plans.${plan}`} defaults={plan} />
               </span>
+
+              <If condition={plan.toLowerCase() === "annually"}>&nbsp;-20%</If>
             </span>
           </Button>
         );
