@@ -44,9 +44,9 @@ function Index() {
             </HeroTitle>
 
             <SubHeading className={"text-center"}>
-              <span>Revolutionary AI-Powered Audio & Video Dubbing</span>
-              <span>Cutting-Edge Voice Cloning Technology</span>
-              <span>Achieve Natural, Human-Like Voices</span>
+              <span>★ Revolutionary AI-Powered Audio & Video Dubbing ★</span>
+              <span>★ Cutting-Edge Voice Cloning Technology ★</span>
+              <span>★ Achieve Natural, Human-Like Voices ★</span>
             </SubHeading>
 
             <div className={"flex flex-col items-center space-y-4"}>
