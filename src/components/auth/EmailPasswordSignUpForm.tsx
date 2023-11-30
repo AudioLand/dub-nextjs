@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import TextField from '~/core/ui/TextField';
 import Button from '~/core/ui/Button';
 import If from '~/core/ui/If';
+import AgreeToRulesCheckbox from './AgreeToRulesCheckbox';
 
 const EmailPasswordSignUpForm: React.FCC<{
   onSubmit: (params: {
@@ -109,6 +110,8 @@ const EmailPasswordSignUpForm: React.FCC<{
             <TextField.Error error={errors.repeatPassword?.message} />
           </TextField.Label>
         </TextField>
+
+        <AgreeToRulesCheckbox />
 
         <div>
           <Button

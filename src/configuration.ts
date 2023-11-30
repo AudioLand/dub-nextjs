@@ -58,6 +58,9 @@ const configuration = {
     emailLinkSignIn: "/auth/link",
     onboarding: `/onboarding`,
     appHome: "/projects",
+    faq: "/faq",
+    termsOfService: "/terms-of-service",
+    privacyPolicy: "/privacy-policy",
     settings: {
       profile: "/settings/profile",
       authentication: "/settings/profile/authentication",
