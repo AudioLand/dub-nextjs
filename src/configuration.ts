@@ -282,6 +282,11 @@ const configuration = {
         "“I used Audioland for dubbing my web series, and the outcome was fantastic. The voices matched our characters' personalities perfectly even they were cloned with AI, and the emotional delivery was spot on. The process was smooth, although pricing was a bit higher than expected. However, the quality justifies the cost. Highly recommended for anyone looking to dub entertainment content...“",
     } as FeedbackCardType,
   ],
+
+  magic: {
+    // https://www.notion.so/krenels/61d2dd45bea5420baf770e621b40ad2e?pvs=4
+    projectDurationMultiplicator: 2,
+  },
 };
 
 export default configuration;

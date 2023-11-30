@@ -1,5 +1,5 @@
 // react
-import { ChangeEvent, FC, useRef, useState } from "react";
+import { ChangeEvent, FC, useMemo, useRef, useState } from "react";
 
 // ui-components
 import Badge from "~/core/ui/Badge";
@@ -20,6 +20,7 @@ import FileUploader from "./FileUploader";
 
 // hooks
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
+import useVideoFileDuration from "~/lib/projects/hooks/use-video-file-duration";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useTargetVoices from "~/lib/projects/hooks/use-target-voices";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
@@ -37,6 +38,7 @@ import { Project } from "~/lib/projects/types/project";
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { useUserSession } from "~/core/hooks/use-user-session";
+import { estimateProjectDuration } from "~/lib/projects/video";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
@@ -61,6 +63,18 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   } as Project);
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
+  const duration = useVideoFileDuration(userMediaFile);
+  const projectDuration = useMemo(
+    () => duration && formatTime(estimateProjectDuration(duration)),
+    [duration],
+  );
+
+  function formatTime(seconds: number) {
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return min + " minutes, " + (sec < 10 ? "0" : "") + sec + " seconds";
+  }
+
   const [languageErrorMessage, setLanguageErrorMessage] = useState<string>("");
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
 
@@ -298,6 +312,13 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         />
         <TextField.Error error={fileErrorMessage} />
       </TextField>
+
+      <If condition={projectDuration}>
+        <p className="flex space-x-4">
+          <span className="text-gray-500 dark:text-gray-400">Estimated time:</span>
+          <span>{projectDuration} seconds</span>
+        </p>
+      </If>
 
       {/* Buttons */}
       <div className={"flex justify-end space-x-2"}>
