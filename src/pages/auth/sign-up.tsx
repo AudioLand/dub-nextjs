@@ -17,21 +17,26 @@ import EmailLinkAuth from '~/components/auth/EmailLinkAuth';
 import PhoneNumberSignInContainer from '~/components/auth/PhoneNumberSignInContainer';
 
 const signInPath = configuration.paths.signIn;
-const onboarding = configuration.paths.onboarding;
+// const onboarding = configuration.paths.onboarding;
+const appHomePath = configuration.paths.appHome
 
 const SignUp: React.FCC = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
+  useEffect(() => {
+    void router.prefetch(appHomePath);
+  }, [router]);
+
   const onSignUp = useCallback(() => {
-    return router.push(onboarding);
+    return router.push(appHomePath);
   }, [router]);
 
   // let's prefetch the onboarding route
   // to avoid slow redirects
-  useEffect(() => {
-    void router.prefetch(onboarding);
-  }, [router]);
+  // useEffect(() => {
+  //   void router.prefetch(onboarding);
+  // }, [router]);
 
   return (
     <AuthPageLayout heading={<Trans i18nKey={'auth:signUpHeading'} />}>

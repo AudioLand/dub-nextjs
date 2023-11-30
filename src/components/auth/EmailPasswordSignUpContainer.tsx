@@ -1,18 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { FirebaseError } from 'firebase/app';
-import { User, sendEmailVerification } from 'firebase/auth';
-import { Trans } from 'next-i18next';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FirebaseError } from "firebase/app";
+import { User, sendEmailVerification } from "firebase/auth";
+import { Trans } from "next-i18next";
+import useSWRMutation from "swr/mutation";
 
-import If from '~/core/ui/If';
-import Alert from '~/core/ui/Alert';
-import configuration from '~/configuration';
+import If from "~/core/ui/If";
+import Alert from "~/core/ui/Alert";
+import configuration from "~/configuration";
 
-import { useSignUpWithEmailAndPassword } from '~/core/firebase/hooks';
-import { getFirebaseErrorCode } from '~/core/firebase/utils/get-firebase-error-code';
+import { useSignUpWithEmailAndPassword } from "~/core/firebase/hooks";
+import { getFirebaseErrorCode } from "~/core/firebase/utils/get-firebase-error-code";
 
-import AuthErrorMessage from './AuthErrorMessage';
-import useCreateServerSideSession from '~/core/hooks/use-create-server-side-session';
-import EmailPasswordSignUpForm from '~/components/auth/EmailPasswordSignUpForm';
+import AuthErrorMessage from "./AuthErrorMessage";
+import { useApiRequest } from "~/core/hooks/use-api";
+import useCreateServerSideSession from "~/core/hooks/use-create-server-side-session";
+import EmailPasswordSignUpForm from "~/components/auth/EmailPasswordSignUpForm";
 
 const requireEmailVerification = configuration.auth.requireEmailVerification;
 
@@ -62,6 +64,17 @@ const EmailPasswordSignUpContainer: React.FCC<{
     callOnErrorCallback();
   }, [callOnErrorCallback]);
 
+  //#region Onboarding
+  const onboarding = useCompleteOnboardingRequest();
+  const onboardingCompleteRequested = useRef(false);
+  const onboardingReq = useCallback(async () => {
+    if (!onboardingCompleteRequested.current) {
+      onboardingCompleteRequested.current = true;
+      await onboarding.trigger({ organization: "Organization" });
+    }
+  }, [onboarding]);
+  //#endregion
+
   const onSubmit = useCallback(
     async (params: { email: string; password: string }) => {
       if (loading) {
@@ -73,8 +86,10 @@ const EmailPasswordSignUpContainer: React.FCC<{
       if (credential) {
         await createSession(credential.user);
       }
+
+      await onboardingReq();
     },
-    [loading, signUp, createSession],
+    [loading, signUp, onboardingReq, createSession],
   );
 
   return (
@@ -98,13 +113,13 @@ export default EmailPasswordSignUpContainer;
 
 function VerifyEmailAlert() {
   return (
-    <Alert type={'success'}>
+    <Alert type={"success"}>
       <Alert.Heading>
-        <Trans i18nKey={'auth:emailConfirmationAlertHeading'} />
+        <Trans i18nKey={"auth:emailConfirmationAlertHeading"} />
       </Alert.Heading>
 
       <p>
-        <Trans i18nKey={'auth:emailConfirmationAlertBody'} />
+        <Trans i18nKey={"auth:emailConfirmationAlertBody"} />
       </p>
     </Alert>
   );
@@ -112,13 +127,34 @@ function VerifyEmailAlert() {
 
 function useSendEmailConfirmation() {
   return useCallback((user: User) => {
-    const fullPath = [
-      configuration.site.siteUrl,
-      configuration.paths.onboarding,
-    ].join('/');
+    const fullPath = [configuration.site.siteUrl, configuration.paths.appHome].join("/");
 
     return sendEmailVerification(user, {
       url: fullPath,
     });
   }, []);
 }
+
+// Сохранить текущий путь создания организации.
+// -> Отправить запрос на /api/onboarding
+
+//#region Onboarding
+
+interface CompleteOnboardingStepData {
+  organization: string;
+}
+
+function useCompleteOnboardingRequest() {
+  const fetcher = useApiRequest<void, CompleteOnboardingStepData>();
+
+  return useSWRMutation(
+    "/api/onboarding",
+    (path, { arg: body }: { arg: CompleteOnboardingStepData }) => {
+      return fetcher({
+        path,
+        body,
+      });
+    },
+  );
+}
+//#endregion
