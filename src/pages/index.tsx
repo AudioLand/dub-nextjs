@@ -32,11 +32,11 @@ function Index() {
             </Pill>
 
             <HeroTitle>
-              <span>Make your content speak different languages</span>
+              <span className="mb-6">Make your content speak different languages</span>
               <span
                 className={
                   "bg-gradient-to-br bg-clip-text text-transparent" +
-                  " from-primary-400 to-primary-700 leading-[1.2]"
+                  " from-primary-400 to-primary-700 leading-[1.2] text-[35px]"
                 }
               >
                 Enhance Your Video & Audio Content Global Reach <br /> at a click of a button
@@ -44,9 +44,9 @@ function Index() {
             </HeroTitle>
 
             <SubHeading className={"text-center"}>
-              <span>★ Revolutionary AI-Powered Audio & Video Dubbing ★</span>
-              <span>★ Cutting-Edge Voice Cloning Technology ★</span>
-              <span>★ Achieve Natural, Human-Like Voices ★</span>
+              <span>★&nbsp;Revolutionary AI-Powered Audio & Video Dubbing&nbsp;★</span>
+              <span>★&nbsp;Cutting-Edge Voice Cloning Technology&nbsp;★</span>
+              <span>★&nbsp;Achieve Natural, Human-Like Voices&nbsp;★</span>
             </SubHeading>
 
             <div className={"flex flex-col items-center space-y-4"}>
