@@ -162,7 +162,7 @@ function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: Lan
             <span className="capitalize font-heading text-4xl font-semibold tracking-tight">
               Listen our Voices Samples.{" "}
               <span className="bg-gradient-to-br bg-clip-text text-transparent from-primary-400 to-primary-700">
-                {voices.length} Voices for {languageTo}!
+                {voices?.length ?? 0} Voices for {languageTo}!
               </span>
             </span>
           </Heading>
@@ -172,7 +172,7 @@ function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: Lan
             className="grid gap-2 lg:gap-4 w-full px-10"
             style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}
           >
-            {voices.slice(0, 3).map(({ voice_id, voice_name, provider, sample }) => (
+            {voices?.slice(0, 3).map(({ voice_id, voice_name, provider, sample }) => (
               <div
                 key={voice_id}
                 className="flex items-center"
@@ -217,7 +217,7 @@ function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: Lan
             <span className="capitalize font-heading text-4xl font-semibold tracking-tight">
               Translate {languageFrom} To{" "}
               <span className="bg-gradient-to-br bg-clip-text text-transparent from-primary-400 to-primary-700">
-                {outputLanguages.length - 1} Languages
+                {outputLanguages?.length - 1 ?? 0} Languages
               </span>
             </span>
           </Heading>
@@ -226,7 +226,7 @@ function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: Lan
             style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}
           >
             {outputLanguages
-              .filter((x) => ![languageFrom, languageTo].includes(x))
+              ?.filter((x) => ![languageFrom, languageTo].includes(x))
               .map((x) => (
                 <Link
                   key={x}
