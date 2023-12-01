@@ -93,11 +93,7 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
               <TableCell>
                 <Badge className="w-fit" color={getStatusColor(status)}>
                   <span>{status}</span>
-                  <If
-                    condition={[PROJECT_STATUSES.translating, PROJECT_STATUSES.uploaded].includes(
-                      status,
-                    )}
-                  >
+                  <If condition={[PROJECT_STATUSES.translating].includes(status)}>
                     <ProjectCountdown
                       createdAt={createdAt.toDate()}
                       originalFileLink={originalFileLink}
