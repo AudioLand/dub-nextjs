@@ -14,6 +14,7 @@ import SiteHeader from "~/components/SiteHeader";
 import { withTranslationProps } from "~/lib/props/with-translation-props";
 import Footer from "~/components/Footer";
 import FeedbackList from "~/components/FeedbackList";
+import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
 
 type LanguagePairProps = {
   languageFrom: string;
@@ -188,7 +189,7 @@ const pathPrefix = "online-audio-video-dubbing-";
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
   await initFlagsmith();
-  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
+  const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
   const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
 
   const { props } = await withTranslationProps({ locale });
@@ -209,11 +210,13 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
 
 export async function getStaticPaths({}: GetStaticPathsContext) {
   await initFlagsmith();
-  const inputLanguageListFlagsmith: string = flagsmith.getValue("requirements_info_tooltip");
+  const inputLanguageListFlagsmith: string = flagsmith.getValue(
+    FEATURES_IDS_LIST.requirements_info_tooltip,
+  );
   const inputLanguageList: string[] = JSON.parse(inputLanguageListFlagsmith).supported_languages
     .for_source_file.languages_list;
 
-  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
+  const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
   const outputLanguageList = JSON.parse(outputLanguageListFlagsmith);
 
   // languageList -> pairs

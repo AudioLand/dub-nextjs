@@ -14,6 +14,7 @@ import Footer from "~/components/Footer";
 import FeedbackList from "~/components/FeedbackList";
 import flagsmith from "flagsmith";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
+import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
 
 interface LandingProps {
   outputLanguageAmount: number;
@@ -190,7 +191,7 @@ export default Index;
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
   await initFlagsmith();
-  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
+  const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
   const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
 
   return {
