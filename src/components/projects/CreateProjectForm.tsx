@@ -22,13 +22,13 @@ import FileUploader from "./FileUploader";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
 import useVideoFileDuration from "~/lib/projects/hooks/use-video-file-duration";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
-import useTargetVoices from "~/lib/projects/hooks/use-target-voices";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 
 // constants
 import PIPELINE_URL from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
+import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -79,7 +79,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
 
   const targetLanguages = useTargetLanguages();
-  const avaialableVoices = useTargetVoices(newProject.targetLanguage);
+  const avaialableVoices = filterVoicesByLanguage(newProject.targetLanguage);
   const isLanguageSelected = avaialableVoices.length === 0;
 
   const handleNameUpdate = (e: ChangeEvent<HTMLInputElement>) => {
