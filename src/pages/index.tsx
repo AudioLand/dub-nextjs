@@ -12,8 +12,14 @@ import SiteHeader from "~/components/SiteHeader";
 import { withTranslationProps } from "~/lib/props/with-translation-props";
 import Footer from "~/components/Footer";
 import FeedbackList from "~/components/FeedbackList";
+import flagsmith from "flagsmith";
+import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 
-function Index() {
+interface LandingProps {
+  outputLanguageAmount: number;
+}
+
+function Index(props: LandingProps) {
   return (
     <Layout>
       <SiteHeader />
@@ -149,7 +155,12 @@ function Index() {
         <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
           <div className={"flex flex-col items-center space-y-8 text-center"}>
             <div className={"flex flex-col space-y-6 items-center"}>
-              <Heading type={1}>Seamlessly Translate Your Content into Multiple Languages</Heading>
+              <Heading type={1}>
+                Seamlessly Translate Your Content into{" "}
+                <span className="bg-gradient-to-br bg-clip-text text-transparent from-primary-400 to-primary-700">
+                  {props.outputLanguageAmount - 1} Languages
+                </span>
+              </Heading>
 
               <SubHeading className="max-w-2xl">
                 Make your audience captivated by listening to you in their mother tongue with just a
@@ -174,13 +185,25 @@ function Index() {
 
 export default Index;
 
+//#region SSG
+
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
+  await initFlagsmith();
+  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
+  const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
 
   return {
-    props,
+    props: {
+      ...props,
+      outputLanguageAmount: outputLanguageList.length,
+    },
   };
 }
+
+//#endregion
+
+//#region Components
 
 function HeroTitle({ children }: React.PropsWithChildren) {
   return (
@@ -236,3 +259,5 @@ function MainCallToActionButton() {
     </Button>
   );
 }
+
+//#endregion

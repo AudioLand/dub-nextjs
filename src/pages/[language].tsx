@@ -2,6 +2,7 @@ import type { GetStaticPropsContext, GetStaticPathsContext } from "next";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import flagsmith from "flagsmith";
 import Head from "next/head";
+import Link from "next/link";
 
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import Container from "~/core/ui/Container";
@@ -17,10 +18,10 @@ import FeedbackList from "~/components/FeedbackList";
 type LanguagePairProps = {
   languageFrom: string;
   languageTo: string;
-  outputLanguagesAmount: number;
+  outputLanguages: string[];
 };
 
-function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: LanguagePairProps) {
+function LanguagePair({ languageFrom, languageTo, outputLanguages }: LanguagePairProps) {
   return (
     <Layout>
       <Head>
@@ -47,9 +48,7 @@ function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: Langu
             </Pill>
 
             <HeroTitle>
-              <>
-                Online Audio and Video Dubbing from {languageFrom} to {languageTo}
-              </>
+              Online Audio and Video Dubbing from {languageFrom} to {languageTo}
             </HeroTitle>
             <SubHeading className={"text-center"}>
               <span
@@ -135,13 +134,32 @@ function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: Langu
       </Container>
 
       <Container>
-        <div className={"flex flex-col items-center justify-center py-[100px] "}>
+        <div className={"flex flex-col items-center justify-center py-[100px]"}>
           <Heading type={3}>
-            <span className="font-heading text-4xl font-semibold tracking-tight">
-              Translate {languageFrom} to {outputLanguagesAmount} languages
+            <span className="capitalize font-heading text-4xl font-semibold tracking-tight">
+              Translate {languageFrom} To{" "}
+              <span className="bg-gradient-to-br bg-clip-text text-transparent from-primary-400 to-primary-700">
+                {outputLanguages.length - 1} Languages
+              </span>
             </span>
           </Heading>
-          <p>TODO: Сделать иконки разных языков со ссылкой на страницы сгенерированные</p>
+          <div
+            className="grid gap-2 lg:gap-4 w-full p-10"
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}
+          >
+            {outputLanguages
+              .filter((x) => ![languageFrom, languageTo].includes(x))
+              .map((x) => (
+                <Link
+                  key={x}
+                  href={`/${pathPrefix}${languageFrom}-to-${x}`}
+                  className="hover:underline text-[25px] lg:text-[30px] p-2 lg:p-4"
+                >
+                  {languageEmojis[x as keyof typeof languageEmojis]}&nbsp;
+                  <span className="capitalize">{x}</span>
+                </Link>
+              ))}
+          </div>
         </div>
       </Container>
 
@@ -169,6 +187,10 @@ export default LanguagePair;
 const pathPrefix = "online-audio-video-dubbing-";
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
+  await initFlagsmith();
+  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
+  const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
+
   const { props } = await withTranslationProps({ locale });
   const seoLanguagePair = (params?.language as string)?.slice(pathPrefix.length).split("-to-");
   return {
@@ -176,7 +198,7 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
       ...props,
       languageFrom: seoLanguagePair[0],
       languageTo: seoLanguagePair[1],
-      outputLanguagesAmount: outputLanguageList.length,
+      outputLanguages: outputLanguageList.map((x) => x.toLowerCase()),
     } satisfies LanguagePairProps,
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
@@ -185,8 +207,6 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
   };
 }
 
-let outputLanguageList: string[] = [];
-
 export async function getStaticPaths({}: GetStaticPathsContext) {
   await initFlagsmith();
   const inputLanguageListFlagsmith: string = flagsmith.getValue("requirements_info_tooltip");
@@ -194,7 +214,7 @@ export async function getStaticPaths({}: GetStaticPathsContext) {
     .for_source_file.languages_list;
 
   const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
-  outputLanguageList = JSON.parse(outputLanguageListFlagsmith);
+  const outputLanguageList = JSON.parse(outputLanguageListFlagsmith);
 
   // languageList -> pairs
   let languagePaths: string[] = [];
@@ -270,5 +290,62 @@ function MainCallToActionButton() {
     </Button>
   );
 }
+
+const languageEmojis = {
+  english: "🇬🇧",
+  spanish: "🇪🇸",
+  estonian: "🇪🇪",
+  thai: "🇹🇭",
+  zulu: "🇿🇦",
+  korean: "🇰🇷",
+  bangla: "🇧🇩",
+  portuguese: "🇵🇹",
+  hebrew: "🇮🇱",
+  catalan: "🇨🇦",
+  kannada: "🇮🇳",
+  chinese: "🇨🇳",
+  javanese: "🇮🇩",
+  tamil: "🇮🇳",
+  sundanese: "🇮🇩",
+  german: "🇩🇪",
+  swedish: "🇸🇪",
+  malayalam: "🇮🇳",
+  arabic: "🇸🇦",
+  french: "🇫🇷",
+  vietnamese: "🇻🇳",
+  croatian: "🇭🇷",
+  danish: "🇩🇰",
+  finnish: "🇫🇮",
+  russian: "🇷🇺",
+  hindi: "🇮🇳",
+  polish: "🇵🇱",
+  turkish: "🇹🇷",
+  japanese: "🇯🇵",
+  norwegian: "🇳🇴",
+  italian: "🇮🇹",
+  greek: "🇬🇷",
+  bulgarian: "🇧🇬",
+  czech: "🇨🇿",
+  slovak: "🇸🇰",
+  latvian: "🇱🇻",
+  romanian: "🇷🇴",
+  slovene: "🇸🇮",
+  ukrainian: "🇺🇦",
+  lithuanian: "🇱🇹",
+  dutch: "🇳🇱",
+  bahasa: "🇮🇩",
+  malay: "🇲🇾",
+  gujarati: "🇮🇳",
+  telugu: "🇮🇳",
+  marathi: "🇮🇳",
+  swahili: "🇰🇪",
+  urdu: "🇵🇰",
+  welsh: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+  hungarian: "🇭🇺",
+  irish: "🇮🇪",
+  persian: "🇮🇷",
+  afrikaans: "🇿🇦",
+  filipino: "🇵🇭",
+};
 
 //#endregion
