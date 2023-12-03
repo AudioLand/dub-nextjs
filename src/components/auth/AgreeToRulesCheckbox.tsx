@@ -6,10 +6,19 @@ import configuration from "~/configuration";
 const termsOfServicePath = configuration.paths.termsOfService;
 const privacyPolicyPath = configuration.paths.privacyPolicy;
 
-const AgreeToRulesCheckbox: React.FCC = () => {
+type AgreeToRulesCheckboxProps = {
+  setCheckbox: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const AgreeToRulesCheckbox: React.FCC<AgreeToRulesCheckboxProps> = ({ setCheckbox }) => {
   return (
     <p className={"flex space-x-3 mb-3"}>
-      <input type="checkbox" className="w-8" checked disabled />
+      <input
+        type="checkbox"
+        className="w-8"
+        defaultChecked={true}
+        onChange={(e) => setCheckbox(e.target.checked)}
+      />
       <span>
         I agree to Audioland`s{" "}
         <Link
