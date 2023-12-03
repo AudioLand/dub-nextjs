@@ -13,6 +13,9 @@ const useVideoFileDuration = (file: File | undefined) => {
     };
 
     video.src = URL.createObjectURL(file);
+    return () => {
+      window.URL.revokeObjectURL(video.src);
+    };
   }, [file]);
 
   return duration;
