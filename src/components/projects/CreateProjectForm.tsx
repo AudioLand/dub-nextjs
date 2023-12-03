@@ -79,8 +79,8 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
 
   const targetLanguages = useTargetLanguages();
-  const avaialableVoices = filterVoicesByLanguage(newProject.targetLanguage);
-  const isLanguageSelected = avaialableVoices.length === 0;
+  const availableVoices = filterVoicesByLanguage(newProject.targetLanguage);
+  const isLanguageSelected = availableVoices.length === 0;
 
   const handleNameUpdate = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
@@ -263,7 +263,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
                   <span className="px-1">Select any language to see avaliable voices</span>
                 </If>
 
-                {avaialableVoices?.map(({ voice_id, voice_name, provider, sample }) => (
+                {availableVoices?.map(({ voice_id, voice_name, provider, sample }) => (
                   <div key={voice_id} className="flex items-center">
                     <IconButton
                       className="pl-1 hover:border-0 focus:border-0"
