@@ -169,8 +169,8 @@ function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: Lan
 
           <audio ref={audioRef} hidden />
           <div
-            className="grid gap-2 lg:gap-4 w-full px-10"
-            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}
+            className="grid gap-2 lg:gap-4 justify-items-center w-full px-10"
+            style={{ gridTemplateColumns: "repeat(3, minmax(300px, 1fr))" }}
           >
             {voices?.slice(0, 3).map(({ voice_id, voice_name, provider, sample }) => (
               <div
@@ -263,15 +263,25 @@ export default LanguagePair;
 //#region ISR
 
 const pathPrefix = "online-audio-video-dubbing-";
+const pseoPathPattern = new RegExp(`${pathPrefix}([a-zA-Z]+)-to-([a-zA-Z]+)$`);
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
+  if (!params || !params.language || !(params.language as string).match(pseoPathPattern)) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
+
   await initFlagsmith();
   const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
   const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
 
   const { props } = await withTranslationProps({ locale });
-  const seoLanguagePair = (params?.language as string)?.slice(pathPrefix.length).split("-to-");
 
+  const seoLanguagePair = (params.language as string).slice(pathPrefix.length).split("-to-");
   const voices = filterVoicesByLanguage(seoLanguagePair[0]);
 
   return {
