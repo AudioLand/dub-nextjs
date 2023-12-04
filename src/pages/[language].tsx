@@ -282,7 +282,7 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
   const { props } = await withTranslationProps({ locale });
 
   const seoLanguagePair = (params.language as string).slice(pathPrefix.length).split("-to-");
-  const voices = filterVoicesByLanguage(seoLanguagePair[0]);
+  const voices = filterVoicesByLanguage(seoLanguagePair[1]);
 
   return {
     props: {
