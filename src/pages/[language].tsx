@@ -1,7 +1,9 @@
+import React from "react";
 import type { GetStaticPropsContext, GetStaticPathsContext } from "next";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon, PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
 import flagsmith from "flagsmith";
 import Head from "next/head";
+import Link from "next/link";
 
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import Container from "~/core/ui/Container";
@@ -13,14 +15,49 @@ import SiteHeader from "~/components/SiteHeader";
 import { withTranslationProps } from "~/lib/props/with-translation-props";
 import Footer from "~/components/Footer";
 import FeedbackList from "~/components/FeedbackList";
+import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
+import { filterVoicesByLanguage } from "~/lib/projects/voices";
+import { TargetVoice } from "~/lib/projects/types/target-voice";
+import IconButton from "~/core/ui/IconButton";
+import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
+import Badge from "~/core/ui/Badge";
+import If from "~/core/ui/If";
 
 type LanguagePairProps = {
   languageFrom: string;
   languageTo: string;
-  outputLanguagesAmount: number;
+  outputLanguages: string[];
+  voices: TargetVoice[];
 };
 
-function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: LanguagePairProps) {
+function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: LanguagePairProps) {
+  const audioRef = React.useRef<HTMLAudioElement>(null);
+  const [player, setAudioPlayed] = React.useState({
+    sample: "",
+    paused: false,
+  });
+  const isTrackPlaying = (sample: string) => !player.paused && player.sample === sample;
+
+  const handlePlayPreviewAudio = (sampleAudioUrl: string) => {
+    if (!audioRef.current) return;
+    // Переключить трек
+    if (audioRef.current.src !== `${PREVIEW_HOST_URL}/${sampleAudioUrl}`) {
+      audioRef.current.pause();
+      audioRef.current.src = `${PREVIEW_HOST_URL}/${sampleAudioUrl}`;
+      audioRef.current.play();
+      setAudioPlayed({ sample: sampleAudioUrl, paused: false });
+      return;
+    }
+    // Вкл / выкл
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      setAudioPlayed({ sample: sampleAudioUrl, paused: false });
+    } else {
+      audioRef.current.pause();
+      setAudioPlayed({ sample: sampleAudioUrl, paused: true });
+    }
+  };
+
   return (
     <Layout>
       <Head>
@@ -47,9 +84,7 @@ function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: Langu
             </Pill>
 
             <HeroTitle>
-              <>
-                Online Audio and Video Dubbing from {languageFrom} to {languageTo}
-              </>
+              Online Audio and Video Dubbing from {languageFrom} to {languageTo}
             </HeroTitle>
             <SubHeading className={"text-center"}>
               <span
@@ -122,26 +157,87 @@ function LanguagePair({ languageFrom, languageTo, outputLanguagesAmount }: Langu
       </Container>
 
       <Container>
-        <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
-          <div className={"flex flex-col items-center space-y-8 text-center"}>
-            <p>
-              TODO: Вывести три смэпла голосов таргет языка из базы. Нужно решить по какому правилу
-              выводить, можно из “рекомендованных” выбирать первые три. Тогда у нас наиболее
-              качественные будут показываться всегда
-            </p>
-            <MainCallToActionButton />
+        <div className={"flex flex-col items-center justify-center py-16 space-y-12"}>
+          <Heading type={3}>
+            <span className="capitalize font-heading text-4xl font-semibold tracking-tight">
+              Listen our Voices Samples.{" "}
+              <span className="bg-gradient-to-br bg-clip-text text-transparent from-primary-400 to-primary-700">
+                {voices?.length ?? 0} Voices for {languageTo}!
+              </span>
+            </span>
+          </Heading>
+
+          <audio ref={audioRef} hidden />
+          <div
+            className="grid gap-2 lg:gap-4 justify-items-center w-full px-10"
+            style={{ gridTemplateColumns: "repeat(3, minmax(300px, 1fr))" }}
+          >
+            {voices?.slice(0, 3).map(({ voice_id, voice_name, provider, sample }) => (
+              <div
+                key={voice_id}
+                className="flex items-center"
+                onClick={() => handlePlayPreviewAudio(sample)}
+              >
+                <IconButton className={"hover:border-0 focus:border-0 "}>
+                  {isTrackPlaying(sample) ? (
+                    <PauseIcon className="h-5" color="#a78bfa" />
+                  ) : (
+                    <PlayIcon className="h-5" />
+                  )}
+                </IconButton>
+
+                <span className="px-2 cursor-pointer">
+                  <div className="flex w-full items-center gap-5">
+                    <span className={isTrackPlaying(sample) ? "text-primary-400" : ""}>
+                      {voice_name.replace(/\([^)]*\)/g, "")}
+                    </span>
+                    <If condition={provider === "eleven_labs"}>
+                      <Badge
+                        size="verySmall"
+                        className="text-right w-min"
+                        style={{
+                          fontSize: 9,
+                        }}
+                      >
+                        Powered by IIElevenLabs
+                      </Badge>
+                    </If>
+                  </div>
+                </span>
+              </div>
+            ))}
           </div>
+          <MainCallToActionButton />
         </div>
       </Container>
 
       <Container>
-        <div className={"flex flex-col items-center justify-center py-[100px] "}>
+        <div className={"flex flex-col items-center justify-center py-[100px]"}>
           <Heading type={3}>
-            <span className="font-heading text-4xl font-semibold tracking-tight">
-              Translate {languageFrom} to {outputLanguagesAmount} languages
+            <span className="capitalize font-heading text-4xl font-semibold tracking-tight">
+              Translate {languageFrom} To{" "}
+              <span className="bg-gradient-to-br bg-clip-text text-transparent from-primary-400 to-primary-700">
+                {outputLanguages?.length - 1 ?? 0} Languages
+              </span>
             </span>
           </Heading>
-          <p>TODO: Сделать иконки разных языков со ссылкой на страницы сгенерированные</p>
+          <div
+            className="grid gap-2 lg:gap-4 w-full p-10"
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}
+          >
+            {outputLanguages
+              ?.filter((x) => ![languageFrom, languageTo].includes(x))
+              .map((x) => (
+                <Link
+                  key={x}
+                  href={`/${pathPrefix}${languageFrom}-to-${x}`}
+                  className="hover:underline text-[20px] lg:text-[25px] p-2 lg:p-4"
+                >
+                  {languageEmojis[x as keyof typeof languageEmojis]}&nbsp;
+                  <span className="capitalize">{x}</span>
+                </Link>
+              ))}
+          </div>
         </div>
       </Container>
 
@@ -167,16 +263,34 @@ export default LanguagePair;
 //#region ISR
 
 const pathPrefix = "online-audio-video-dubbing-";
+const pseoPathPattern = new RegExp(`${pathPrefix}([a-zA-Z]+)-to-([a-zA-Z]+)$`);
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
+  if (!params || !params.language || !(params.language as string).match(pseoPathPattern)) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
+
+  await initFlagsmith();
+  const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
+  const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
+
   const { props } = await withTranslationProps({ locale });
-  const seoLanguagePair = (params?.language as string)?.slice(pathPrefix.length).split("-to-");
+
+  const seoLanguagePair = (params.language as string).slice(pathPrefix.length).split("-to-");
+  const voices = filterVoicesByLanguage(seoLanguagePair[0]);
+
   return {
     props: {
       ...props,
       languageFrom: seoLanguagePair[0],
       languageTo: seoLanguagePair[1],
-      outputLanguagesAmount: outputLanguageList.length,
+      outputLanguages: outputLanguageList.map((x) => x.toLowerCase()),
+      voices,
     } satisfies LanguagePairProps,
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
@@ -185,16 +299,16 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
   };
 }
 
-let outputLanguageList: string[] = [];
-
 export async function getStaticPaths({}: GetStaticPathsContext) {
   await initFlagsmith();
-  const inputLanguageListFlagsmith: string = flagsmith.getValue("requirements_info_tooltip");
+  const inputLanguageListFlagsmith: string = flagsmith.getValue(
+    FEATURES_IDS_LIST.requirements_info_tooltip,
+  );
   const inputLanguageList: string[] = JSON.parse(inputLanguageListFlagsmith).supported_languages
     .for_source_file.languages_list;
 
-  const outputLanguageListFlagsmith: string = flagsmith.getValue("languages_list");
-  outputLanguageList = JSON.parse(outputLanguageListFlagsmith);
+  const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
+  const outputLanguageList = JSON.parse(outputLanguageListFlagsmith);
 
   // languageList -> pairs
   let languagePaths: string[] = [];
@@ -270,5 +384,62 @@ function MainCallToActionButton() {
     </Button>
   );
 }
+
+const languageEmojis = {
+  english: "🇬🇧",
+  spanish: "🇪🇸",
+  estonian: "🇪🇪",
+  thai: "🇹🇭",
+  zulu: "🇿🇦",
+  korean: "🇰🇷",
+  bangla: "🇧🇩",
+  portuguese: "🇵🇹",
+  hebrew: "🇮🇱",
+  catalan: "🇨🇦",
+  kannada: "🇮🇳",
+  chinese: "🇨🇳",
+  javanese: "🇮🇩",
+  tamil: "🇮🇳",
+  sundanese: "🇮🇩",
+  german: "🇩🇪",
+  swedish: "🇸🇪",
+  malayalam: "🇮🇳",
+  arabic: "🇸🇦",
+  french: "🇫🇷",
+  vietnamese: "🇻🇳",
+  croatian: "🇭🇷",
+  danish: "🇩🇰",
+  finnish: "🇫🇮",
+  russian: "🇷🇺",
+  hindi: "🇮🇳",
+  polish: "🇵🇱",
+  turkish: "🇹🇷",
+  japanese: "🇯🇵",
+  norwegian: "🇳🇴",
+  italian: "🇮🇹",
+  greek: "🇬🇷",
+  bulgarian: "🇧🇬",
+  czech: "🇨🇿",
+  slovak: "🇸🇰",
+  latvian: "🇱🇻",
+  romanian: "🇷🇴",
+  slovene: "🇸🇮",
+  ukrainian: "🇺🇦",
+  lithuanian: "🇱🇹",
+  dutch: "🇳🇱",
+  bahasa: "🇮🇩",
+  malay: "🇲🇾",
+  gujarati: "🇮🇳",
+  telugu: "🇮🇳",
+  marathi: "🇮🇳",
+  swahili: "🇰🇪",
+  urdu: "🇵🇰",
+  welsh: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+  hungarian: "🇭🇺",
+  irish: "🇮🇪",
+  persian: "🇮🇷",
+  afrikaans: "🇿🇦",
+  filipino: "🇵🇭",
+};
 
 //#endregion

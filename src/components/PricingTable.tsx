@@ -8,6 +8,7 @@ import Heading from "~/core/ui/Heading";
 import If from "~/core/ui/If";
 
 import configuration from "~/configuration";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/core/ui/Tooltip";
 
 interface CheckoutButtonProps {
   readonly stripePriceId?: string;
@@ -50,7 +51,7 @@ function PricingTable(
     CheckoutButton?: React.ComponentType<CheckoutButtonProps>;
   }>,
 ) {
-  //* Default plan - Yearly
+  //* Default plan - Annually
   const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[1]);
 
   return (
@@ -85,6 +86,23 @@ PricingTable.Item = PricingItem;
 PricingTable.Price = Price;
 PricingTable.FeaturesList = FeaturesList;
 
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 2,
+});
+
+function getPrice(planPrice: string, planName: string, productName: string): string {
+  // текстовка для "Contact us"
+  if (productName === "Enterprise") return planPrice;
+
+  // "Annually"
+  if (planName === STRIPE_PLANS[1]) return formatter.format(+planPrice / 12);
+
+  // "Monthly"
+  return formatter.format(+planPrice);
+}
+
 function PricingItem(
   props: React.PropsWithChildren<
     PricingItemProps & {
@@ -93,7 +111,7 @@ function PricingItem(
   >,
 ) {
   const recommended = props.product.recommended ?? false;
-
+  const price = getPrice(props.plan.price, props.plan.name, props.product.name);
   return (
     <div
       data-cy={"subscription-plan"}
@@ -126,18 +144,21 @@ function PricingItem(
           </If>
         </div>
 
-        <span className={"text-sm text-gray-500 dark:text-gray-400"}>
-          {props.product.description}
-        </span>
+        <Tooltip>
+          <TooltipContent>Each token equals a minute</TooltipContent>
+          <TooltipTrigger className={"text-sm w-fit text-gray-500 dark:text-gray-400"}>
+            {props.product.description}
+          </TooltipTrigger>
+        </Tooltip>
       </div>
 
       <div className={"flex items-end space-x-1"}>
-        <Price>{props.plan.price}</Price>
+        <Price>{price}</Price>
 
         <If condition={props.plan.name}>
           <span className={classNames(`text-lg lowercase text-gray-500 dark:text-gray-400`)}>
             <span>/</span>
-            <span>{props.plan.name}</span>
+            <span>{STRIPE_PLANS[0]}</span>
           </span>
         </If>
       </div>
@@ -169,13 +190,11 @@ function FeaturesList(
 ) {
   return (
     <ul className={"grid w-fit space-y-2"}>
-      {props.features.map((feature) => {
-        return (
-          <ListItem key={feature}>
-            <Trans i18nKey={`common:plans.features.${feature}`} defaults={feature} />
-          </ListItem>
-        );
-      })}
+      {props.features.map((feature) => (
+        <ListItem key={feature} isAvailable={!configuration.unavailableFeatures.includes(feature)}>
+          <Trans i18nKey={`common:plans.features.${feature}`} defaults={feature} />
+        </ListItem>
+      ))}
     </ul>
   );
 }
@@ -191,14 +210,27 @@ function Price({ children }: React.PropsWithChildren) {
   );
 }
 
-function ListItem({ children }: React.PropsWithChildren) {
+function ListItem(
+  props: React.PropsWithChildren<{
+    isAvailable: boolean;
+  }>,
+) {
   return (
     <li className={"flex items-center space-x-3 font-medium"}>
       <div>
-        <CheckCircleIcon className={"h-5"} />
+        <CheckCircleIcon className={"h-5"} color={props.isAvailable ? "#62cd71" : "#585858"} />
       </div>
-
-      <span className={"text-sm text-gray-600 dark:text-gray-300"}>{children}</span>
+      <If condition={props.isAvailable}>
+        <span className={"text-sm text-[#62cd71]"}>{props.children}</span>
+      </If>
+      <If condition={!props.isAvailable}>
+        <Tooltip>
+          <TooltipContent>Coming soon!</TooltipContent>
+          <TooltipTrigger className={"text-sm text-[#585858]"}>
+            ⧖&nbsp;{props.children}
+          </TooltipTrigger>
+        </Tooltip>
+      </If>
     </li>
   );
 }
@@ -211,7 +243,7 @@ function PlansSwitcher(
   }>,
 ) {
   return (
-    //* Reversed to set Yearly plan the first
+    //* Reversed to set Annually plan the first
     <div className={"flex flex-row-reverse"}>
       {props.plans.map((plan, index) => {
         const selected = plan === props.plan;
@@ -238,6 +270,8 @@ function PlansSwitcher(
               <span>
                 <Trans i18nKey={`common:plans.${plan}`} defaults={plan} />
               </span>
+
+              <If condition={plan.toLowerCase() === STRIPE_PLANS[1].toLowerCase()}>&nbsp;-20%</If>
             </span>
           </Button>
         );

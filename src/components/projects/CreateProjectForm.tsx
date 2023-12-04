@@ -1,5 +1,5 @@
 // react
-import { ChangeEvent, FC, useRef, useState } from "react";
+import { ChangeEvent, FC, useMemo, useRef, useState } from "react";
 
 // ui-components
 import Badge from "~/core/ui/Badge";
@@ -20,14 +20,15 @@ import FileUploader from "./FileUploader";
 
 // hooks
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
+import useVideoFileDuration from "~/lib/projects/hooks/use-video-file-duration";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
-import useTargetVoices from "~/lib/projects/hooks/use-target-voices";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 
 // constants
 import PIPELINE_URL from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
+import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -37,6 +38,7 @@ import { Project } from "~/lib/projects/types/project";
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { useUserSession } from "~/core/hooks/use-user-session";
+import { estimateProjectDuration } from "~/lib/projects/video";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
@@ -61,12 +63,24 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   } as Project);
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
+  const duration = useVideoFileDuration(userMediaFile);
+  const projectDuration = useMemo(
+    () => duration && formatTime(estimateProjectDuration(duration)),
+    [duration],
+  );
+
+  function formatTime(seconds: number) {
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return min + " minutes, " + (sec < 10 ? "0" : "") + sec + " seconds";
+  }
+
   const [languageErrorMessage, setLanguageErrorMessage] = useState<string>("");
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
 
   const targetLanguages = useTargetLanguages();
-  const avaialableVoices = useTargetVoices(newProject.targetLanguage);
-  const isLanguageSelected = avaialableVoices.length === 0;
+  const availableVoices = filterVoicesByLanguage(newProject.targetLanguage);
+  const isLanguageSelected = availableVoices.length === 0;
 
   const handleNameUpdate = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
@@ -249,7 +263,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
                   <span className="px-1">Select any language to see avaliable voices</span>
                 </If>
 
-                {avaialableVoices?.map(({ voice_id, voice_name, provider, sample }) => (
+                {availableVoices?.map(({ voice_id, voice_name, provider, sample }) => (
                   <div key={voice_id} className="flex items-center">
                     <IconButton
                       className="pl-1 hover:border-0 focus:border-0"
@@ -298,6 +312,13 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         />
         <TextField.Error error={fileErrorMessage} />
       </TextField>
+
+      <If condition={projectDuration}>
+        <p className="flex space-x-4">
+          <span className="text-gray-500 dark:text-gray-400">Estimated time:</span>
+          <span>{projectDuration} seconds</span>
+        </p>
+      </If>
 
       {/* Buttons */}
       <div className={"flex justify-end space-x-2"}>

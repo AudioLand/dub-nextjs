@@ -20,7 +20,7 @@ const TokensInfoCard = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-col gap-2 py-2 pb-3 px-4 bg-gray-900 rounded">
+      <div className="flex flex-col gap-2 py-2 pb-3 px-4 bg-gray-100 dark:bg-gray-900 rounded">
         <div className="flex justify-between">
           {/* Subscription Name */}
           <span className="text-lg font-semibold">{userSubscriptionPlan.name}</span>
@@ -34,7 +34,7 @@ const TokensInfoCard = () => {
           </div>
         </div>
 
-        <Progress className="h-2 w-full overflow-hidden rounded-full bg-gray-800">
+        <Progress className="h-2 w-full overflow-hidden rounded-full bg-gray-500 dark:bg-gray-800">
           <ProgressIndicator
             className="h-2 bg-purple-700 duration-300 ease-in-out"
             style={{

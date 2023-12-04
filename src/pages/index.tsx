@@ -12,8 +12,15 @@ import SiteHeader from "~/components/SiteHeader";
 import { withTranslationProps } from "~/lib/props/with-translation-props";
 import Footer from "~/components/Footer";
 import FeedbackList from "~/components/FeedbackList";
+import flagsmith from "flagsmith";
+import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
+import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
 
-function Index() {
+interface LandingProps {
+  outputLanguageAmount: number;
+}
+
+function Index(props: LandingProps) {
   return (
     <Layout>
       <SiteHeader />
@@ -32,11 +39,11 @@ function Index() {
             </Pill>
 
             <HeroTitle>
-              <span>Make your content speak different languages</span>
+              <span className="mb-6">Make your content speak different languages</span>
               <span
                 className={
                   "bg-gradient-to-br bg-clip-text text-transparent" +
-                  " from-primary-400 to-primary-700 leading-[1.2]"
+                  " from-primary-400 to-primary-700 leading-[1.2] text-[35px]"
                 }
               >
                 Enhance Your Video & Audio Content Global Reach <br /> at a click of a button
@@ -44,9 +51,9 @@ function Index() {
             </HeroTitle>
 
             <SubHeading className={"text-center"}>
-              <span>Revolutionary AI-Powered Audio & Video Dubbing</span>
-              <span>Cutting-Edge Voice Cloning Technology</span>
-              <span>Achieve Natural, Human-Like Voices</span>
+              <span>★&nbsp;Revolutionary AI-Powered Audio & Video Dubbing&nbsp;★</span>
+              <span>★&nbsp;Cutting-Edge Voice Cloning Technology&nbsp;★</span>
+              <span>★&nbsp;Achieve Natural, Human-Like Voices&nbsp;★</span>
             </SubHeading>
 
             <div className={"flex flex-col items-center space-y-4"}>
@@ -149,11 +156,16 @@ function Index() {
         <div className={"flex flex-col items-center justify-center py-16 space-y-16"}>
           <div className={"flex flex-col items-center space-y-8 text-center"}>
             <div className={"flex flex-col space-y-6 items-center"}>
-              <Heading type={1}>Seamlessly Translate Your Content into Multiple Languages.</Heading>
+              <Heading type={1}>
+                Seamlessly Translate Your Content into{" "}
+                <span className="bg-gradient-to-br bg-clip-text text-transparent from-primary-400 to-primary-700">
+                  {props.outputLanguageAmount - 1} Languages
+                </span>
+              </Heading>
 
               <SubHeading className="max-w-2xl">
                 Make your audience captivated by listening to you in their mother tongue with just a
-                couple of clicks.
+                couple of clicks
               </SubHeading>
               <div className={"flex flex-col items-center space-y-4"}>
                 <MainCallToActionButton />
@@ -174,13 +186,25 @@ function Index() {
 
 export default Index;
 
+//#region SSG
+
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
+  await initFlagsmith();
+  const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
+  const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
 
   return {
-    props,
+    props: {
+      ...props,
+      outputLanguageAmount: outputLanguageList.length,
+    },
   };
 }
+
+//#endregion
+
+//#region Components
 
 function HeroTitle({ children }: React.PropsWithChildren) {
   return (
@@ -236,3 +260,5 @@ function MainCallToActionButton() {
     </Button>
   );
 }
+
+//#endregion

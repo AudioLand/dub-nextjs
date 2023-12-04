@@ -58,6 +58,9 @@ const configuration = {
     emailLinkSignIn: "/auth/link",
     onboarding: `/onboarding`,
     appHome: "/projects",
+    faq: "/faq",
+    termsOfService: "/terms-of-service",
+    privacyPolicy: "/privacy-policy",
     settings: {
       profile: "/settings/profile",
       authentication: "/settings/profile/authentication",
@@ -105,12 +108,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$0",
+            price: "0",
             stripePriceId: "",
           },
           {
-            name: "Yearly",
-            price: "$0",
+            name: "Annually",
+            price: "0",
             stripePriceId: "",
           },
         ],
@@ -137,12 +140,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$20",
+            price: "20",
             stripePriceId: process.env.NEXT_PUBLIC_CREATOR_MONTH_SUBSCRIPTION_ID,
           },
           {
-            name: "Yearly",
-            price: "$189",
+            name: "Annually",
+            price: "189",
             stripePriceId: process.env.NEXT_PUBLIC_CREATOR_YEAR_SUBSCRIPTION_ID,
           },
         ],
@@ -169,12 +172,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$49",
+            price: "49",
             stripePriceId: process.env.NEXT_PUBLIC_STANDARD_MONTH_SUBSCRIPTION_ID,
           },
           {
-            name: "Yearly",
-            price: "$470",
+            name: "Annually",
+            price: "470",
             stripePriceId: process.env.NEXT_PUBLIC_STANDARD_YEAR_SUBSCRIPTION_ID,
           },
         ],
@@ -203,12 +206,12 @@ const configuration = {
         plans: [
           {
             name: "Monthly",
-            price: "$349",
+            price: "349",
             stripePriceId: process.env.NEXT_PUBLIC_PRODUCER_MONTH_SUBSCRIPTION_ID,
           },
           {
-            name: "Yearly",
-            price: "$3,349",
+            name: "Annually",
+            price: "3349",
             stripePriceId: process.env.NEXT_PUBLIC_PRODUCER_YEAR_SUBSCRIPTION_ID,
           },
         ],
@@ -242,6 +245,12 @@ const configuration = {
       },
     ],
   },
+  unavailableFeatures: [
+    "Visual editor",
+    "Your own voice in 29 languages",
+    "Lip-syncing",
+    "SRT sources",
+  ],
   feedback: [
     {
       avatarUrl: "/assets/images/google.png",
@@ -272,6 +281,11 @@ const configuration = {
         "“I used Audioland for dubbing my web series, and the outcome was fantastic. The voices matched our characters' personalities perfectly even they were cloned with AI, and the emotional delivery was spot on. The process was smooth, although pricing was a bit higher than expected. However, the quality justifies the cost. Highly recommended for anyone looking to dub entertainment content...“",
     } as FeedbackCardType,
   ],
+
+  magic: {
+    // https://www.notion.so/krenels/61d2dd45bea5420baf770e621b40ad2e?pvs=4
+    projectDurationMultiplicator: 2,
+  },
 };
 
 export default configuration;

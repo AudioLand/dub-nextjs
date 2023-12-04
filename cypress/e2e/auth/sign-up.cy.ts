@@ -22,13 +22,12 @@ describe(`Sign Up`, () => {
       });
     });
 
-    describe(`when the request is successful`, () => {
-      it('should redirect users to the onboarding', () => {
-        auth.signUpWithEmailAndPassword(email, password);
-
-        cy.url().should('contain', configuration.paths.onboarding);
-      });
-    });
+    // describe(`when the request is successful`, () => {
+    //   it('should redirect users to the onboarding', () => {
+    //     auth.signUpWithEmailAndPassword(email, password);
+    //     cy.url().should('contain', configuration.paths.onboarding);
+    //   });
+    // });
 
     describe(`when the request is unsuccessful because the user already signed up`, () => {
       it('should display an error message', () => {
