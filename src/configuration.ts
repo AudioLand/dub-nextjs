@@ -109,18 +109,19 @@ const configuration = {
           {
             name: "Monthly",
             price: "0",
-            stripePriceId: "price_1O5dATLMDoxZURVetlMftktp",
+            stripePriceId: "",
           },
           {
             name: "Annually",
             price: "0",
-            stripePriceId: "price_1O5dATLMDoxZURVeJ8pbEq5t",
+            stripePriceId: "",
+          },
           },
         ],
       },
       //* Creator
       {
-        stripeProductId: "prod_OuKnitbowAz4n4",
+        stripeProductId: process.env.NEXT_PUBLIC_CREATOR_PRODUCT_ID,
         name: "Creator",
         description: "10 tokens/month",
         tokens: 10,
@@ -141,18 +142,18 @@ const configuration = {
           {
             name: "Monthly",
             price: "20",
-            stripePriceId: "price_1O6W81LMDoxZURVe5SPXElmm",
+            stripePriceId: process.env.NEXT_PUBLIC_CREATOR_MONTH_SUBSCRIPTION_ID,
           },
           {
             name: "Annually",
             price: "189",
-            stripePriceId: "price_1O6W81LMDoxZURVevB2MwM3Z",
+            stripePriceId: process.env.NEXT_PUBLIC_CREATOR_YEAR_SUBSCRIPTION_ID,
           },
         ],
       },
-      //* Standart
+      //* Standard
       {
-        stripeProductId: "prod_OuKpA5o0s5ysTU",
+        stripeProductId: process.env.NEXT_PUBLIC_STANDARD_PRODUCT_ID,
         name: "Standard",
         description: "30 tokens/month",
         tokens: 30,
@@ -173,18 +174,18 @@ const configuration = {
           {
             name: "Monthly",
             price: "49",
-            stripePriceId: "price_1O6WA2LMDoxZURVe3FYhuzEy",
+            stripePriceId: process.env.NEXT_PUBLIC_STANDARD_MONTH_SUBSCRIPTION_ID,
           },
           {
             name: "Annually",
             price: "470",
-            stripePriceId: "price_1O6WA2LMDoxZURVe2ZmelB28",
+            stripePriceId: process.env.NEXT_PUBLIC_STANDARD_YEAR_SUBSCRIPTION_ID,
           },
         ],
       },
       //* Producer
       {
-        stripeProductId: "prod_OuKubCASJyJPoR",
+        stripeProductId: process.env.NEXT_PUBLIC_PRODUCER_PRODUCT_ID,
         name: "Producer",
         badge: `Most Popular`,
         recommended: true,
@@ -207,12 +208,12 @@ const configuration = {
           {
             name: "Monthly",
             price: "349",
-            stripePriceId: "price_1O81jhLMDoxZURVeNz22ANJ3",
+            stripePriceId: process.env.NEXT_PUBLIC_PRODUCER_MONTH_SUBSCRIPTION_ID,
           },
           {
             name: "Annually",
             price: "3349",
-            stripePriceId: "price_1O6WF3LMDoxZURVecqdybl5W",
+            stripePriceId: process.env.NEXT_PUBLIC_PRODUCER_YEAR_SUBSCRIPTION_ID,
           },
         ],
       },
@@ -251,7 +252,6 @@ const configuration = {
     "Lip-syncing",
     "SRT sources",
   ],
-
   feedback: [
     {
       avatarUrl: "/assets/images/google.png",

@@ -55,7 +55,7 @@ export async function createStripeCheckout(params: CreateCheckoutParams) {
 
   return stripe.checkout.sessions.create({
     mode,
-    customer,
+    // customer,
     line_items: [lineItem],
     success_url: successUrl,
     cancel_url: cancelUrl,
