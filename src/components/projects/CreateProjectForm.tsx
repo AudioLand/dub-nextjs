@@ -316,7 +316,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
       <If condition={projectDuration}>
         <p className="flex space-x-4">
           <span className="text-gray-500 dark:text-gray-400">Estimated time:</span>
-          <span>{projectDuration} seconds</span>
+          <span>{projectDuration}</span>
         </p>
       </If>
 
