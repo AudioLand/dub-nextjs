@@ -116,7 +116,6 @@ const configuration = {
             price: "0",
             stripePriceId: "",
           },
-          },
         ],
       },
       //* Creator
