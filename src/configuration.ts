@@ -107,12 +107,7 @@ const configuration = {
         ],
         plans: [
           {
-            name: "Monthly",
-            price: "0",
-            stripePriceId: "",
-          },
-          {
-            name: "Annually",
+            name: "",
             price: "0",
             stripePriceId: "",
           },
