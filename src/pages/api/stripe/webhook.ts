@@ -104,7 +104,23 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
       case StripeWebhooks.SubscriptionUpdated: {
         const subscription = event.data.object as Stripe.Subscription;
 
+        // TODO: re-add subscription renew email sending
+        // const invoice = event.data.object as Stripe.Invoice;
+        // const userEmail = invoice.customer_email;
+        // console.log(event)
+        // console.log(userEmail)
+
         await onSubscriptionUpdated(subscription);
+
+        // //* Send email that subscription renew payment is successful
+        // if (userEmail) {
+        //   const organizationSubscription = buildOrganizationSubscription(subscription);
+        //   sendEmailWithApi(userEmail, EmailTemplate.SubscriptionAutoRenew, {
+        //     subscription: organizationSubscription,
+        //   });
+        // } else {
+        //   console.error("User email is not defined in Stripe paid invoice event");
+        // }
 
         break;
       }
@@ -112,20 +128,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
       case StripeWebhooks.InvoicePaid: {
         const invoice = event.data.object as Stripe.Invoice;
         const subscriptionId = invoice.subscription as string;
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-        const userEmail = invoice.customer_email;
 
-        await onSubscriptionContinued(invoice);
-
-        //* Send email that subscription renew payment is successful
-        if (userEmail) {
-          const organizationSubscription = buildOrganizationSubscription(subscription);
-          sendEmailWithApi(userEmail, EmailTemplate.SubscriptionAutoRenew, {
-            subscription: organizationSubscription,
-          });
-        } else {
-          console.error("User email is not defined in Stripe paid invoice event");
-        }
 
         break;
       }
@@ -214,10 +217,6 @@ async function onSubscriptionUpdated(subscription: Stripe.Subscription) {
   const subscriptionData = buildOrganizationSubscription(subscription);
 
   return updateSubscriptionById(subscription.id, subscriptionData);
-}
-
-async function onSubscriptionContinued(invoice: Stripe.Invoice) {
-  return resetTokensByCustomerId(invoice.customer as string);
 }
 
 function respondOk(res: NextApiResponse) {
