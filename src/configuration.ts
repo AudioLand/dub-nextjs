@@ -269,14 +269,14 @@ const configuration = {
     {
       avatarUrl: "/assets/images/google.png",
       name: "Priya K.",
-      rating: 4,
+      rating: 5,
       comment:
         "“I'm thoroughly impressed with Audioland's dubbing service. Efficient, fast, affordable“",
     } as FeedbackCardType,
     {
       avatarUrl: "/assets/images/google.png",
       name: "Connor Williamson",
-      rating: 4,
+      rating: 5,
       comment:
         "“I used Audioland for dubbing my web series, and the outcome was fantastic. The voices matched our characters' personalities perfectly even they were cloned with AI, and the emotional delivery was spot on. The process was smooth, although pricing was a bit higher than expected. However, the quality justifies the cost. Highly recommended for anyone looking to dub entertainment content...“",
     } as FeedbackCardType,
