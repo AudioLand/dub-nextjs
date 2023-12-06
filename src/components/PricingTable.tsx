@@ -112,6 +112,8 @@ function PricingItem(
 ) {
   const recommended = props.product.recommended ?? false;
   const price = getPrice(props.plan.price, props.plan.name, props.product.name);
+  const annualPrice = getPrice(props.plan.price, "", "");
+
   return (
     <div
       data-cy={"subscription-plan"}
@@ -152,14 +154,19 @@ function PricingItem(
         </Tooltip>
       </div>
 
-      <div className={"flex items-end space-x-1"}>
-        <Price>{price}</Price>
+      <div className={"flex-col"}>
+        <div className={"flex items-end space-x-1"}>
+          <Price>{price}</Price>
 
-        <If condition={props.plan.name}>
-          <span className={classNames(`text-lg lowercase text-gray-500 dark:text-gray-400`)}>
-            <span>/</span>
-            <span>{STRIPE_PLANS[0]}</span>
-          </span>
+          <If condition={props.plan.name}>
+            <span className={classNames(`text-lg lowercase text-gray-500 dark:text-gray-400`)}>
+              <span>/</span>
+              <span>{STRIPE_PLANS[0]}</span>
+            </span>
+          </If>
+        </div>
+        <If condition={!props.isFree && props.plan.name==STRIPE_PLANS[1]}>
+          <span className={"text-2md lg:text-3md xl:text-4md text-gray-500 dark:text-gray-400"}>{annualPrice} Billed Yearly</span>
         </If>
       </div>
 
