@@ -82,7 +82,7 @@ const configuration = {
     password: process.env.ETHEREAL_PASSWORD,
   },
   sentry: {
-    dsn: process.env.SENTRY_DSN,
+    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   },
   stripe: {
     products: [
