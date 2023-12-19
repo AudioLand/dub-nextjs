@@ -234,7 +234,7 @@ const configuration = {
             price: "Contact us",
             stripePriceId: "",
             label: `Contact us`,
-            href: `/contact`,
+            href: `https://lwffw510qaa.typeform.com/to/OTl4Rkin`,
           },
         ],
       },
