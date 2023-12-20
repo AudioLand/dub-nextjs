@@ -56,7 +56,7 @@ const NotFoundPage = () => {
                 </div>
 
                 <div className={'flex space-x-4'}>
-                  <Button variant={'secondary'} href={'/faq'}>
+                  <Button variant={'secondary'} href={configuration.paths.faq}>
                     <Trans i18nKey={'common:contactUs'} />
                   </Button>
 

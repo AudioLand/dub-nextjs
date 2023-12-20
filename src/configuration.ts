@@ -58,7 +58,10 @@ const configuration = {
     emailLinkSignIn: "/auth/link",
     onboarding: `/onboarding`,
     appHome: "/projects",
+    about: "/about",
+    blog: "/blog",
     faq: "/faq",
+    pricing: "/pricing",
     termsOfService: "/terms-of-service",
     privacyPolicy: "/privacy-policy",
     settings: {
@@ -69,8 +72,12 @@ const configuration = {
       subscription: "/settings/subscription",
     },
     api: {
-      checkout: `/api/stripe/checkout`,
-      billingPortal: `/api/stripe/portal`,
+      //TODO: поместить в configuration.paths.api все пути API
+      onboarding: "/api/onboarding",
+      checkout: "/api/stripe/checkout",
+      billingPortal: "/api/stripe/portal",
+      sessionSignOut: "/api/session/sign-out",
+      sessionSignIn: "/api/session/sign-in",
     },
   },
   navigation: {

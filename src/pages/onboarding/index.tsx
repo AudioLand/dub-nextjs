@@ -14,6 +14,7 @@ import { withTranslationProps } from "~/lib/props/with-translation-props";
 
 const appHome = configuration.paths.appHome;
 
+//TODO: удалить эту страницу и весь связанный код, проверить, что она ни на что не влияет
 const Onboarding = () => {
   // const [currentStep, setCurrentStep] = useState(0);
   // const [data, setData] = useState<Data>();
@@ -48,8 +49,7 @@ const Onboarding = () => {
 
       <div
         className={
-          "flex h-screen flex-1 flex-col items-center justify-center" +
-          " w-full space-y-24"
+          "flex h-screen flex-1 flex-col items-center justify-center" + " w-full space-y-24"
         }
       >
         <Logo href={"/onboarding"} />
@@ -64,10 +64,7 @@ const Onboarding = () => {
             {(data) => <CompleteOnboardingStep data={data} onComplete={onComplete} />}
           </If> */}
 
-          <CompleteOnboardingStep
-            data={{ organization: "Organization" }}
-            onComplete={onComplete}
-          />
+          <CompleteOnboardingStep data={{ organization: "Organization" }} onComplete={onComplete} />
         </div>
       </div>
     </Layout>
@@ -124,9 +121,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function redirectToSignIn() {
   const paths = configuration.paths;
 
-  const destination = [paths.signIn, `?returnUrl=${paths.onboarding}&signOut=true`].join(
-    "/",
-  );
+  const destination = [paths.signIn, `?returnUrl=${paths.onboarding}&signOut=true`].join("/");
 
   return {
     redirect: {
