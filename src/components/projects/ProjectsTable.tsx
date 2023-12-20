@@ -12,9 +12,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~
 // import useSendTicket from "~/lib/projects/hooks/use-send-ticket";
 
 // types
-import PROJECT_STATUSES, { ERROR_PROJECT_STATUSES, TicketErrorType } from "~/lib/projects/statuses";
+import PROJECT_STATUSES, {
+  ERROR_PROJECT_STATUSES,
+  PROJECT_STATUSES_TEXTS,
+} from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 import ProjectCountdown from "./ProjectCountdown";
+import Link from "next/link";
+import configuration from "~/configuration";
 
 interface ProjectsTableProps {
   projects: WithId<Project>[];
@@ -92,12 +97,18 @@ export const ProjectsTable: FC<ProjectsTableProps> = (props) => {
               <TableCell>{targetLanguage}</TableCell>
               <TableCell>
                 <Badge className="w-fit" color={getStatusColor(status)}>
-                  <span>{status}</span>
+                  <span>{PROJECT_STATUSES_TEXTS[status]}</span>
                   <If condition={[PROJECT_STATUSES.translating].includes(status)}>
                     <ProjectCountdown
                       createdAt={createdAt.toDate()}
                       originalFileLink={originalFileLink}
                     />
+                  </If>
+                  <If condition={ERROR_PROJECT_STATUSES.includes(status)}>
+                    <Link href={configuration.paths.faq}>
+                      <span>→ </span>
+                      <span className="underline">Reachout Team</span>
+                    </Link>
                   </If>
                 </Badge>
               </TableCell>

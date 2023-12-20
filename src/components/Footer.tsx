@@ -58,10 +58,10 @@ function Footer() {
 
                 <FooterSectionList>
                   <FooterLink>
-                    <Link href={"/about"}>Who we are</Link>
+                    <Link href={configuration.paths.about}>Who we are</Link>
                   </FooterLink>
                   <FooterLink>
-                    <Link href={"/blog"}>Blog</Link>
+                    <Link href={configuration.paths.blog}>Blog</Link>
                   </FooterLink>
                 </FooterSectionList>
               </div>
@@ -77,7 +77,7 @@ function Footer() {
                     <Link href={"#"}>Help Center</Link>
                   </FooterLink> */}
                   <FooterLink>
-                    <Link href={"/faq"}>FAQ</Link>
+                    <Link href={configuration.paths.faq}>FAQ</Link>
                   </FooterLink>
                 </FooterSectionList>
               </div>
@@ -89,10 +89,10 @@ function Footer() {
 
                 <FooterSectionList>
                   <FooterLink>
-                    <Link href={"/terms-of-service"}>Terms of Service</Link>
+                    <Link href={configuration.paths.termsOfService}>Terms of Service</Link>
                   </FooterLink>
                   <FooterLink>
-                    <Link href={"/privacy-policy"}>Privacy Policy</Link>
+                    <Link href={configuration.paths.privacyPolicy}>Privacy Policy</Link>
                   </FooterLink>
                 </FooterSectionList>
               </div>

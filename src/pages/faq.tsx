@@ -1,19 +1,23 @@
-import Head from 'next/head';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { GetStaticPropsContext } from 'next';
+import Head from "next/head";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { GetStaticPropsContext } from "next";
 
-import { withTranslationProps } from '~/lib/props/with-translation-props';
-import configuration from '~/configuration';
+import { withTranslationProps } from "~/lib/props/with-translation-props";
+import configuration from "~/configuration";
 
-import Layout from '~/core/ui/Layout';
-import Container from '~/core/ui/Container';
-import SubHeading from '~/core/ui/SubHeading';
+import Layout from "~/core/ui/Layout";
+import Container from "~/core/ui/Container";
+import SubHeading from "~/core/ui/SubHeading";
 
-import Footer from '~/components/Footer';
-import SiteHeader from '../components/SiteHeader';
-import Heading from '~/core/ui/Heading';
+import Footer from "~/components/Footer";
+import SiteHeader from "../components/SiteHeader";
+import Heading from "~/core/ui/Heading";
 
 const DATA = [
+  {
+    question: "How do I connect to a Support team?",
+    answer: "Please connect via email help@audioland.io",
+  },
   {
     question: `Do you offer a free trial?`,
     answer: `Yes, we offer a 14-day free trial. You can cancel at any time during the trial period and you won't be charged.`,
@@ -42,18 +46,16 @@ const DATA = [
 
 const Faq = () => {
   const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: DATA.map((item) => {
-      return {
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: item.answer,
-        },
-      };
-    }),
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: DATA.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 
   return (
@@ -62,7 +64,7 @@ const Faq = () => {
         <title key="title">{`FAQ - ${configuration.site.siteName}`}</title>
 
         <script
-          key={'ld:json'}
+          key={"ld:json"}
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
@@ -71,22 +73,18 @@ const Faq = () => {
       <SiteHeader />
 
       <Container>
-        <div className={'flex flex-col space-y-8 my-8'}>
-          <div className={'flex flex-col items-center space-y-4'}>
+        <div className={"flex flex-col space-y-8 my-8"}>
+          <div className={"flex flex-col items-center space-y-4"}>
             <Heading type={1}>FAQ</Heading>
 
             <SubHeading>Frequently Asked Questions</SubHeading>
           </div>
 
-          <div
-            className={
-              'm-auto flex w-full max-w-xl items-center justify-center'
-            }
-          >
+          <div className={"m-auto flex w-full max-w-xl items-center justify-center"}>
             <div className="flex w-full flex-col">
-              {DATA.map((item, index) => {
-                return <FaqItem key={index} item={item} />;
-              })}
+              {DATA.map((item, index) => (
+                <FaqItem key={index} item={item} />
+              ))}
             </div>
           </div>
         </div>
@@ -99,53 +97,39 @@ const Faq = () => {
 
 function FaqItem({
   item,
-}: React.PropsWithChildren<{
+}: {
   item: {
     question: string;
     answer: string;
   };
-}>) {
+}) {
   return (
-    <details
-      className={
-        'group border-b border-gray-100 px-2 py-4 dark:border-dark-800'
-      }
-    >
-      <summary
-        className={'flex items-center justify-between hover:cursor-pointer'}
-      >
+    <details className={"group border-b border-gray-100 px-2 py-4 dark:border-dark-800"}>
+      <summary className={"flex items-center justify-between hover:cursor-pointer"}>
         <h2
           className={
-            'font-sans text-lg font-medium text-gray-600 hover:text-gray-700' +
-            ' cursor-pointer dark:text-gray-300 dark:hover:text-white'
+            "font-sans text-lg font-medium text-gray-600 hover:text-gray-700" +
+            " cursor-pointer dark:text-gray-300 dark:hover:text-white"
           }
         >
           {item.question}
         </h2>
 
         <div>
-          <ChevronDownIcon
-            className={'h-5 transition duration-300 group-open:-rotate-180'}
-          />
+          <ChevronDownIcon className={"h-5 transition duration-300 group-open:-rotate-180"} />
         </div>
       </summary>
 
-      <div
-        className={
-          'flex flex-col space-y-2 py-1 text-gray-500 dark:text-gray-400'
-        }
-        dangerouslySetInnerHTML={{ __html: item.answer }}
-      />
+      <div className={"flex flex-col space-y-2 py-1 text-gray-500 dark:text-gray-400"}>
+        {item.answer}
+      </div>
     </details>
   );
 }
 
 export async function getStaticProps({ locale }: GetStaticPropsContext) {
   const { props } = await withTranslationProps({ locale });
-
-  return {
-    props,
-  };
+  return { props };
 }
 
 export default Faq;

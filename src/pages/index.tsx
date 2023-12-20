@@ -15,9 +15,15 @@ import FeedbackList from "~/components/FeedbackList";
 import flagsmith from "flagsmith";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
+import Link from "next/link";
+import configuration from "~/configuration";
 
 interface LandingProps {
   outputLanguageAmount: number;
+  languageTableLinks: {
+    language: keyof typeof configuration.languageEmojis;
+    link: string;
+  }[];
 }
 
 function Index(props: LandingProps) {
@@ -167,14 +173,32 @@ function Index(props: LandingProps) {
                 Make your audience captivated by listening to you in their mother tongue with just a
                 couple of clicks
               </SubHeading>
-              <div className={"flex flex-col items-center space-y-4"}>
-                <MainCallToActionButton />
-
-                <span className={"text-xs text-gray-500 dark:text-gray-400"}>
-                  No credit card required
-                </span>
-              </div>
             </div>
+          </div>
+
+          <div
+            className="grid gap-2 lg:gap-4 w-full px-10"
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}
+          >
+            {props.languageTableLinks.map(({ language, link }) => (
+              <Link
+                key={link}
+                href={link}
+                className="hover:underline text-[20px] lg:text-[25px] p-2 lg:p-4"
+              >
+                {configuration.languageEmojis[language]}
+                &nbsp;
+                <span className="capitalize">{language}</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className={"flex flex-col items-center space-y-4"}>
+            <MainCallToActionButton />
+
+            <span className={"text-xs text-gray-500 dark:text-gray-400"}>
+              No credit card required
+            </span>
           </div>
         </div>
       </Container>
@@ -194,10 +218,23 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
   const outputLanguageListFlagsmith: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
   const outputLanguageList: string[] = JSON.parse(outputLanguageListFlagsmith);
 
+  // Ссылки на таблицы PSEO
+  const inputLanguageListFlagsmith: string = flagsmith.getValue(
+    FEATURES_IDS_LIST.requirements_info_tooltip,
+  );
+  const inputLanguageList: string[] = JSON.parse(inputLanguageListFlagsmith).supported_languages
+    .for_source_file.languages_list;
+
+  const languageTableLinks = inputLanguageList.map((language) => ({
+    language: language.toLowerCase(),
+    link: `/table/${language.toLowerCase()}`,
+  }));
+
   return {
     props: {
       ...props,
       outputLanguageAmount: outputLanguageList.length,
+      languageTableLinks,
     },
   };
 }
@@ -206,7 +243,7 @@ export async function getStaticProps({ locale }: GetStaticPropsContext) {
 
 //#region Components
 
-function HeroTitle({ children }: React.PropsWithChildren) {
+export function HeroTitle({ children }: React.PropsWithChildren) {
   return (
     <h1
       className={
@@ -219,7 +256,7 @@ function HeroTitle({ children }: React.PropsWithChildren) {
   );
 }
 
-function Pill(props: React.PropsWithChildren) {
+export function Pill(props: React.PropsWithChildren) {
   return (
     <h2
       className={
@@ -235,7 +272,7 @@ function Pill(props: React.PropsWithChildren) {
   );
 }
 
-function MainCallToActionButton() {
+export function MainCallToActionButton() {
   return (
     <Button
       className={

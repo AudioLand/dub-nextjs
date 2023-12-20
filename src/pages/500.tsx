@@ -1,13 +1,13 @@
-import Head from 'next/head';
-import { Trans } from 'next-i18next';
+import Head from "next/head";
+import { Trans } from "next-i18next";
 
-import configuration from '~/configuration';
-import Layout from '~/core/ui/Layout';
-import Button from '~/core/ui/Button';
+import configuration from "~/configuration";
+import Layout from "~/core/ui/Layout";
+import Button from "~/core/ui/Button";
 
-import SiteHeader from '~/components/SiteHeader';
-import Heading from '~/core/ui/Heading';
-import { withTranslationProps } from '~/lib/props/with-translation-props';
+import SiteHeader from "~/components/SiteHeader";
+import Heading from "~/core/ui/Heading";
+import { withTranslationProps } from "~/lib/props/with-translation-props";
 
 const InternalServerErrorPage = () => {
   return (
@@ -19,43 +19,35 @@ const InternalServerErrorPage = () => {
 
         <SiteHeader />
 
-        <div
-          className={
-            'm-auto flex min-h-[50vh] w-full items-center justify-center'
-          }
-        >
-          <div className={'flex flex-col space-y-8'}>
-            <div
-              className={
-                'flex space-x-8 divide-x divide-gray-100 dark:divide-gray-700'
-              }
-            >
+        <div className={"m-auto flex min-h-[50vh] w-full items-center justify-center"}>
+          <div className={"flex flex-col space-y-8"}>
+            <div className={"flex space-x-8 divide-x divide-gray-100 dark:divide-gray-700"}>
               <div>
                 <Heading type={1}>
-                  <span className={'text-primary'}>500</span>
+                  <span className={"text-primary"}>500</span>
                 </Heading>
               </div>
 
-              <div className={'flex flex-col space-y-4 pl-8'}>
-                <div className={'flex flex-col space-y-2'}>
+              <div className={"flex flex-col space-y-4 pl-8"}>
+                <div className={"flex flex-col space-y-2"}>
                   <div>
                     <Heading type={1}>
-                      <Trans i18nKey={'common:genericError'} />
+                      <Trans i18nKey={"common:genericError"} />
                     </Heading>
                   </div>
 
-                  <p className={'text-gray-500 dark:text-gray-300'}>
-                    <Trans i18nKey={'common:genericErrorSubHeading'} />
+                  <p className={"text-gray-500 dark:text-gray-300"}>
+                    <Trans i18nKey={"common:genericErrorSubHeading"} />
                   </p>
                 </div>
 
-                <div className={'flex space-x-4'}>
-                  <Button variant={'secondary'} href={'/faq'}>
-                    <Trans i18nKey={'common:contactUs'} />
+                <div className={"flex space-x-4"}>
+                  <Button variant={"secondary"} href={configuration.paths.faq}>
+                    <Trans i18nKey={"common:contactUs"} />
                   </Button>
 
-                  <Button href={'/'}>
-                    <Trans i18nKey={'common:backToHomePage'} />
+                  <Button href={"/"}>
+                    <Trans i18nKey={"common:backToHomePage"} />
                   </Button>
                 </div>
               </div>

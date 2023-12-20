@@ -1,44 +1,42 @@
-import Link from 'next/link';
-import Bars3Icon from '@heroicons/react/24/outline/Bars3Icon';
+import Link from "next/link";
+import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 
-import NavigationMenuItem from '~/core/ui/Navigation/NavigationItem';
-import NavigationMenu from '~/core/ui/Navigation/NavigationMenu';
+import NavigationMenuItem from "~/core/ui/Navigation/NavigationItem";
+import NavigationMenu from "~/core/ui/Navigation/NavigationMenu";
 
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenu,
   DropdownMenuTrigger,
-} from '~/core/ui/Dropdown';
+} from "~/core/ui/Dropdown";
+import configuration from "~/configuration";
 
 const links = {
   SignIn: {
-    label: 'Sign In',
-    path: '/auth/sign-in',
+    label: "Sign In",
+    path: configuration.paths.signIn,
   },
   Blog: {
-    label: 'Blog',
-    path: '/blog',
+    label: "Blog",
+    path: configuration.paths.blog,
   },
   Pricing: {
-    label: 'Pricing',
-    path: '/pricing',
+    label: "Pricing",
+    path: configuration.paths.pricing,
   },
   FAQ: {
-    label: 'FAQ',
-    path: '/faq',
+    label: "FAQ",
+    path: configuration.paths.faq,
   },
 };
 
 const SiteNavigation = () => {
   return (
     <>
-      <div className={'hidden items-center lg:flex'}>
+      <div className={"hidden items-center lg:flex"}>
         <NavigationMenu>
-          <NavigationMenuItem
-            className={'flex lg:hidden'}
-            link={links.SignIn}
-          />
+          <NavigationMenuItem className={"flex lg:hidden"} link={links.SignIn} />
 
           <NavigationMenuItem link={links.Blog} />
           <NavigationMenuItem link={links.Pricing} />
@@ -46,7 +44,7 @@ const SiteNavigation = () => {
         </NavigationMenu>
       </div>
 
-      <div className={'ml-4 flex items-center lg:hidden'}>
+      <div className={"ml-4 flex items-center lg:hidden"}>
         <MobileDropdown />
       </div>
     </>
@@ -57,12 +55,12 @@ function MobileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Bars3Icon className={'h-9'} />
+        <Bars3Icon className={"h-9"} />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
         {Object.values(links).map((item) => {
-          const className = 'flex w-full h-full items-center';
+          const className = "flex w-full h-full items-center";
 
           return (
             <DropdownMenuItem key={item.path}>

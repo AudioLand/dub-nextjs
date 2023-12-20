@@ -1,6 +1,6 @@
 import React from "react";
 import type { GetStaticPropsContext, GetStaticPathsContext } from "next";
-import { ChevronRightIcon, PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
+import { PlayIcon, PauseIcon } from "@heroicons/react/24/outline";
 import flagsmith from "flagsmith";
 import Head from "next/head";
 import Link from "next/link";
@@ -8,7 +8,6 @@ import Link from "next/link";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import Container from "~/core/ui/Container";
 import SubHeading from "~/core/ui/SubHeading";
-import Button from "~/core/ui/Button";
 import Heading from "~/core/ui/Heading";
 import Layout from "~/core/ui/Layout";
 import SiteHeader from "~/components/SiteHeader";
@@ -22,6 +21,8 @@ import IconButton from "~/core/ui/IconButton";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
 import Badge from "~/core/ui/Badge";
 import If from "~/core/ui/If";
+import configuration from "~/configuration";
+import { HeroTitle, MainCallToActionButton, Pill } from ".";
 
 type LanguagePairProps = {
   languageFrom: string;
@@ -230,10 +231,11 @@ function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: Lan
               .map((x) => (
                 <Link
                   key={x}
-                  href={`/${pathPrefix}${languageFrom}-to-${x}`}
+                  href={`/${pairPathPrefix}${languageFrom}-to-${x}`}
                   className="hover:underline text-[20px] lg:text-[25px] p-2 lg:p-4"
                 >
-                  {languageEmojis[x as keyof typeof languageEmojis]}&nbsp;
+                  {configuration.languageEmojis[x as keyof typeof configuration.languageEmojis]}
+                  &nbsp;
                   <span className="capitalize">{x}</span>
                 </Link>
               ))}
@@ -262,8 +264,8 @@ export default LanguagePair;
 
 //#region ISR
 
-const pathPrefix = "online-audio-video-dubbing-";
-const pseoPathPattern = new RegExp(`${pathPrefix}([a-zA-Z]+)-to-([a-zA-Z]+)$`);
+export const pairPathPrefix = "online-audio-video-dubbing-";
+const pseoPathPattern = new RegExp(`${pairPathPrefix}([a-zA-Z]+)-to-([a-zA-Z]+)$`);
 
 export async function getStaticProps({ locale, params }: GetStaticPropsContext) {
   if (!params || !params.language || !(params.language as string).match(pseoPathPattern)) {
@@ -281,7 +283,7 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
 
   const { props } = await withTranslationProps({ locale });
 
-  const seoLanguagePair = (params.language as string).slice(pathPrefix.length).split("-to-");
+  const seoLanguagePair = (params.language as string).slice(pairPathPrefix.length).split("-to-");
   const voices = filterVoicesByLanguage(seoLanguagePair[1]);
 
   return {
@@ -317,7 +319,7 @@ export async function getStaticPaths({}: GetStaticPathsContext) {
       const from = inputLanguageList[i].toLowerCase();
       const to = outputLanguageList[o].toLowerCase();
       if (from === to) continue;
-      languagePaths.push(`${pathPrefix}${from}-to-${to}`);
+      languagePaths.push(`${pairPathPrefix}${from}-to-${to}`);
     }
   }
   return {
@@ -325,121 +327,5 @@ export async function getStaticPaths({}: GetStaticPathsContext) {
     fallback: true, // false or "blocking"
   };
 }
-
-//#endregion
-
-//#region Components
-
-function HeroTitle({ children }: React.PropsWithChildren) {
-  return (
-    <h1
-      className={
-        "text-center text-4xl text-gray-600 dark:text-white md:text-5xl" +
-        " flex flex-col font-heading font-medium xl:text-6xl 2xl:text-7xl"
-      }
-    >
-      {children}
-    </h1>
-  );
-}
-
-function Pill(props: React.PropsWithChildren) {
-  return (
-    <h2
-      className={
-        "inline-flex w-auto items-center space-x-2" +
-        " rounded-full bg-gradient-to-br dark:from-gray-200 dark:via-gray-400" +
-        " dark:to-gray-700 bg-clip-text px-4 py-2 text-center text-sm" +
-        " font-normal text-gray-500 dark:text-transparent shadow" +
-        " dark:shadow-dark-700"
-      }
-    >
-      <span>{props.children}</span>
-    </h2>
-  );
-}
-
-function MainCallToActionButton() {
-  return (
-    <Button
-      className={
-        "bg-transparent bg-gradient-to-r shadow-2xl" +
-        " hover:shadow-primary/60 from-primary" +
-        " to-primary-600 hover:to-indigo-600 text-white"
-      }
-      variant={"custom"}
-      size={"lg"}
-      round
-      href={"/auth/sign-up"}
-    >
-      <span className={"flex items-center space-x-2"}>
-        <span>Try for free dub</span>
-        <ChevronRightIcon
-          className={
-            "h-4 animate-in fade-in slide-in-from-left-8" +
-            " delay-1000 fill-mode-both duration-1000 zoom-in"
-          }
-        />
-      </span>
-    </Button>
-  );
-}
-
-const languageEmojis = {
-  english: "🇬🇧",
-  spanish: "🇪🇸",
-  estonian: "🇪🇪",
-  thai: "🇹🇭",
-  zulu: "🇿🇦",
-  korean: "🇰🇷",
-  bangla: "🇧🇩",
-  portuguese: "🇵🇹",
-  hebrew: "🇮🇱",
-  catalan: "🇨🇦",
-  kannada: "🇮🇳",
-  chinese: "🇨🇳",
-  javanese: "🇮🇩",
-  tamil: "🇮🇳",
-  sundanese: "🇮🇩",
-  german: "🇩🇪",
-  swedish: "🇸🇪",
-  malayalam: "🇮🇳",
-  arabic: "🇸🇦",
-  french: "🇫🇷",
-  vietnamese: "🇻🇳",
-  croatian: "🇭🇷",
-  danish: "🇩🇰",
-  finnish: "🇫🇮",
-  russian: "🇷🇺",
-  hindi: "🇮🇳",
-  polish: "🇵🇱",
-  turkish: "🇹🇷",
-  japanese: "🇯🇵",
-  norwegian: "🇳🇴",
-  italian: "🇮🇹",
-  greek: "🇬🇷",
-  bulgarian: "🇧🇬",
-  czech: "🇨🇿",
-  slovak: "🇸🇰",
-  latvian: "🇱🇻",
-  romanian: "🇷🇴",
-  slovene: "🇸🇮",
-  ukrainian: "🇺🇦",
-  lithuanian: "🇱🇹",
-  dutch: "🇳🇱",
-  bahasa: "🇮🇩",
-  malay: "🇲🇾",
-  gujarati: "🇮🇳",
-  telugu: "🇮🇳",
-  marathi: "🇮🇳",
-  swahili: "🇰🇪",
-  urdu: "🇵🇰",
-  welsh: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
-  hungarian: "🇭🇺",
-  irish: "🇮🇪",
-  persian: "🇮🇷",
-  afrikaans: "🇿🇦",
-  filipino: "🇵🇭",
-};
 
 //#endregion

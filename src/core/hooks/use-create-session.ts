@@ -1,5 +1,6 @@
 import { useApiRequest } from '~/core/hooks/use-api';
 import useSWRMutation from 'swr/mutation';
+import configuration from '~/configuration';
 
 interface Body {
   idToken: string;
@@ -12,7 +13,7 @@ interface Body {
  * the client SDK.
  */
 export function useCreateSession() {
-  const endpoint = '/api/session/sign-in';
+  const endpoint = configuration.paths.api.sessionSignIn;
   const fetcher = useApiRequest<void, Body>();
 
   return useSWRMutation(endpoint, (path, { arg }: { arg: Body }) => {
