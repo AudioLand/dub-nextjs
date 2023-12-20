@@ -15,12 +15,12 @@ import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
 import configuration from "~/configuration";
 import { pairPathPrefix } from "../[language]";
 
-type LanguagePairProps = {
+type LanguageTableProps = {
   languageFrom: string;
   outputLanguages: string[];
 };
 
-function LanguagePair({ languageFrom, outputLanguages }: LanguagePairProps) {
+function LanguageTable({ languageFrom, outputLanguages }: LanguageTableProps) {
   return (
     <Layout>
       <Head>
@@ -73,7 +73,7 @@ function LanguagePair({ languageFrom, outputLanguages }: LanguagePairProps) {
   );
 }
 
-export default LanguagePair;
+export default LanguageTable;
 
 //#region ISR
 
@@ -101,7 +101,7 @@ export async function getStaticProps({ locale, params }: GetStaticPropsContext) 
       ...props,
       languageFrom: languageFrom,
       outputLanguages: outputLanguageList.map((x) => x.toLowerCase()),
-    } satisfies LanguagePairProps,
+    } satisfies LanguageTableProps,
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 1 day
@@ -119,7 +119,7 @@ export async function getStaticPaths({}: GetStaticPathsContext) {
 
   return {
     paths: inputLanguageList.map((language) => ({ params: { language: language.toLowerCase() } })),
-    fallback: true, // false or "blocking"
+    fallback: false, // false or "blocking"
   };
 }
 
