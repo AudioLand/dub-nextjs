@@ -68,7 +68,7 @@ function PricingTable(
           return (
             <PricingItem
               isFree={isFree}
-              key={plan.stripePriceId ?? plan.name}
+              key={product.name}
               plan={plan}
               product={product}
               CheckoutButton={props.CheckoutButton}
@@ -165,8 +165,10 @@ function PricingItem(
             </span>
           </If>
         </div>
-        <If condition={!props.isFree && props.plan.name==STRIPE_PLANS[1]}>
-          <span className={"text-2md lg:text-3md xl:text-4md text-gray-500 dark:text-gray-400"}>{annualPrice} Billed Yearly</span>
+        <If condition={!props.isFree && props.plan.name == STRIPE_PLANS[1]}>
+          <span className={"text-2md lg:text-3md xl:text-4md text-gray-500 dark:text-gray-400"}>
+            {annualPrice} Billed Yearly
+          </span>
         </If>
       </div>
 
