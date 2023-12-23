@@ -300,7 +300,6 @@ const configuration = {
     hebrew: "🇮🇱",
     catalan: "🇨🇦",
     kannada: "🇮🇳",
-    mandarin: "🇨🇳",
     chinese: "🇨🇳",
     javanese: "🇮🇩",
     tamil: "🇮🇳",
