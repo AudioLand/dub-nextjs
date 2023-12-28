@@ -189,7 +189,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         user_email: userEmail,
       });
 
-      const pipelineUrl = shouldUseRaskAPI ? OUR_PIPELINE_URL : RASK_PIPELINE_URL;
+      const pipelineUrl = shouldUseRaskAPI ? RASK_PIPELINE_URL : OUR_PIPELINE_URL;
 
       const url = `${pipelineUrl}/?${requestParams.toString()}`;
       const response = await fetch(url);
