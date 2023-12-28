@@ -19,14 +19,16 @@ import TextField from "~/core/ui/TextField";
 import FileUploader from "./FileUploader";
 
 // hooks
+import { useUserSession } from "~/core/hooks/use-user-session";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
-import useVideoFileDuration from "~/lib/projects/hooks/use-video-file-duration";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
+import useVideoFileDuration from "~/lib/projects/hooks/use-video-file-duration";
+import { estimateProjectDuration } from "~/lib/projects/video";
 
 // constants
-import PIPELINE_URL from "~/core/ml-pipeline/url";
+import { OUR_PIPELINE_URL, RASK_PIPELINE_URL } from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
 import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
@@ -37,17 +39,16 @@ import { Project } from "~/lib/projects/types/project";
 
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
-import { useUserSession } from "~/core/hooks/use-user-session";
-import { estimateProjectDuration } from "~/lib/projects/video";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
   userId: string;
   organizationId: string;
+  shouldUseRaskAPI: boolean;
 }
 
 const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
-  const { handleClose, userId, organizationId } = props;
+  const { handleClose, userId, organizationId, shouldUseRaskAPI } = props;
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -188,7 +189,9 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         user_email: userEmail,
       });
 
-      const url = `${PIPELINE_URL}/?${requestParams.toString()}`;
+      const pipelineUrl = shouldUseRaskAPI ? OUR_PIPELINE_URL : RASK_PIPELINE_URL;
+
+      const url = `${pipelineUrl}/?${requestParams.toString()}`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Network response was not ok");

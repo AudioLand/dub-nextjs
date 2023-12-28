@@ -1,6 +1,7 @@
 const FEATURES_IDS_LIST = {
   languages_list: "languages_list",
   requirements_info_tooltip: "requirements_info_tooltip",
+  use_rask_api: "use_rask_api",
 
   emailTexts: {
     notification_of_a_failed_payment_attempt: "notification_of_a_failed_payment_attempt",
