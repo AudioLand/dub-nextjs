@@ -195,7 +195,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
       const pipelineUrl = shouldUseRaskAPI ? RASK_PIPELINE_URL : OUR_PIPELINE_URL;
 
       if (shouldUseRaskAPI) {
-        requestParams.append("tokens", tokensForProject.toString());
+        requestParams.append("used_tokens_in_seconds", tokensForProject.toString());
       }
 
       const url = `${pipelineUrl}/?${requestParams.toString()}`;

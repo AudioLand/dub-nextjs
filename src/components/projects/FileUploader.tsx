@@ -51,7 +51,9 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
             const isFileTypeAccepted = ACCEPTED_FILES.includes(uploadedFile.type);
             if (isFileTypeAccepted) {
               handleUploadFile(uploadedFile);
-              setTokensForProject(fileDuration.roundedInMinutes);
+              
+              const tokensInSeconds = Math.floor(fileDuration.inSeconds)
+              setTokensForProject(tokensInSeconds);
             } else {
               setFileErrorMessage("Wrong file type. Please, upload audio or video file");
             }
