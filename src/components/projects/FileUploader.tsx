@@ -17,10 +17,11 @@ interface FileUploaderProps {
   file: File | undefined;
   handleUploadFile: (file: File) => void;
   setFileErrorMessage: Dispatch<SetStateAction<string>>;
+  setTokensForProject: Dispatch<SetStateAction<number>>;
 }
 
 const FileUploader: FC<FileUploaderProps> = (props) => {
-  const { file, handleUploadFile, setFileErrorMessage } = props;
+  const { file, handleUploadFile, setFileErrorMessage, setTokensForProject } = props;
   const filesInputRef = useRef<HTMLInputElement>(null);
   const isFileExists = file !== undefined;
 
@@ -50,6 +51,9 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
             const isFileTypeAccepted = ACCEPTED_FILES.includes(uploadedFile.type);
             if (isFileTypeAccepted) {
               handleUploadFile(uploadedFile);
+              
+              const tokensInSeconds = Math.floor(fileDuration.inSeconds)
+              setTokensForProject(tokensInSeconds);
             } else {
               setFileErrorMessage("Wrong file type. Please, upload audio or video file");
             }
