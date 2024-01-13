@@ -170,8 +170,8 @@ function LanguagePair({ languageFrom, languageTo, outputLanguages, voices }: Lan
 
           <audio ref={audioRef} hidden />
           <div
-            className="grid gap-2 lg:gap-4 justify-items-center w-full px-10"
-            style={{ gridTemplateColumns: "repeat(3, minmax(300px, 1fr))" }}
+            className="grid gap-2 lg:gap-4 justify-items-center w-full lg:px-10"
+            style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
           >
             {voices?.slice(0, 3).map(({ voice_id, voice_name, provider, sample }) => (
               <div
