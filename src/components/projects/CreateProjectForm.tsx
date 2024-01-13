@@ -62,6 +62,9 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     name: "",
     targetLanguage: "",
   } as Project);
+
+  const [tokensForProject, setTokensForProject] = useState<number>(0);
+
   //* userMediaFile - is user media file, ready to use in AI
   const [userMediaFile, setUserMediaFile] = useState<File>();
   const duration = useVideoFileDuration(userMediaFile);
@@ -191,6 +194,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
 
       const pipelineUrl = shouldUseRaskAPI ? RASK_PIPELINE_URL : OUR_PIPELINE_URL;
 
+      if (shouldUseRaskAPI) {
+        requestParams.append("tokens", tokensForProject.toString());
+      }
+
       const url = `${pipelineUrl}/?${requestParams.toString()}`;
       const response = await fetch(url);
       if (!response.ok) {
@@ -312,6 +319,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
           file={userMediaFile}
           handleUploadFile={handleUploadFile}
           setFileErrorMessage={setFileErrorMessage}
+          setTokensForProject={setTokensForProject}
         />
         <TextField.Error error={fileErrorMessage} />
       </TextField>
