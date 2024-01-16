@@ -9,6 +9,7 @@ export type Project = {
   targetLanguage: string;
   targetVoice: number;
   status: PROJECT_STATUSES;
+  numberOfSpeakers: string;
   userId: string;
   originalFileLink: string;
   translatedFileLink: string;
