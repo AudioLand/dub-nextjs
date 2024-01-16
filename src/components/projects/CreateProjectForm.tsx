@@ -30,8 +30,8 @@ import { estimateProjectDuration } from "~/lib/projects/video";
 // constants
 import { OUR_PIPELINE_URL, RASK_PIPELINE_URL } from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
-import { filterVoicesByLanguage } from "~/lib/projects/voices";
 import { SPEAKERS_COUNT_LIST } from "~/lib/projects/speakers";
+import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -62,6 +62,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [newProject, setNewProject] = useState<Project>({
     name: "",
     targetLanguage: "",
+    numberOfSpeakers: "Autodetect",
   } as Project);
 
   const [tokensForProject, setTokensForProject] = useState<number>(0);
@@ -146,6 +147,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     handleClose();
 
     const projectNameIsEmpty = newProject.name.trim() === "";
+    const numberOfSpeakersIsEmpty = newProject.numberOfSpeakers.trim() === "";
 
     //* Create new project
     let createdProject;
@@ -155,6 +157,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         name: projectNameIsEmpty ? "Untitled" : newProject.name,
         userId: userId,
         status: PROJECT_STATUSES.uploading,
+        numberOfSpeakers: numberOfSpeakersIsEmpty ? "Autodetect" : newProject.numberOfSpeakers,
         createdAt: Timestamp.fromDate(new Date()),
       });
     } catch (error) {
