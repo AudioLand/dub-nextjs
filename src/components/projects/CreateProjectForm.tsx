@@ -31,6 +31,7 @@ import { estimateProjectDuration } from "~/lib/projects/video";
 import { OUR_PIPELINE_URL, RASK_PIPELINE_URL } from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
 import { filterVoicesByLanguage } from "~/lib/projects/voices";
+import { SPEAKERS_COUNT_LIST } from "~/lib/projects/speakers";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -115,6 +116,13 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     setUserMediaFile(file);
   };
 
+  const handleSpeakersUpdate = (numberOfSpeakers: string) => {
+    setNewProject((prevProject) => ({
+      ...prevProject,
+      numberOfSpeakers: numberOfSpeakers,
+    }));
+  };
+
   const isFormValid = () => {
     const isTargetLanguageSelected = newProject.targetLanguage.length > 0;
     const isMediaFileExists = userMediaFile !== undefined;
@@ -196,6 +204,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
 
       if (shouldUseRaskAPI) {
         requestParams.append("used_tokens_in_seconds", tokensForProject.toString());
+
+        if (createdProject.numberOfSpeakers !== "Autodetect") {
+          requestParams.append("number_of_speakers", createdProject.numberOfSpeakers);
+        }
       }
 
       const url = `${pipelineUrl}/?${requestParams.toString()}`;
@@ -268,7 +280,6 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
 
             <SelectContent>
               <SelectGroup>
-                {/* <SelectLabel>Powered with 11labs</SelectLabel> */}
                 <If condition={isLanguageSelected}>
                   <span className="px-1">Select any language to see avaliable voices</span>
                 </If>
@@ -311,6 +322,26 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
           </Select>
         </TextField>
       </div>
+
+      {/* Number of Speakers Select */}
+      <TextField>
+        <TextField.Label>Number of Speakers</TextField.Label>
+        <Select name="numberOfSpeakers" onValueChange={handleSpeakersUpdate}>
+          <SelectTrigger>
+            <SelectValue placeholder="Autodetect" />
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectGroup>
+              {SPEAKERS_COUNT_LIST.map((i) => (
+                <SelectItem key={i} value={i}>
+                  {i}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </TextField>
 
       {/* Source media Input */}
       <TextField>
