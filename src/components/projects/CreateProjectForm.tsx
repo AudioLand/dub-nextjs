@@ -30,6 +30,7 @@ import { estimateProjectDuration } from "~/lib/projects/video";
 // constants
 import { OUR_PIPELINE_URL, RASK_PIPELINE_URL } from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
+import { SPEAKERS_COUNT_LIST } from "~/lib/projects/speakers";
 import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
@@ -61,6 +62,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [newProject, setNewProject] = useState<Project>({
     name: "",
     targetLanguage: "",
+    numberOfSpeakers: "Autodetect",
   } as Project);
 
   const [tokensForProject, setTokensForProject] = useState<number>(0);
@@ -115,6 +117,13 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     setUserMediaFile(file);
   };
 
+  const handleSpeakersUpdate = (numberOfSpeakers: string) => {
+    setNewProject((prevProject) => ({
+      ...prevProject,
+      numberOfSpeakers: numberOfSpeakers,
+    }));
+  };
+
   const isFormValid = () => {
     const isTargetLanguageSelected = newProject.targetLanguage.length > 0;
     const isMediaFileExists = userMediaFile !== undefined;
@@ -138,6 +147,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     handleClose();
 
     const projectNameIsEmpty = newProject.name.trim() === "";
+    const numberOfSpeakersIsEmpty = newProject.numberOfSpeakers.trim() === "";
 
     //* Create new project
     let createdProject;
@@ -147,6 +157,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         name: projectNameIsEmpty ? "Untitled" : newProject.name,
         userId: userId,
         status: PROJECT_STATUSES.uploading,
+        numberOfSpeakers: numberOfSpeakersIsEmpty ? "Autodetect" : newProject.numberOfSpeakers,
         createdAt: Timestamp.fromDate(new Date()),
       });
     } catch (error) {
@@ -196,6 +207,10 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
 
       if (shouldUseRaskAPI) {
         requestParams.append("used_tokens_in_seconds", tokensForProject.toString());
+
+        if (createdProject.numberOfSpeakers !== "Autodetect") {
+          requestParams.append("number_of_speakers", createdProject.numberOfSpeakers);
+        }
       }
 
       const url = `${pipelineUrl}/?${requestParams.toString()}`;
@@ -268,7 +283,6 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
 
             <SelectContent>
               <SelectGroup>
-                {/* <SelectLabel>Powered with 11labs</SelectLabel> */}
                 <If condition={isLanguageSelected}>
                   <span className="px-1">Select any language to see avaliable voices</span>
                 </If>
@@ -311,6 +325,26 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
           </Select>
         </TextField>
       </div>
+
+      {/* Number of Speakers Select */}
+      <TextField>
+        <TextField.Label>Number of Speakers</TextField.Label>
+        <Select name="numberOfSpeakers" onValueChange={handleSpeakersUpdate}>
+          <SelectTrigger>
+            <SelectValue placeholder="Autodetect" />
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectGroup>
+              {SPEAKERS_COUNT_LIST.map((i) => (
+                <SelectItem key={i} value={i}>
+                  {i}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </TextField>
 
       {/* Source media Input */}
       <TextField>
