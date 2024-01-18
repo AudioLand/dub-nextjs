@@ -26,7 +26,6 @@ export const updateUserTokens = onRequest(async (request, response) => {
       if (organizationData) {
         const organizationPrevTokens = Number(organizationData.usedTokensInSeconds) || 0;
         const newUsedTokensCount = organizationPrevTokens + tokens;
-        console.log(organizationPrevTokens);
         organizationRef.update({
           usedTokensInSeconds: newUsedTokensCount,
         });

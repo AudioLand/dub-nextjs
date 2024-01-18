@@ -53,7 +53,7 @@ export async function updateSubscriptionById(
 
   return organization.update({
     subscription,
-    usedTokensInSeconds: 0,
+    // usedTokensInSeconds: 0,
   });
 }
 

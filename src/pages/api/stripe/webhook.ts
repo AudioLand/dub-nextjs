@@ -106,8 +106,6 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
         const invoice = event.data.object as Stripe.Invoice;
         const userEmail = invoice.customer_email;
-        console.log(event);
-        console.log(userEmail);
 
         await onSubscriptionUpdated(subscription);
 
@@ -120,6 +118,27 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
         } else {
           console.error("User email is not defined in Stripe paid invoice event");
         }
+
+        break;
+      }
+
+      case StripeWebhooks.InvoicePaymentSucceeded: {
+        // const subscription = event.data.object as Stripe.Subscription;
+
+        const invoice = event.data.object as Stripe.Invoice;
+        // const userEmail = invoice.customer_email;
+
+        await resetTokensByCustomerId(invoice.customer as string);
+
+        // //* Send email that subscription renew payment is successful
+        // if (userEmail) {
+        //   const organizationSubscription = buildOrganizationSubscription(subscription);
+        //   sendEmailWithApi(userEmail, EmailTemplate.SubscriptionAutoRenew, {
+        //     subscription: organizationSubscription,
+        //   });
+        // } else {
+        //   console.error("User email is not defined in Stripe paid invoice event");
+        // }
 
         break;
       }
