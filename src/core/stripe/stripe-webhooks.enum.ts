@@ -8,5 +8,6 @@ export enum StripeWebhooks {
   SubscriptionUpdated = "customer.subscription.updated",
   InvoicePaid = "invoice.paid",
   InvoicePaymentFailed = "invoice.payment_failed",
+  InvoicePaymentSucceeded = "invoice.payment_succeeded",
   InvoiceUpcoming = "invoice.upcoming",
 }
