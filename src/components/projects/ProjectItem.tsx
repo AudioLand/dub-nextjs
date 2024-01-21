@@ -51,7 +51,7 @@ const ProjectItem: React.FC<{
 
   return (
     <div className={"flex flex-1"}>
-      <div className={collapsed ? "w-2/5 mr-10 bg-" : "w-full"}>
+      <div className={collapsed ? "w-2/5 mr-10" : "w-full"}>
         <div className={"flex-0"}>
           <div className={"absolute"}>
             <Button size={"small"} color={"transparent"} href={"/projects"}>
@@ -129,7 +129,7 @@ const ProjectItem: React.FC<{
             className="flex"
             size={"default"}
             color={"transparent"}
-            disabled={isRedubButtonDisable}
+            disabled={isRedubButtonDisabled}
           >
             Redub
           </Button>
