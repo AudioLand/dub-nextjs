@@ -23,7 +23,7 @@ const ProjectItem: React.FC<{
     translated: "",
   };
 
-  const isRedubButtonDisable =
+  const isRedubButtonDisabled =
     transcriptionTexts.original === newOriginalTranscription &&
     transcriptionTexts.translated === newTranslatedTranscription;
 
