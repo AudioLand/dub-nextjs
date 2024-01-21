@@ -60,6 +60,7 @@ export function useCreateOrganization() {
             },
           },
           usedTokensInSeconds: 0,
+          nextTokenResetDate: null,
         });
 
         return organizationDoc.id;
