@@ -9,4 +9,5 @@
 
 // If env - Prod -> every month
 // If env - Dev -> every minute (but it does not need or does not work)
-export const DELAY_TO_CHECK_USERS_TOKENS = process.env.NODE_ENV === "production" ? "0 0 1 * *" : "* * * * *";
+export const DELAY_TO_CHECK_USERS_TOKENS =
+  process.env.NODE_ENV === "production" ? "0 0 * * *" : "* * * * *";
