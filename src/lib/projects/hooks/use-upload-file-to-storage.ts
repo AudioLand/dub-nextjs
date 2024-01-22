@@ -9,8 +9,8 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 const useUploadFileToStorage = () => {
   const storage = useStorage();
 
-  const uploadFile = async (file: File, userId: string, projectId: string) => {
-    const path = `${userId}/${projectId}/${file.name}`;
+  const uploadFile = async (file: File, userId: string, projectId: string, bucketName: string) => {
+    const path = `gs://${bucketName}/${userId}/${projectId}/${file.name}`;
     const reference = ref(storage, path);
     const promise = uploadBytes(reference, file, {});
 
@@ -22,8 +22,8 @@ const useUploadFileToStorage = () => {
 
     return {
       publicUrl: await getDownloadURL(reference),
-      filePathInBucket: path
-    }
+      filePathInBucket: path,
+    };
   };
 
   return useCallback(uploadFile, [storage]);

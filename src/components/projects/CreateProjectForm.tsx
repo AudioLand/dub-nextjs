@@ -40,6 +40,7 @@ import { Project } from "~/lib/projects/types/project";
 
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
+import { RASK_STORAGE_BUCKET, STORAGE_BUCKET } from "~/lib/projects/storage-buckets";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
@@ -168,7 +169,8 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     //* Upload file to google cloud storage
     let publicUrl, filePathInBucket;
     try {
-      const data = await uploadFileToStorage(userMediaFile!, userId, createdProject.id);
+      const bucketName = shouldUseRaskAPI ? RASK_STORAGE_BUCKET : STORAGE_BUCKET;
+      const data = await uploadFileToStorage(userMediaFile!, userId, createdProject.id, bucketName);
       publicUrl = data.publicUrl;
       filePathInBucket = data.filePathInBucket;
     } catch (error) {
