@@ -95,8 +95,13 @@ function App(
   useEffect(updateCurrentOrganization, [updateCurrentOrganization]);
   useEffect(updateCurrentUser, [updateCurrentUser]);
 
-  //* Init Flagsmith API to get feature flags
-  initFlagsmith();
+  useEffect(() => {
+    //* Init Flagsmith API to get feature flags
+    initFlagsmith();
+
+    //* Init Amplitude API to track analytic-events
+    initAmplitude();
+  }, []);
 
   return (
     <FirebaseAppShell config={firebase}>
