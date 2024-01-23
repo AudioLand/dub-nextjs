@@ -35,13 +35,13 @@ import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
 import { Timestamp } from "firebase/firestore";
+import Events from "~/lib/analytics/events";
 import PROJECT_STATUSES from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
-import Events from "~/lib/analytics/events";
 
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
-import trackEvent from "~/core/amplitude/hooks/track-event-amplitude";
+import trackEvent from "~/lib/amplitude/hooks/track-event-amplitude";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
@@ -146,7 +146,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     if (!isFormValid()) {
       return;
     }
-    trackEvent(Events.USER_CREATED_PROJECT)
+    trackEvent(Events.USER_CREATED_PROJECT);
     handleClose();
 
     const projectNameIsEmpty = newProject.name.trim() === "";
@@ -371,7 +371,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
       {/* Buttons */}
       <div className={"flex justify-end space-x-2"}>
         <Modal.CancelButton onClick={handleClose}>Cancel</Modal.CancelButton>
-        
+
         <Button onClick={handleCreate}>Create</Button>
       </div>
     </div>
