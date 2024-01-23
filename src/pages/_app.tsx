@@ -26,6 +26,7 @@ import { UserSessionContext } from "~/core/contexts/user-session";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
 import { UserData } from "~/core/session/types/user-data";
 import { UserSession } from "~/core/session/types/user-session";
+import initAmplitude from "~/lib/amplitude/hooks/init-amplitude";
 import { OrganizationContext } from "~/lib/contexts/organization";
 import { Organization } from "~/lib/organizations/types/organization";
 
@@ -94,8 +95,13 @@ function App(
   useEffect(updateCurrentOrganization, [updateCurrentOrganization]);
   useEffect(updateCurrentUser, [updateCurrentUser]);
 
-  //* Init Flagsmith API to get feature flags
-  initFlagsmith();
+  useEffect(() => {
+    //* Init Flagsmith API to get feature flags
+    initFlagsmith();
+
+    //* Init Amplitude API to track analytic-events
+    initAmplitude();
+  }, []);
 
   return (
     <FirebaseAppShell config={firebase}>
