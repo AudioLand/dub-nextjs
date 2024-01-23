@@ -35,7 +35,7 @@ import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
 import { Timestamp } from "firebase/firestore";
-import Events from "~/lib/analytics/events";
+import Events from "~/lib/amplitude/events";
 import PROJECT_STATUSES from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 

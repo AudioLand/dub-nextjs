@@ -98,9 +98,6 @@ function App(
   //* Init Flagsmith API to get feature flags
   initFlagsmith();
 
-  //* Init Amplitude API to track analytic-events
-  initAmplitude();
-
   return (
     <FirebaseAppShell config={firebase}>
       <FirebaseAppCheckProvider>

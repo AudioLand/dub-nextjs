@@ -1,6 +1,6 @@
 import { init } from "@amplitude/analytics-browser";
 
-const initAmplitude = () => {
+const initAmplitude = async () => {
   const apiKey = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
 
   if (apiKey) {
