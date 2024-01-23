@@ -24,6 +24,7 @@ import { SidebarContext } from "~/core/contexts/sidebar";
 import { ThemeContext } from "~/core/contexts/theme";
 import { UserSessionContext } from "~/core/contexts/user-session";
 import initFlagsmith from "~/core/flagsmith/hooks/init-flagsmith";
+import initAmplitude from "~/core/amplitude/hooks/init-amplitude";
 import { UserData } from "~/core/session/types/user-data";
 import { UserSession } from "~/core/session/types/user-session";
 import { OrganizationContext } from "~/lib/contexts/organization";
@@ -96,6 +97,9 @@ function App(
 
   //* Init Flagsmith API to get feature flags
   initFlagsmith();
+
+  //* Init Amplitude API to track analytic-events
+  initAmplitude();
 
   return (
     <FirebaseAppShell config={firebase}>
