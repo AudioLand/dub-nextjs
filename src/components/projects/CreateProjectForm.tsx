@@ -143,8 +143,13 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   };
 
   const handleCreate = async () => {
+const handleCreate = async () => {
+    if (!isFormValid()) {
+        return;
+    }
     trackEvent(Events.USER_CREATED_PROJECT)
-
+    handleClose();
+    ...
     if (!isFormValid()) {
       return;
     }
