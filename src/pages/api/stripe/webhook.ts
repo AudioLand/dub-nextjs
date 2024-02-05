@@ -18,8 +18,8 @@ import { withPipe } from "~/core/middleware/with-pipe";
 
 import {
   deleteOrganizationSubscription,
-  resetTokensByCustomerId,
   setOrganizationSubscription,
+  setTokensResetDateByCustomerId,
   updateSubscriptionById,
 } from "~/lib/server/organizations/subscriptions";
 
@@ -74,11 +74,14 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
       case StripeWebhooks.Completed: {
         const session = event.data.object as Stripe.Checkout.Session;
         const subscriptionId = session.subscription as string;
+        const customerId = session.customer as string;
         const userEmail = session.customer_email;
 
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
         await onCheckoutCompleted(session, subscription);
+        //* Set date to update user tokens
+        await setTokensResetDateByCustomerId(customerId);
 
         //* Send email that subscription is successful
         if (userEmail) {
@@ -118,27 +121,6 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
         } else {
           console.error("User email is not defined in Stripe paid invoice event");
         }
-
-        break;
-      }
-
-      case StripeWebhooks.InvoicePaymentSucceeded: {
-        // const subscription = event.data.object as Stripe.Subscription;
-
-        const invoice = event.data.object as Stripe.Invoice;
-        // const userEmail = invoice.customer_email;
-
-        await resetTokensByCustomerId(invoice.customer as string);
-
-        // //* Send email that subscription renew payment is successful
-        // if (userEmail) {
-        //   const organizationSubscription = buildOrganizationSubscription(subscription);
-        //   sendEmailWithApi(userEmail, EmailTemplate.SubscriptionAutoRenew, {
-        //     subscription: organizationSubscription,
-        //   });
-        // } else {
-        //   console.error("User email is not defined in Stripe paid invoice event");
-        // }
 
         break;
       }

@@ -1,5 +1,7 @@
-import { FieldValue } from "firebase-admin/firestore";
+// firebase
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 
+// hooks
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
 import { getOrganizationsCollection } from "~/lib/server/collections";
 
@@ -20,7 +22,6 @@ export function setOrganizationSubscription(props: AddSubscriptionProps) {
   return organization.update({
     subscription,
     customerId,
-    usedTokensInSeconds: 0,
   });
 }
 
@@ -35,6 +36,8 @@ export async function deleteOrganizationSubscription(subscriptionId: string) {
 
   return organization.update({
     subscription: FieldValue.delete(),
+    nextTokenResetDate: null,
+    usedTokensInSeconds: 0,
   });
 }
 
@@ -53,16 +56,27 @@ export async function updateSubscriptionById(
 
   return organization.update({
     subscription,
-    // usedTokensInSeconds: 0,
   });
 }
 
-export async function resetTokensByCustomerId(customerId: string) {
+export async function setTokensResetDateByCustomerId(customerId: string) {
   const organizationSnap = await getOrganizationByCustomerId(customerId);
-  const organization = organizationSnap.ref;
+  const organizationRef = organizationSnap.ref;
+  const organization = await organizationRef.get();
+  const organizationData = organization.data();
 
-  return organization.update({
-    usedTokensInSeconds: 0,
+  // Skip if user already had subscription
+  if (organizationData?.nextTokenResetDate !== null || !organizationData.subscription) {
+    return;
+  }
+
+  const nextTokenResetDate = new Date();
+  const nextTokenResetMonth = nextTokenResetDate.getMonth();
+  nextTokenResetDate.setMonth(nextTokenResetMonth + 1);
+  const nextTokenResetTimestamp = Timestamp.fromDate(nextTokenResetDate);
+
+  return organizationRef.update({
+    nextTokenResetDate: nextTokenResetTimestamp.toMillis(),
   });
 }
 
