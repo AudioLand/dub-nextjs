@@ -39,6 +39,7 @@ export async function completeOnboarding({ userId, organizationName }: Params) {
     name: organizationName,
     members: organizationMembers,
     usedTokensInSeconds: 0,
+    nextTokenResetDate: null,
   });
 
   // Here we create the user's Firestore record

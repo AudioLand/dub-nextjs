@@ -26,21 +26,23 @@ import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 import useVideoFileDuration from "~/lib/projects/hooks/use-video-file-duration";
 import { estimateProjectDuration } from "~/lib/projects/video";
+import trackEvent from "~/lib/amplitude/hooks/track-event-amplitude";
 
 // constants
 import { OUR_PIPELINE_URL, RASK_PIPELINE_URL } from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
 import { SPEAKERS_COUNT_LIST } from "~/lib/projects/speakers";
 import { filterVoicesByLanguage } from "~/lib/projects/voices";
+import { RASK_STORAGE_BUCKET, STORAGE_BUCKET } from "~/lib/projects/storage-buckets";
 
 // types
 import { Timestamp } from "firebase/firestore";
+import Events from "~/lib/amplitude/events";
 import PROJECT_STATUSES from "~/lib/projects/statuses";
 import { Project } from "~/lib/projects/types/project";
 
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
-import { RASK_STORAGE_BUCKET, STORAGE_BUCKET } from "~/lib/projects/storage-buckets";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
@@ -145,6 +147,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     if (!isFormValid()) {
       return;
     }
+    trackEvent(Events.USER_CREATED_PROJECT);
     handleClose();
 
     const projectNameIsEmpty = newProject.name.trim() === "";

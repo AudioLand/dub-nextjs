@@ -1,5 +1,5 @@
-import { FirestoreOrganizationMembership } from './organization-membership';
-import { OrganizationSubscription } from './organization-subscription';
+import { FirestoreOrganizationMembership } from "./organization-membership";
+import { OrganizationSubscription } from "./organization-subscription";
 
 type UserId = string;
 
@@ -14,4 +14,5 @@ interface BaseOrganization {
 export interface Organization extends BaseOrganization {
   members: Record<UserId, FirestoreOrganizationMembership>;
   usedTokensInSeconds: number;
+  nextTokenResetDate: UnixTimestamp | null;
 }
