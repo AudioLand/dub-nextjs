@@ -17,7 +17,7 @@ import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-or
 import useIsUserCanCreateDubs from "~/lib/projects/hooks/use-is-user-can-create-dubs";
 import useMaxMediaFileDuration from "~/lib/projects/hooks/use-max-media-file-duration";
 import useRequirementsInfoTooltipText from "~/lib/projects/hooks/use-requirements-info-tooltip-text";
-import useShouldUseRaskAPI from "~/lib/projects/hooks/use-should-use-rask-api";
+import useshouldUseAlexAPI from "~/lib/projects/hooks/use-should-use-rask-api";
 
 // constants
 import { MAX_FILE_DURATION_STRING_TEMPLATE } from "~/lib/projects/limits";
@@ -30,7 +30,7 @@ const ProjectsWrapper = () => {
   const userOrganization = useCurrentOrganization();
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState<boolean>(false);
 
-  const shouldUseRaskAPI = useShouldUseRaskAPI();
+  const shouldUseAlexAPI = useshouldUseAlexAPI();
 
   const handleOpenCreateProjectModal = () => {
     setCreateProjectModalOpen(true);
@@ -67,7 +67,7 @@ const ProjectsWrapper = () => {
           userId={userId}
           organizationId={userOrganization.id}
           handleClose={handleCloseCreateProjectModal}
-          shouldUseRaskAPI={shouldUseRaskAPI}
+          shouldUseAlexAPI={shouldUseAlexAPI}
         />
       </Modal>
     </>
