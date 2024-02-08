@@ -20,20 +20,20 @@ import FileUploader from "./FileUploader";
 
 // hooks
 import { useUserSession } from "~/core/hooks/use-user-session";
+import trackEvent from "~/lib/amplitude/hooks/track-event-amplitude";
 import useCreateProject from "~/lib/projects/hooks/use-create-project";
 import useTargetLanguages from "~/lib/projects/hooks/use-target-languages";
 import useUpdateProject from "~/lib/projects/hooks/use-update-project";
 import useUploadFileToStorage from "~/lib/projects/hooks/use-upload-file-to-storage";
 import useVideoFileDuration from "~/lib/projects/hooks/use-video-file-duration";
 import { estimateProjectDuration } from "~/lib/projects/video";
-import trackEvent from "~/lib/amplitude/hooks/track-event-amplitude";
 
 // constants
 import { OUR_PIPELINE_URL, RASK_PIPELINE_URL } from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
 import { SPEAKERS_COUNT_LIST } from "~/lib/projects/speakers";
-import { filterVoicesByLanguage } from "~/lib/projects/voices";
 import { RASK_STORAGE_BUCKET, STORAGE_BUCKET } from "~/lib/projects/storage-buckets";
+import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
 import { Timestamp } from "firebase/firestore";
@@ -43,16 +43,17 @@ import { Project } from "~/lib/projects/types/project";
 
 // icons
 import { PlayIcon } from "@heroicons/react/24/outline";
+import { TargetVoice } from "~/lib/projects/types/target-voice";
 
 interface CreateProjectFormProps {
   handleClose: () => void;
   userId: string;
   organizationId: string;
-  shouldUseRaskAPI: boolean;
+  shouldUseAlexAPI: boolean;
 }
 
 const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
-  const { handleClose, userId, organizationId, shouldUseRaskAPI } = props;
+  const { handleClose, userId, organizationId, shouldUseAlexAPI } = props;
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -88,7 +89,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
 
   const targetLanguages = useTargetLanguages();
-  const availableVoices = filterVoicesByLanguage(newProject.targetLanguage);
+  const availableVoices = filterVoicesByLanguage(newProject.targetLanguage, shouldUseAlexAPI);
   const isLanguageSelected = availableVoices.length === 0;
 
   const handleNameUpdate = (e: ChangeEvent<HTMLInputElement>) => {
@@ -172,7 +173,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     //* Upload file to google cloud storage
     let publicUrl, filePathInBucket;
     try {
-      const bucketName = shouldUseRaskAPI ? RASK_STORAGE_BUCKET : STORAGE_BUCKET;
+      const bucketName = shouldUseAlexAPI ? RASK_STORAGE_BUCKET : STORAGE_BUCKET;
       const data = await uploadFileToStorage(userMediaFile!, userId, createdProject.id, bucketName);
       publicUrl = data.publicUrl;
       filePathInBucket = data.filePathInBucket;
@@ -208,9 +209,9 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
         user_email: userEmail,
       });
 
-      const pipelineUrl = shouldUseRaskAPI ? RASK_PIPELINE_URL : OUR_PIPELINE_URL;
+      const pipelineUrl = shouldUseAlexAPI ? RASK_PIPELINE_URL : OUR_PIPELINE_URL;
 
-      if (shouldUseRaskAPI) {
+      if (shouldUseAlexAPI) {
         requestParams.append("used_tokens_in_seconds", tokensForProject.toString());
 
         if (createdProject.numberOfSpeakers !== "Autodetect") {
@@ -292,36 +293,13 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
                   <span className="px-1">Select any language to see avaliable voices</span>
                 </If>
 
-                {availableVoices?.map(({ voice_id, voice_name, provider, sample }) => (
-                  <div key={voice_id} className="flex items-center">
-                    <IconButton
-                      className="pl-1 hover:border-0 focus:border-0"
-                      onClick={() => handlePlayPreviewAudio(sample)}
-                    >
-                      <PlayIcon className="h-5" />
-                    </IconButton>
-
-                    <SelectItem
-                      className="px-2"
-                      value={voice_id.toString()}
-                      defaultChecked={newProject.targetVoice === voice_id}
-                      showSelectedIcon={false}
-                    >
-                      <div className="flex w-full items-center gap-5">
-                        <span>{voice_name}</span>
-                        <If condition={provider === "eleven_labs"}>
-                          <Badge
-                            size="verySmall"
-                            style={{
-                              fontSize: 9,
-                            }}
-                          >
-                            Powered by IIElevenLabs
-                          </Badge>
-                        </If>
-                      </div>
-                    </SelectItem>
-                  </div>
+                {availableVoices.map((voice: TargetVoice) => (
+                  <VoiceItem
+                    key={voice.voice_id}
+                    voice={voice}
+                    project={newProject}
+                    handlePlayPreviewAudio={handlePlayPreviewAudio}
+                  />
                 ))}
               </SelectGroup>
 
@@ -381,3 +359,45 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
 };
 
 export default CreateProjectForm;
+
+interface VoiceItemProps {
+  voice: TargetVoice;
+  project: Project;
+  handlePlayPreviewAudio: (sample: string) => void;
+}
+
+const VoiceItem: FC<VoiceItemProps> = (props) => {
+  const { voice, project, handlePlayPreviewAudio } = props;
+
+  return (
+    <div key={voice.voice_id} className="flex flex-row justify-start items-center">
+      <IconButton
+        className="pl-1 hover:border-0 focus:border-0"
+        onClick={() => handlePlayPreviewAudio(voice.sample)}
+      >
+        <PlayIcon className="h-5" />
+      </IconButton>
+
+      <SelectItem
+        className="px-1"
+        value={voice.voice_id.toString()}
+        defaultChecked={project.targetVoice === voice.voice_id}
+        showSelectedIcon={false}
+      >
+        <div className="flex flex-row w-full  justify-start items-center gap-5">
+          <span>{voice.voice_name}</span>
+          <If condition={voice.provider === "eleven_labs"}>
+            <Badge
+              size="verySmall"
+              style={{
+                fontSize: 8,
+              }}
+            >
+              Powered by IIElevenLabs
+            </Badge>
+          </If>
+        </div>
+      </SelectItem>
+    </div>
+  );
+};
