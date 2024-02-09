@@ -55,6 +55,7 @@ const configuration = {
   paths: {
     signIn: "/auth/sign-in",
     signUp: "/auth/sign-up",
+    appsumoAuthActivate: "/auth/appsumo/activate",
     emailLinkSignIn: "/auth/link",
     onboarding: `/onboarding`,
     appHome: "/projects",
