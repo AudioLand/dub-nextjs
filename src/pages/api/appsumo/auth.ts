@@ -27,7 +27,7 @@ const Body = z.object({
 });
 
 const generateJWTToken = (username: string) => {
-  const token = sign({ username }, JWT_SECRET_KEY, { expiresIn: "1h" });
+  const token = sign({ username }, JWT_SECRET_KEY, { expiresIn: "10m" });
   return token;
 };
 
@@ -39,9 +39,7 @@ async function appSumoAuthHandler(req: NextApiRequest, res: NextApiResponse) {
   if (body.username === APPSUMO_USERNAME || body.password === APPSUMO_PASSWORD) {
     const token = generateJWTToken(body.username);
 
-    return res.status(200).send({
-      access: token,
-    });
+    return res.status(200).send({ access: token });
   }
 
   return res.status(403).send("Something wrong");
