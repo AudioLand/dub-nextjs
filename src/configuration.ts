@@ -1,6 +1,7 @@
 import { GoogleAuthProvider } from "firebase/auth";
 import { LayoutStyle } from "~/core/layout-style";
 import { FeedbackCardType } from "~/components/FeedbackCard";
+import { ProductTiers } from "./lib/appsumo/tiers.enum";
 
 enum Themes {
   Light = "light",
@@ -124,6 +125,7 @@ const configuration = {
       //* Creator
       {
         stripeProductId: process.env.NEXT_PUBLIC_CREATOR_PRODUCT_ID,
+        appsumoTier: ProductTiers.Tier1,
         name: "Creator",
         description: "10 tokens/month",
         tokens: 10,
@@ -156,6 +158,7 @@ const configuration = {
       //* Standard
       {
         stripeProductId: process.env.NEXT_PUBLIC_STANDARD_PRODUCT_ID,
+        appsumoTier: ProductTiers.Tier2,
         name: "Standard",
         description: "30 tokens/month",
         tokens: 30,
@@ -188,6 +191,7 @@ const configuration = {
       //* Producer
       {
         stripeProductId: process.env.NEXT_PUBLIC_PRODUCER_PRODUCT_ID,
+        appsumoTier: ProductTiers.Tier3,
         name: "Producer",
         badge: `Most Popular`,
         recommended: true,
