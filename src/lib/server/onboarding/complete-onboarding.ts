@@ -3,12 +3,17 @@ import { getAuth } from "firebase-admin/auth";
 import { MembershipRole } from "~/lib/organizations/types/membership-role";
 
 import getRestFirestore from "~/core/firebase/admin/get-rest-firestore";
+import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
+import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
 import { getOrganizationsCollection, getUsersCollection } from "../collections";
 
 interface Params {
   organizationName: string;
   userId: string;
   nextTokenResetDate?: number | null;
+  sumolingUUID?: string;
+  invoiceItemUUID?: string;
+  sumolingSubscription?: SumolingSubscription;
 }
 
 /**
@@ -23,6 +28,9 @@ export async function completeOnboarding({
   userId,
   organizationName,
   nextTokenResetDate = null,
+  sumolingUUID,
+  invoiceItemUUID,
+  sumolingSubscription,
 }: Params) {
   const firestore = getRestFirestore();
   const auth = getAuth();
@@ -39,13 +47,32 @@ export async function completeOnboarding({
     },
   };
 
-  // create organization
-  batch.create(organizationRef, {
+  const sumolingData = {
+    sumolingUUID: sumolingUUID,
+    invoiceItemUUID: invoiceItemUUID,
+    subscription: sumolingSubscription as OrganizationSubscription,
+  };
+
+  const shouldAddSumolingData = sumolingUUID && invoiceItemUUID && sumolingSubscription;
+
+  const organizationData = {
     name: organizationName,
     members: organizationMembers,
     usedTokensInSeconds: 0,
     nextTokenResetDate: nextTokenResetDate,
-  });
+  };
+
+  // create organization
+  if (shouldAddSumolingData) {
+    batch.create(organizationRef, {
+      ...organizationData,
+      ...sumolingData,
+    });
+  } else {
+    batch.create(organizationRef, {
+      ...organizationData,
+    });
+  }
 
   // Here we create the user's Firestore record
   // You can add any additional properties to the user object

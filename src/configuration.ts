@@ -1,6 +1,6 @@
 import { GoogleAuthProvider } from "firebase/auth";
-import { LayoutStyle } from "~/core/layout-style";
 import { FeedbackCardType } from "~/components/FeedbackCard";
+import { LayoutStyle } from "~/core/layout-style";
 import { ProductTiers } from "./lib/appsumo/tiers.enum";
 
 enum Themes {
