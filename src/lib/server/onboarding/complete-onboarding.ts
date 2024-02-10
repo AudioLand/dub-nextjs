@@ -8,6 +8,7 @@ import { getOrganizationsCollection, getUsersCollection } from "../collections";
 interface Params {
   organizationName: string;
   userId: string;
+  nextTokenResetDate?: number | null;
 }
 
 /**
@@ -18,7 +19,11 @@ interface Params {
  * @param userId
  * @param organizationName
  */
-export async function completeOnboarding({ userId, organizationName }: Params) {
+export async function completeOnboarding({
+  userId,
+  organizationName,
+  nextTokenResetDate = null,
+}: Params) {
   const firestore = getRestFirestore();
   const auth = getAuth();
 
@@ -39,7 +44,7 @@ export async function completeOnboarding({ userId, organizationName }: Params) {
     name: organizationName,
     members: organizationMembers,
     usedTokensInSeconds: 0,
-    nextTokenResetDate: null,
+    nextTokenResetDate: nextTokenResetDate,
   });
 
   // Here we create the user's Firestore record
