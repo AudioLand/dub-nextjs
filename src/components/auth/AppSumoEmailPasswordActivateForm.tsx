@@ -1,12 +1,11 @@
 import { Trans, useTranslation } from "next-i18next";
 import { useForm } from "react-hook-form";
 
-import { useState } from "react";
 import Button from "~/core/ui/Button";
 import If from "~/core/ui/If";
 import TextField from "~/core/ui/TextField";
 
-const AppSumoEmailPasswordActivate: React.FCC<{
+const AppSumoEmailPasswordActivateForm: React.FCC<{
   onSubmit: (params: { email: string; password: string; repeatPassword: string }) => unknown;
   loading: boolean;
   email: string;
@@ -15,7 +14,7 @@ const AppSumoEmailPasswordActivate: React.FCC<{
 
   const { register, handleSubmit, watch, formState } = useForm({
     defaultValues: {
-      email: "",
+      email: email,
       password: "",
       repeatPassword: "",
     },
@@ -48,11 +47,11 @@ const AppSumoEmailPasswordActivate: React.FCC<{
       return true;
     },
   });
-  const [isRulesAccepted, setIsRulesAccepted] = useState(true);
 
   return (
     <form className={"w-full"} onSubmit={handleSubmit(onSubmit)}>
       <div className={"flex-col space-y-4"}>
+        {/* Email Field */}
         <TextField>
           <TextField.Label>
             <Trans i18nKey={"common:emailAddress"} />
@@ -62,7 +61,6 @@ const AppSumoEmailPasswordActivate: React.FCC<{
               data-cy={"email-input"}
               required
               type="email"
-              value={email}
               disabled
             />
 
@@ -70,6 +68,7 @@ const AppSumoEmailPasswordActivate: React.FCC<{
           </TextField.Label>
         </TextField>
 
+        {/* Password Field */}
         <TextField>
           <TextField.Label>
             <Trans i18nKey={"common:password"} />
@@ -90,6 +89,7 @@ const AppSumoEmailPasswordActivate: React.FCC<{
           </TextField.Label>
         </TextField>
 
+        {/* Repeat Password Field */}
         <TextField>
           <TextField.Label>
             <Trans i18nKey={"auth:repeatPassword"} />
@@ -115,7 +115,6 @@ const AppSumoEmailPasswordActivate: React.FCC<{
             data-cy={"auth-submit-button"}
             className={"w-full"}
             type="submit"
-            disabled={!isRulesAccepted}
             loading={loading}
           >
             <If condition={loading} fallback={<span>Activate</span>}>
@@ -128,4 +127,4 @@ const AppSumoEmailPasswordActivate: React.FCC<{
   );
 };
 
-export default AppSumoEmailPasswordActivate;
+export default AppSumoEmailPasswordActivateForm;

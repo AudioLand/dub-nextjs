@@ -1,12 +1,11 @@
 import { GetServerSidePropsContext } from "next";
-import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 
 import configuration from "~/configuration";
 
-import AppSumoEmailPasswordActivate from "~/components/auth/AppSumoEmailPasswordActivate";
+import AppSumoEmailPasswordActivateContainer from "~/components/auth/AppSumoEmailPasswordActivateContainer";
 import AppSumoActivatePageLayout from "~/components/auth/AppsumoActivatePageLayout";
 import { withAuthProps } from "~/lib/props/with-auth-props";
 
@@ -14,13 +13,12 @@ const appHomePath = configuration.paths.appHome;
 
 const Activate: React.FCC = () => {
   const router = useRouter();
-  const { t } = useTranslation();
 
   useEffect(() => {
     void router.prefetch(appHomePath);
   }, [router]);
 
-  const onSubmit = useCallback(() => {
+  const onSignUp = useCallback(() => {
     return router.push(appHomePath);
   }, [router]);
 
@@ -30,7 +28,8 @@ const Activate: React.FCC = () => {
         <title key={"title"}>Activate an account</title>
       </Head>
 
-      <AppSumoEmailPasswordActivate onSubmit={onSubmit} loading={false} email="test бля" />
+      {/* <AppSumoEmailPasswordActivate onSubmit={onSignUp} loading={false} email="test бля" /> */}
+      <AppSumoEmailPasswordActivateContainer onSignUp={onSignUp} />
     </AppSumoActivatePageLayout>
   );
 };
