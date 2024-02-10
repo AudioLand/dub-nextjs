@@ -9,7 +9,7 @@ import AppSumoEmailPasswordActivateContainer from "~/components/auth/AppSumoEmai
 import AppSumoActivatePageLayout from "~/components/auth/AppsumoActivatePageLayout";
 import { withAuthProps } from "~/lib/props/with-auth-props";
 
-const appHomePath = configuration.paths.appHome;
+const appHomePath = configuration.paths.settings.subscription;
 
 const Activate: React.FCC = () => {
   const router = useRouter();
@@ -28,7 +28,6 @@ const Activate: React.FCC = () => {
         <title key={"title"}>Activate an account</title>
       </Head>
 
-      {/* <AppSumoEmailPasswordActivate onSubmit={onSignUp} loading={false} email="test бля" /> */}
       <AppSumoEmailPasswordActivateContainer onSignUp={onSignUp} />
     </AppSumoActivatePageLayout>
   );

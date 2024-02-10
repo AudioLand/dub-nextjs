@@ -9,7 +9,8 @@ const AppSumoEmailPasswordActivateForm: React.FCC<{
   onSubmit: (params: { email: string; password: string; repeatPassword: string }) => unknown;
   loading: boolean;
   email: string;
-}> = ({ onSubmit, loading, email }) => {
+  redirecting: boolean;
+}> = ({ onSubmit, loading, email, redirecting }) => {
   const { t } = useTranslation();
 
   const { register, handleSubmit, watch, formState } = useForm({
@@ -115,6 +116,7 @@ const AppSumoEmailPasswordActivateForm: React.FCC<{
             data-cy={"auth-submit-button"}
             className={"w-full"}
             type="submit"
+            disabled={redirecting}
             loading={loading}
           >
             <If condition={loading} fallback={<span>Activate</span>}>

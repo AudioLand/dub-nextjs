@@ -8,10 +8,12 @@ import If from "~/core/ui/If";
 import { useSignUpWithEmailAndPassword } from "~/core/firebase/hooks";
 import { getFirebaseErrorCode } from "~/core/firebase/utils/get-firebase-error-code";
 
-import getClientQueryParams from "~/core/generic/get-client-query-params";
-import { isBrowser } from "~/core/generic/is-browser";
+import { Timestamp } from "firebase/firestore";
+import { useRouter } from "next/router";
+import configuration from "~/configuration";
 import { useApiRequest } from "~/core/hooks/use-api";
 import useCreateServerSideSession from "~/core/hooks/use-create-server-side-session";
+import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
 import AppSumoEmailPasswordActivateForm from "./AppSumoEmailPasswordActivateForm";
 import AuthErrorMessage from "./AuthErrorMessage";
 
@@ -19,14 +21,17 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
   onSignUp: () => unknown;
   onError?: (error: FirebaseError) => unknown;
 }> = ({ onSignUp, onError }) => {
+  const router = useRouter();
   const [sessionRequest, sessionState] = useCreateServerSideSession();
   const [signUp, state] = useSignUpWithEmailAndPassword();
   const redirecting = useRef(false);
 
-  const planId = useQueryParam("plan_id")!;
-  const activationEmail = useQueryParam("activation_email")!;
-  const uuid = useQueryParam("uuid")!;
-  const invoiceItemUUID = useQueryParam("invoice_item_uuid")!;
+  const planId = router.query.plan_id as string;
+  const activationEmail = router.query.activation_email as string;
+  const uuid = router.query.uuid as string;
+  const invoiceItemUUID = router.query.invoice_item_uuid as string;
+
+  const sumolingSubscription = buildSumolingSubscription(planId);
 
   const loading = state.loading || sessionState.loading || redirecting.current;
 
@@ -41,12 +46,8 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       // using the ID token, we will make a request to initiate the session
       // to make SSR possible via session cookie
       await sessionRequest(user);
-
-      redirecting.current = true;
-
-      onSignUp();
     },
-    [onSignUp, sessionRequest],
+    [sessionRequest],
   );
 
   useEffect(() => {
@@ -55,13 +56,23 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
 
   //#region Onboarding
   const onboarding = useCompleteOnboardingRequest();
-  const onboardingCompleteRequested = useRef(false);
   const onboardingReq = useCallback(async () => {
-    if (!onboardingCompleteRequested.current) {
-      onboardingCompleteRequested.current = true;
-      await onboarding.trigger({ organization: "Organization" });
-    }
-  }, [onboarding]);
+    // Get next token reset date
+    const newNextTokenResetDate = new Date();
+    newNextTokenResetDate.setMonth(newNextTokenResetDate.getMonth() + 1);
+    const newNextTokenResetTimestamp = Timestamp.fromDate(newNextTokenResetDate);
+
+    const data = {
+      organization: "Sumo-ling",
+      nextTokenResetDate: newNextTokenResetTimestamp.toMillis(),
+      sumolingUUID: uuid,
+      invoiceItemUUID: invoiceItemUUID,
+      sumolingSubscription: sumolingSubscription,
+    };
+    console.log("container", data);
+
+    await onboarding.trigger(data);
+  }, [onboarding, invoiceItemUUID, uuid, sumolingSubscription]);
   //#endregion
 
   const onSubmit = useCallback(
@@ -77,8 +88,12 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       }
 
       await onboardingReq();
+
+      redirecting.current = true;
+
+      onSignUp();
     },
-    [loading, signUp, onboardingReq, createSession],
+    [onSignUp, loading, signUp, onboardingReq, createSession],
   );
 
   return (
@@ -90,6 +105,7 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       <AppSumoEmailPasswordActivateForm
         onSubmit={onSubmit}
         loading={loading}
+        redirecting={redirecting.current}
         email={activationEmail}
       />
     </>
@@ -105,6 +121,10 @@ export default AppSumoEmailPasswordActivateContainer;
 
 interface CompleteOnboardingStepData {
   organization: string;
+  nextTokenResetDate: number;
+  sumolingUUID: string;
+  invoiceItemUUID: string;
+  sumolingSubscription: SumolingSubscription;
 }
 
 function useCompleteOnboardingRequest() {
@@ -122,12 +142,13 @@ function useCompleteOnboardingRequest() {
 }
 //#endregion
 
-function useQueryParam(param: string) {
-  if (!isBrowser()) {
-    return undefined;
-  }
+const STRIPE_PRODUCTS = configuration.stripe.products;
 
-  const params = getClientQueryParams();
-
-  return params.get(param);
-}
+const buildSumolingSubscription = (planId: string) => {
+  const subscriptionPlan = STRIPE_PRODUCTS.find((product) => product.appsumoTier == planId);
+  const subscription: SumolingSubscription = {
+    product: subscriptionPlan!.stripeProductId!,
+    status: "active",
+  };
+  return subscription;
+};

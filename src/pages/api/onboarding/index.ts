@@ -12,6 +12,15 @@ import { completeOnboarding } from "~/lib/server/onboarding/complete-onboarding"
 
 const Body = z.object({
   organization: z.string(),
+  nextTokenResetDate: z.number().optional(),
+  sumolingUUID: z.string().optional(),
+  invoiceItemUUID: z.string().optional(),
+  sumolingSubscription: z
+    .object({
+      product: z.string(),
+      status: z.string(),
+    })
+    .optional(),
 });
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
@@ -24,7 +33,12 @@ async function onboardingHandler(req: NextApiRequest, res: NextApiResponse) {
   const data = {
     userId,
     organizationName: body.organization,
+    nextTokenResetDate: body.nextTokenResetDate,
+    sumolingUUID: body.sumolingUUID,
+    invoiceItemUUID: body.invoiceItemUUID,
+    sumolingSubscription: body.sumolingSubscription,
   };
+  console.log("api", data);
 
   await completeOnboarding(data);
 
