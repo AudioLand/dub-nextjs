@@ -17,8 +17,7 @@ import If from "~/core/ui/If";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/core/ui/Tooltip";
 import { useIsSumolingUser } from "~/lib/appsumo/hooks/is-sumo-ling-user";
 import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
-
-const STRIPE_PRODUCTS = configuration.stripe.products;
+import { STRIPE_PRODUCTS } from "~/lib/stripe/stripe-products";
 
 const Subscription = () => {
   const organization = useCurrentOrganization();

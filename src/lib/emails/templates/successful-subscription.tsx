@@ -1,16 +1,13 @@
 import { Text } from "@react-email/components";
-import configuration from "~/configuration";
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
+import { STRIPE_PRODUCTS } from "~/lib/stripe/stripe-products";
 import { renderEmailHtml } from "../hooks/render-email-html";
 
-const STRIPE_PRODUCTS = configuration.stripe.products;
-
-export const getSuccessfulSubscriptionEmailTemplate = (
-  subscription: OrganizationSubscription,
-) => {
+export const getSuccessfulSubscriptionEmailTemplate = (subscription: OrganizationSubscription) => {
   const userSubscriptionPlan = STRIPE_PRODUCTS.find(
     (product) => product.stripeProductId === subscription.product,
   );
+  
   const subscriptionPlanName = userSubscriptionPlan?.name;
   const subscriptionPlanFeatures = userSubscriptionPlan?.features;
 

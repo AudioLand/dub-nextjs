@@ -116,7 +116,7 @@ const AppSumoEmailPasswordActivateForm: React.FCC<{
             data-cy={"auth-submit-button"}
             className={"w-full"}
             type="submit"
-            disabled={redirecting}
+            disabled={redirecting || loading}
             loading={loading}
           >
             <If condition={loading} fallback={<span>Activate</span>}>

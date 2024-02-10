@@ -3,17 +3,11 @@ import { getAuth } from "firebase-admin/auth";
 import { MembershipRole } from "~/lib/organizations/types/membership-role";
 
 import getRestFirestore from "~/core/firebase/admin/get-rest-firestore";
-import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
-import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
 import { getOrganizationsCollection, getUsersCollection } from "../collections";
 
 interface Params {
   organizationName: string;
   userId: string;
-  nextTokenResetDate?: number | null;
-  sumolingUUID?: string;
-  invoiceItemUUID?: string;
-  sumolingSubscription?: SumolingSubscription;
 }
 
 /**
@@ -24,14 +18,7 @@ interface Params {
  * @param userId
  * @param organizationName
  */
-export async function completeOnboarding({
-  userId,
-  organizationName,
-  nextTokenResetDate = null,
-  sumolingUUID,
-  invoiceItemUUID,
-  sumolingSubscription,
-}: Params) {
+export async function completeOnboarding({ userId, organizationName }: Params) {
   const firestore = getRestFirestore();
   const auth = getAuth();
 
@@ -47,32 +34,12 @@ export async function completeOnboarding({
     },
   };
 
-  const sumolingData = {
-    sumolingUUID: sumolingUUID,
-    invoiceItemUUID: invoiceItemUUID,
-    subscription: sumolingSubscription as OrganizationSubscription,
-  };
-
-  const shouldAddSumolingData = sumolingUUID && invoiceItemUUID && sumolingSubscription;
-
-  const organizationData = {
+  batch.create(organizationRef, {
     name: organizationName,
     members: organizationMembers,
     usedTokensInSeconds: 0,
-    nextTokenResetDate: nextTokenResetDate,
-  };
-
-  // create organization
-  if (shouldAddSumolingData) {
-    batch.create(organizationRef, {
-      ...organizationData,
-      ...sumolingData,
-    });
-  } else {
-    batch.create(organizationRef, {
-      ...organizationData,
-    });
-  }
+    nextTokenResetDate: null,
+  });
 
   // Here we create the user's Firestore record
   // You can add any additional properties to the user object

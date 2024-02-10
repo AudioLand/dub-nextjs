@@ -5,11 +5,12 @@ import configuration from "~/configuration";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
-import { enhanceSumolingTier } from "~/lib/appsumo/actions/enhance-tier";
-import { reduceSumolingTier } from "~/lib/appsumo/actions/reduce-tier";
-import { refundSumoling } from "~/lib/appsumo/actions/refund";
 import { RequestActions } from "~/lib/appsumo/request-actions.enum";
 import { JWT_SECRET_KEY } from "../../../lib/appsumo/credentials";
+import { activateSumoling } from "./actions/activate-sumo-ling";
+import { enhanceTier } from "./actions/enhance-tier";
+import { reduceTier } from "./actions/reduce-tier";
+import { refundTier } from "./actions/refund-tier";
 
 const APPSUMO_AUTH_URL = `${configuration.site.siteUrl}${configuration.paths.appsumoAuthActivate}`;
 
@@ -49,18 +50,22 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const body = await Body.parseAsync(req.body);
 
+  if (!body.invoice_item_uuid) {
+    return res.status(400).send("invoice_item_uuid in not defined");
+  }
+
   switch (body.action) {
     case RequestActions.Activation:
-      // TODO: add activating email
-      if (!body.invoice_item_uuid) {
-        return res.status(400).send("invoice_item_uuid in not defined");
-      }
+      const authToken = await activateSumoling(
+        body.plan_id,
+        body.uuid,
+        body.activation_email,
+        body.invoice_item_uuid,
+      );
 
       const params = new URLSearchParams();
-      params.append("plan_id", body.plan_id);
       params.append("activation_email", body.activation_email);
-      params.append("uuid", body.uuid);
-      params.append("invoice_item_uuid", body.invoice_item_uuid);
+      params.append("token", authToken);
 
       return res.status(201).send({
         message: "product activated",
@@ -68,31 +73,28 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
       });
 
     case RequestActions.EnhanceTier:
-      // TODO: add enhancing tier
-      enhanceSumolingTier();
+      await enhanceTier(body.uuid, body.plan_id, body.invoice_item_uuid);
 
       return res.status(200).send({
         message: "product enhanced",
       });
 
     case RequestActions.ReduceTier:
-      // TODO: add reducing tier
-      reduceSumolingTier();
+      await reduceTier(body.uuid, body.plan_id, body.invoice_item_uuid);
 
       return res.status(200).send({
         message: "product reduced",
       });
 
     case RequestActions.Refund:
-      // TODO: add refunding
-      refundSumoling();
+      await refundTier(body.uuid, body.invoice_item_uuid);
 
       return res.status(200).send({
         message: "product refunded",
       });
   }
 
-  return res.status(400).send("Something wrong");
+  return res.status(400).send("Wrong body data");
 }
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];

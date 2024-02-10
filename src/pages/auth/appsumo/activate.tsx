@@ -18,7 +18,7 @@ const Activate: React.FCC = () => {
     void router.prefetch(appHomePath);
   }, [router]);
 
-  const onSignUp = useCallback(() => {
+  const onSumbit = useCallback(() => {
     return router.push(appHomePath);
   }, [router]);
 
@@ -28,7 +28,7 @@ const Activate: React.FCC = () => {
         <title key={"title"}>Activate an account</title>
       </Head>
 
-      <AppSumoEmailPasswordActivateContainer onSignUp={onSignUp} />
+      <AppSumoEmailPasswordActivateContainer onSumbit={onSumbit} />
     </AppSumoActivatePageLayout>
   );
 };

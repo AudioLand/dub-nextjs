@@ -1,39 +1,40 @@
 import { FirebaseError } from "firebase/app";
-import { User } from "firebase/auth";
-import { useCallback, useEffect, useRef } from "react";
+import {
+  Auth,
+  EmailAuthProvider,
+  User,
+  reauthenticateWithCredential,
+  signInWithEmailAndPassword,
+  updatePassword,
+} from "firebase/auth";
+import { useCallback, useEffect, useState } from "react";
 import useSWRMutation from "swr/mutation";
 
 import If from "~/core/ui/If";
 
-import { useSignUpWithEmailAndPassword } from "~/core/firebase/hooks";
-import { getFirebaseErrorCode } from "~/core/firebase/utils/get-firebase-error-code";
-
-import { Timestamp } from "firebase/firestore";
 import { useRouter } from "next/router";
-import configuration from "~/configuration";
+import { useSignInWithToken } from "~/core/firebase/hooks/use-sign-in-with-token";
+import { getFirebaseErrorCode } from "~/core/firebase/utils/get-firebase-error-code";
 import { useApiRequest } from "~/core/hooks/use-api";
 import useCreateServerSideSession from "~/core/hooks/use-create-server-side-session";
+import { isTokenExpired } from "~/lib/appsumo/hooks/is-token-expired";
 import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
 import AppSumoEmailPasswordActivateForm from "./AppSumoEmailPasswordActivateForm";
 import AuthErrorMessage from "./AuthErrorMessage";
-
 const AppSumoEmailPasswordActivateContainer: React.FCC<{
-  onSignUp: () => unknown;
+  onSumbit: () => unknown;
   onError?: (error: FirebaseError) => unknown;
-}> = ({ onSignUp, onError }) => {
+}> = ({ onSumbit, onError }) => {
   const router = useRouter();
   const [sessionRequest, sessionState] = useCreateServerSideSession();
-  const [signUp, state] = useSignUpWithEmailAndPassword();
-  const redirecting = useRef(false);
+  const [signInWithToken, state] = useSignInWithToken();
 
-  const planId = router.query.plan_id as string;
+  const [redirecting, setRedirecting] = useState<boolean>(false);
+
   const activationEmail = router.query.activation_email as string;
-  const uuid = router.query.uuid as string;
-  const invoiceItemUUID = router.query.invoice_item_uuid as string;
+  const authToken = router.query.token as string;
 
-  const sumolingSubscription = buildSumolingSubscription(planId);
-
-  const loading = state.loading || sessionState.loading || redirecting.current;
+  const loading = state.loading || sessionState.loading || redirecting;
 
   const callOnErrorCallback = useCallback(() => {
     if (state.error && onError) {
@@ -54,46 +55,28 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
     callOnErrorCallback();
   }, [callOnErrorCallback]);
 
-  //#region Onboarding
-  const onboarding = useCompleteOnboardingRequest();
-  const onboardingReq = useCallback(async () => {
-    // Get next token reset date
-    const newNextTokenResetDate = new Date();
-    newNextTokenResetDate.setMonth(newNextTokenResetDate.getMonth() + 1);
-    const newNextTokenResetTimestamp = Timestamp.fromDate(newNextTokenResetDate);
-
-    const data = {
-      organization: "Sumo-ling",
-      nextTokenResetDate: newNextTokenResetTimestamp.toMillis(),
-      sumolingUUID: uuid,
-      invoiceItemUUID: invoiceItemUUID,
-      sumolingSubscription: sumolingSubscription,
-    };
-    console.log("container", data);
-
-    await onboarding.trigger(data);
-  }, [onboarding, invoiceItemUUID, uuid, sumolingSubscription]);
-  //#endregion
-
-  const onSubmit = useCallback(
+  const onSubmitForm = useCallback(
     async (params: { email: string; password: string }) => {
       if (loading) {
         return;
       }
 
-      const credential = await signUp(params.email, params.password);
+      if (isTokenExpired(authToken)) {
+        throw Error("Token is expired");
+      }
+
+      const credential = await signInWithToken(authToken);
 
       if (credential) {
+        updatePassword(credential.user, params.password);
         await createSession(credential.user);
       }
 
-      await onboardingReq();
+      setRedirecting(true);
 
-      redirecting.current = true;
-
-      onSignUp();
+      onSumbit();
     },
-    [onSignUp, loading, signUp, onboardingReq, createSession],
+    [onSumbit, authToken, signInWithToken, loading, createSession],
   );
 
   return (
@@ -103,9 +86,9 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       </If>
 
       <AppSumoEmailPasswordActivateForm
-        onSubmit={onSubmit}
+        onSubmit={onSubmitForm}
         loading={loading}
-        redirecting={redirecting.current}
+        redirecting={redirecting}
         email={activationEmail}
       />
     </>
@@ -142,13 +125,16 @@ function useCompleteOnboardingRequest() {
 }
 //#endregion
 
-const STRIPE_PRODUCTS = configuration.stripe.products;
+async function getCredential(auth: Auth, params: { email: string; password: string }) {
+  const { email, password } = params;
 
-const buildSumolingSubscription = (planId: string) => {
-  const subscriptionPlan = STRIPE_PRODUCTS.find((product) => product.appsumoTier == planId);
-  const subscription: SumolingSubscription = {
-    product: subscriptionPlan!.stripeProductId!,
-    status: "active",
-  };
-  return subscription;
-};
+  const user = auth.currentUser;
+
+  if (user) {
+    const credential = EmailAuthProvider.credential(email, password);
+
+    return reauthenticateWithCredential(user, credential);
+  }
+
+  return signInWithEmailAndPassword(auth, email, password);
+}
