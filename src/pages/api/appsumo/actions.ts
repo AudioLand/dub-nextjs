@@ -5,14 +5,13 @@ import configuration from "~/configuration";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
-import { RequestActions } from "~/lib/appsumo/request-actions.enum";
-import { JWT_SECRET_KEY } from "../../../lib/appsumo/credentials";
-import { activateSumoling } from "~/lib/appsumo/actions/activate-user";
 import { enhanceSumolingTier } from "~/lib/appsumo/actions/enhance-tier";
 import { reduceSumolingTier } from "~/lib/appsumo/actions/reduce-tier";
 import { refundSumoling } from "~/lib/appsumo/actions/refund";
+import { RequestActions } from "~/lib/appsumo/request-actions.enum";
+import { JWT_SECRET_KEY } from "../../../lib/appsumo/credentials";
 
-const APPSUMO_AUTH_URL = configuration.paths.appsumoAuthActivate;
+const APPSUMO_AUTH_URL = `${configuration.site.siteUrl}${configuration.paths.appsumoAuthActivate}`;
 
 const getToken = (token?: string) => {
   return token?.split("Bearer ")[1];
@@ -53,11 +52,19 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (body.action) {
     case RequestActions.Activation:
       // TODO: add activating email
-      activateSumoling();
+      if (!body.invoice_item_uuid) {
+        return res.status(400).send("invoice_item_uuid in not defined");
+      }
+
+      const params = new URLSearchParams();
+      params.append("plan_id", body.plan_id);
+      params.append("activation_email", body.activation_email);
+      params.append("uuid", body.uuid);
+      params.append("invoice_item_uuid", body.invoice_item_uuid);
 
       return res.status(201).send({
         message: "product activated",
-        redirect_url: `${APPSUMO_AUTH_URL}?activation_email=${body.activation_email}`,
+        redirect_url: `${APPSUMO_AUTH_URL}?${params.toString()}`,
       });
 
     case RequestActions.EnhanceTier:
