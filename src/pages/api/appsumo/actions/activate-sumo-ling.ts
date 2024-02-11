@@ -14,13 +14,19 @@ export const activateSumoling = async (
 ) => {
   const auth = getAuth();
 
+  // Check if user with this uuid exists
   try {
     const user = await auth.getUser(uuid);
+
+    if (user) {
+      throw Error(`User with uuid ${uuid} already exists`);
+    }
   } catch (err: any) {
     const firestore = getRestFirestore();
     const batch = firestore.batch();
+
     // Create user in auth
-    const user = await auth.createUser({
+    const newUser = await auth.createUser({
       uid: uuid,
       email: activationEmail,
     });
@@ -50,9 +56,10 @@ export const activateSumoling = async (
       members: organizationMembers,
       usedTokensInSeconds: 0,
       nextTokenResetDate: newNextTokenResetTimestamp.toMillis(),
+      subscription: sumolingSubscription as OrganizationSubscription,
       sumolingUUID: uuid,
       invoiceItemUUID: invoiceItemUUID,
-      subscription: sumolingSubscription as OrganizationSubscription,
+      isSumolingActivated: false,
     });
 
     batch.set(userRef, {});
