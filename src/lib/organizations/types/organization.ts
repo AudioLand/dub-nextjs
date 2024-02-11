@@ -1,4 +1,3 @@
-import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
 import { FirestoreOrganizationMembership } from "./organization-membership";
 import { OrganizationSubscription } from "./organization-subscription";
 
@@ -18,4 +17,5 @@ export interface Organization extends BaseOrganization {
   nextTokenResetDate: UnixTimestamp | null;
   sumolingUUID?: string;
   invoiceItemUUID?: string;
+  isSumolingActivated?: boolean;
 }

@@ -17,7 +17,9 @@ import { useSignInWithToken } from "~/core/firebase/hooks/use-sign-in-with-token
 import { getFirebaseErrorCode } from "~/core/firebase/utils/get-firebase-error-code";
 import { useApiRequest } from "~/core/hooks/use-api";
 import useCreateServerSideSession from "~/core/hooks/use-create-server-side-session";
+import { isSumolingActivated } from "~/lib/appsumo/hooks/is-sumo-ling-activated";
 import { isTokenExpired } from "~/lib/appsumo/hooks/is-token-expired";
+import { setSumolingActivated } from "~/lib/appsumo/hooks/set-sumo-ling-activated";
 import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
 import AppSumoEmailPasswordActivateForm from "./AppSumoEmailPasswordActivateForm";
 import AuthErrorMessage from "./AuthErrorMessage";
@@ -68,8 +70,15 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       const credential = await signInWithToken(authToken);
 
       if (credential) {
-        updatePassword(credential.user, params.password);
-        await createSession(credential.user);
+        const user = credential.user;
+
+        const isActivated = await isSumolingActivated(user.uid);
+        if (!isActivated) {
+          updatePassword(user, params.password);
+          setSumolingActivated(user.uid);
+        }
+
+        await createSession(user);
       }
 
       setRedirecting(true);
