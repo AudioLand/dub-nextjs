@@ -18,7 +18,7 @@ const Activate: React.FCC = () => {
     void router.prefetch(subscriptionPath);
   }, [router]);
 
-  const onSumbit = useCallback(() => {
+  const onSubmit = useCallback(() => {
     return router.push(subscriptionPath);
   }, [router]);
 
@@ -28,7 +28,7 @@ const Activate: React.FCC = () => {
         <title key={"title"}>Activate an account</title>
       </Head>
 
-      <AppSumoEmailPasswordActivateContainer onSumbit={onSumbit} />
+      <AppSumoEmailPasswordActivateContainer onSubmit={onSubmit} />
     </AppSumoActivatePageLayout>
   );
 };

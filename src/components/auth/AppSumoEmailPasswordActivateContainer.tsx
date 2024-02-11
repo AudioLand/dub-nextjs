@@ -24,9 +24,9 @@ import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
 import AppSumoEmailPasswordActivateForm from "./AppSumoEmailPasswordActivateForm";
 import AuthErrorMessage from "./AuthErrorMessage";
 const AppSumoEmailPasswordActivateContainer: React.FCC<{
-  onSumbit: () => unknown;
+  onSubmit: () => unknown;
   onError?: (error: FirebaseError) => unknown;
-}> = ({ onSumbit, onError }) => {
+}> = ({ onSubmit, onError }) => {
   const router = useRouter();
   const [sessionRequest, sessionState] = useCreateServerSideSession();
   const [signInWithToken, state] = useSignInWithToken();
@@ -48,8 +48,12 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       // using the ID token, we will make a request to initiate the session
       // to make SSR possible via session cookie
       await sessionRequest(user);
+
+      if (redirecting) {
+        onSubmit();
+      }
     },
-    [sessionRequest],
+    [onSubmit, redirecting, sessionRequest],
   );
 
   useEffect(() => {
@@ -78,13 +82,10 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
         }
 
         await createSession(user);
+        setRedirecting(true);
       }
-
-      setRedirecting(true);
-
-      onSumbit();
     },
-    [onSumbit, authToken, signInWithToken, loading, createSession],
+    [authToken, signInWithToken, loading, createSession],
   );
 
   return (
@@ -94,7 +95,7 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       </If>
 
       <AppSumoEmailPasswordActivateForm
-        onSubmit={onSubmitForm}
+        onSubmitForm={onSubmitForm}
         loading={loading}
         redirecting={redirecting}
         email={activationEmail}
