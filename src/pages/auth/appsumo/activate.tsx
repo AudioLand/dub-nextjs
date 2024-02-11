@@ -9,17 +9,17 @@ import AppSumoEmailPasswordActivateContainer from "~/components/auth/AppSumoEmai
 import AppSumoActivatePageLayout from "~/components/auth/AppsumoActivatePageLayout";
 import { withAuthProps } from "~/lib/props/with-auth-props";
 
-const appHomePath = configuration.paths.settings.subscription;
+const subscriptionPath = configuration.paths.settings.subscription;
 
 const Activate: React.FCC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    void router.prefetch(appHomePath);
+    void router.prefetch(subscriptionPath);
   }, [router]);
 
   const onSumbit = useCallback(() => {
-    return router.push(appHomePath);
+    return router.push(subscriptionPath);
   }, [router]);
 
   return (
