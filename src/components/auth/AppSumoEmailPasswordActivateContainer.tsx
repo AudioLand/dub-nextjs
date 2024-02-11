@@ -74,8 +74,8 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
 
         const isActivated = await isSumolingActivated(user.uid);
         if (!isActivated) {
-          updatePassword(user, params.password);
-          setSumolingActivated(user.uid);
+          await updatePassword(user, params.password);
+          await setSumolingActivated(user.uid);
         }
 
         await createSession(user);
