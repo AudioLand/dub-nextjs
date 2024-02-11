@@ -1,28 +1,19 @@
 import { FirebaseError } from "firebase/app";
-import {
-  Auth,
-  EmailAuthProvider,
-  User,
-  reauthenticateWithCredential,
-  signInWithEmailAndPassword,
-  updatePassword,
-} from "firebase/auth";
+import { User, updatePassword } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
-import useSWRMutation from "swr/mutation";
 
 import If from "~/core/ui/If";
 
 import { useRouter } from "next/router";
 import { useSignInWithToken } from "~/core/firebase/hooks/use-sign-in-with-token";
 import { getFirebaseErrorCode } from "~/core/firebase/utils/get-firebase-error-code";
-import { useApiRequest } from "~/core/hooks/use-api";
 import useCreateServerSideSession from "~/core/hooks/use-create-server-side-session";
 import { isSumolingActivated } from "~/lib/appsumo/hooks/is-sumo-ling-activated";
 import { isTokenExpired } from "~/lib/appsumo/hooks/is-token-expired";
 import { setSumolingActivated } from "~/lib/appsumo/hooks/set-sumo-ling-activated";
-import { SumolingSubscription } from "~/lib/appsumo/sumo-ling-subscription";
 import AppSumoEmailPasswordActivateForm from "./AppSumoEmailPasswordActivateForm";
 import AuthErrorMessage from "./AuthErrorMessage";
+
 const AppSumoEmailPasswordActivateContainer: React.FCC<{
   onSubmit: () => unknown;
   onError?: (error: FirebaseError) => unknown;
@@ -49,11 +40,9 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
       // to make SSR possible via session cookie
       await sessionRequest(user);
 
-      if (redirecting) {
-        onSubmit();
-      }
+      onSubmit();
     },
-    [onSubmit, redirecting, sessionRequest],
+    [onSubmit, sessionRequest],
   );
 
   useEffect(() => {
@@ -77,12 +66,16 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
 
         const isActivated = await isSumolingActivated(user.uid);
         if (!isActivated) {
+          //* Update user because firstly authorize user with token
+          //* then user will sign in with this password
           await updatePassword(user, params.password);
+
           await setSumolingActivated(user.uid, true);
         }
 
-        await createSession(user);
         setRedirecting(true);
+
+        await createSession(user);
       }
     },
     [authToken, signInWithToken, loading, createSession],
@@ -105,45 +98,3 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
 };
 
 export default AppSumoEmailPasswordActivateContainer;
-
-// Сохранить текущий путь создания организации.
-// -> Отправить запрос на /api/onboarding
-
-//#region Onboarding
-
-interface CompleteOnboardingStepData {
-  organization: string;
-  nextTokenResetDate: number;
-  sumolingUUID: string;
-  invoiceItemUUID: string;
-  sumolingSubscription: SumolingSubscription;
-}
-
-function useCompleteOnboardingRequest() {
-  const fetcher = useApiRequest<void, CompleteOnboardingStepData>();
-
-  return useSWRMutation(
-    "/api/onboarding",
-    (path, { arg: body }: { arg: CompleteOnboardingStepData }) => {
-      return fetcher({
-        path,
-        body,
-      });
-    },
-  );
-}
-//#endregion
-
-async function getCredential(auth: Auth, params: { email: string; password: string }) {
-  const { email, password } = params;
-
-  const user = auth.currentUser;
-
-  if (user) {
-    const credential = EmailAuthProvider.credential(email, password);
-
-    return reauthenticateWithCredential(user, credential);
-  }
-
-  return signInWithEmailAndPassword(auth, email, password);
-}

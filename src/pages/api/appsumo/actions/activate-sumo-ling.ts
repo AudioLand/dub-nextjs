@@ -1,6 +1,5 @@
 import { getAuth } from "firebase-admin/auth";
-import { Timestamp } from "firebase-admin/firestore";
-import getRestFirestore from "~/core/firebase/admin/get-rest-firestore";
+import { Timestamp, getFirestore } from "firebase-admin/firestore";
 import { buildSumolingSubscription } from "~/lib/appsumo/hooks/build-sumo-ling-subscription";
 import { MembershipRole } from "~/lib/organizations/types/membership-role";
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
@@ -22,7 +21,7 @@ export const activateSumoling = async (
       throw Error(`User with uuid ${uuid} already exists`);
     }
   } catch (err: any) {
-    const firestore = getRestFirestore();
+    const firestore = getFirestore();
     const batch = firestore.batch();
 
     // Create user in auth
