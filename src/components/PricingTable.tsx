@@ -9,6 +9,7 @@ import If from "~/core/ui/If";
 
 import configuration from "~/configuration";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/core/ui/Tooltip";
+import { STRIPE_PRODUCTS } from "~/lib/stripe/stripe-products";
 
 interface CheckoutButtonProps {
   readonly stripePriceId?: string;
@@ -33,8 +34,6 @@ interface PricingItemProps {
     href?: string;
   };
 }
-
-const STRIPE_PRODUCTS = configuration.stripe.products;
 
 const STRIPE_PLANS = STRIPE_PRODUCTS.reduce<string[]>((acc, product) => {
   product.plans.forEach((plan) => {

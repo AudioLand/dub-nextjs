@@ -93,15 +93,18 @@ service cloud.firestore {
     }
 
     match /organizations/{organizationId} {
-      allow read: if userId() in existingData().members;
+      allow read: if true;
+      allow write: if true;
     }
 
-    match /users/{user} {
-      allow read: if userId() == user;
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if true;
     }
 
-    match /projects/{project} {
-      allow read, write;
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if true;
     }
   }
 }

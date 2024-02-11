@@ -6,11 +6,11 @@ import If from "~/core/ui/If";
 import TextField from "~/core/ui/TextField";
 
 const AppSumoEmailPasswordActivateForm: React.FCC<{
-  onSubmit: (params: { email: string; password: string; repeatPassword: string }) => unknown;
+  onSubmitForm: (params: { email: string; password: string; repeatPassword: string }) => unknown;
   loading: boolean;
   email: string;
   redirecting: boolean;
-}> = ({ onSubmit, loading, email, redirecting }) => {
+}> = ({ onSubmitForm, loading, email, redirecting }) => {
   const { t } = useTranslation();
 
   const { register, handleSubmit, watch, formState } = useForm({
@@ -50,7 +50,7 @@ const AppSumoEmailPasswordActivateForm: React.FCC<{
   });
 
   return (
-    <form className={"w-full"} onSubmit={handleSubmit(onSubmit)}>
+    <form className={"w-full"} onSubmit={handleSubmit(onSubmitForm)}>
       <div className={"flex-col space-y-4"}>
         {/* Email Field */}
         <TextField>
@@ -116,7 +116,7 @@ const AppSumoEmailPasswordActivateForm: React.FCC<{
             data-cy={"auth-submit-button"}
             className={"w-full"}
             type="submit"
-            disabled={redirecting}
+            disabled={redirecting || loading}
             loading={loading}
           >
             <If condition={loading} fallback={<span>Activate</span>}>
