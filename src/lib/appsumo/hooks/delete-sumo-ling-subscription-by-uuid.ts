@@ -5,9 +5,10 @@ export const deleteSumoLingSubscriptionByUUID = async (uuid: string, invoiceItem
   const organization = await getSumolingOrganizationByUUID(uuid);
 
   return organization.update({
-    subscription: FieldValue.delete(),
-    invoiceItemUUID: invoiceItemUUID,
     nextTokenResetDate: null,
     usedTokensInSeconds: 0,
+    subscription: FieldValue.delete(),
+    invoiceItemUUID: FieldValue.delete(),
+    sumolingUUID: FieldValue.delete(),
   });
 };
