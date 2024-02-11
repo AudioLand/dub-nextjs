@@ -1,14 +1,26 @@
-import { getOrganizationsCollection } from "~/lib/server/collections";
+import {
+  CollectionReference,
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+import { ORGANIZATIONS_COLLECTION } from "~/lib/firestore-collections";
+import { Organization } from "~/lib/organizations/types/organization";
 
-export const getSumolingOrganizationByUUID = async (uuid: string) => {
-  const { docs, size } = await getOrganizationsCollection()
-    .where("sumolingUUID", "==", uuid)
-    .limit(1)
-    .get();
+export const getSumoLingOrganizationByUUID = async (uuid: string | undefined) => {
+  const firestore = getFirestore();
 
-  if (!size) {
-    throw new Error(`No organization found with uuid ${uuid}`);
-  }
+  const collectionRef = collection(firestore, ORGANIZATIONS_COLLECTION) as CollectionReference<
+    WithId<Organization>
+  >;
 
-  return docs[0].ref;
+  const constraint = where("sumolingUUID", "==", uuid);
+  const organizationsQuery = query<WithId<Organization>>(collectionRef, constraint);
+
+  const organizationSnapshot = await getDocs(organizationsQuery);
+  const sumolingOrganization = organizationSnapshot.docs[0].data();
+
+  return sumolingOrganization;
 };

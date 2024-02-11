@@ -30,7 +30,6 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
   const router = useRouter();
   const [sessionRequest, sessionState] = useCreateServerSideSession();
   const [signInWithToken, state] = useSignInWithToken();
-
   const [redirecting, setRedirecting] = useState<boolean>(false);
 
   const activationEmail = router.query.activation_email as string;
@@ -75,7 +74,7 @@ const AppSumoEmailPasswordActivateContainer: React.FCC<{
         const isActivated = await isSumolingActivated(user.uid);
         if (!isActivated) {
           await updatePassword(user, params.password);
-          await setSumolingActivated(user.uid);
+          await setSumolingActivated(user.uid, true);
         }
 
         await createSession(user);

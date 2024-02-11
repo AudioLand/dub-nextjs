@@ -1,8 +1,8 @@
 import { FieldValue } from "firebase-admin/firestore";
-import { getSumolingOrganizationByUUID } from "./get-sumo-ling-organization-by-uuid";
+import { getSumolingOrganizationRefByUUID } from "./get-sumo-ling-organization-ref-by-uuid";
 
 export const deleteSumoLingSubscriptionByUUID = async (uuid: string, invoiceItemUUID: string) => {
-  const organization = await getSumolingOrganizationByUUID(uuid);
+  const organization = await getSumolingOrganizationRefByUUID(uuid);
 
   return organization.update({
     nextTokenResetDate: null,
