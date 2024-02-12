@@ -91,7 +91,7 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
       const params = new URLSearchParams();
       params.append("token", token);
 
-      return res.status(201).send({
+      return res.status(201).json({
         message: "product activated",
         redirect_url: `${APPSUMO_AUTH_URL}?${params.toString()}`,
       });
@@ -99,14 +99,14 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
     case RequestActions.EnhanceTier:
       await enhanceTier(body.uuid, body.plan_id);
 
-      return res.status(200).send({
+      return res.status(200).json({
         message: "product enhanced",
       });
 
     case RequestActions.ReduceTier:
       await reduceTier(body.uuid, body.plan_id);
 
-      return res.status(200).send({
+      return res.status(200).json({
         message: "product reduced",
       });
 
@@ -117,7 +117,7 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 
       await refundTier(body.uuid);
 
-      return res.status(200).send({
+      return res.status(200).json({
         message: "product refunded",
       });
 
@@ -128,7 +128,7 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 
       await updateInvoiceItemUUID(body.uuid, body.invoice_item_uuid);
 
-      return res.status(200).send({
+      return res.status(200).json({
         message: "product refunded",
       });
   }
