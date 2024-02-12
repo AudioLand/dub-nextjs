@@ -5,12 +5,10 @@ import { getSumolingOrganizationRefByUUID } from "./get-sumo-ling-organization-r
 export const updateSumoLingSubscriptionByUUID = async (
   uuid: string,
   subscription: SumolingSubscription,
-  invoiceItemUUID: string,
 ) => {
   const organization = await getSumolingOrganizationRefByUUID(uuid);
 
   return organization.update({
     subscription: subscription as OrganizationSubscription,
-    invoiceItemUUID,
   });
 };
