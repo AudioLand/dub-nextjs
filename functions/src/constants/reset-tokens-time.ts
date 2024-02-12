@@ -7,7 +7,7 @@
 // The fourth field represents months, and once more * represents "every value".
 // The fifth field represents weekdays, and * signifies "every value".
 
-// If env - Prod -> every month
+// If env - Prod -> every day
 // If env - Dev -> every minute (but it does not need or does not work)
 export const DELAY_TO_CHECK_USERS_TOKENS =
   process.env.NODE_ENV === "production" ? "0 0 * * *" : "* * * * *";
