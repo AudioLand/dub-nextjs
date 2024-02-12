@@ -27,7 +27,7 @@ async function authHandler(req: NextApiRequest, res: NextApiResponse) {
   if (body.username === APPSUMO_USERNAME && body.password === APPSUMO_PASSWORD) {
     const token = generateJWTToken(body.username);
 
-    return res.status(200).send({ access: token });
+    return res.status(200).json({ access: token });
   }
 
   return res.status(403).send("Something wrong");
