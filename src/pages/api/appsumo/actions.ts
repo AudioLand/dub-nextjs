@@ -11,6 +11,7 @@ import { isSumolingExists } from "~/lib/appsumo/actions/is-sumo-ling-exists";
 import { reduceTier } from "~/lib/appsumo/actions/reduce-tier";
 import { refundTier } from "~/lib/appsumo/actions/refund-tier";
 import { JWT_SECRET_KEY } from "~/lib/appsumo/credentials";
+import { updateInvoiceItemUUID } from "~/lib/appsumo/hooks/update-invoice-item-uuid";
 import { RequestActions } from "~/lib/appsumo/request-actions.enum";
 import { SumolingData } from "~/lib/appsumo/types/sumo-ling-data";
 
@@ -115,6 +116,17 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
       }
 
       await refundTier(body.uuid);
+
+      return res.status(200).send({
+        message: "product refunded",
+      });
+
+    case RequestActions.Update:
+      if (!body.invoice_item_uuid) {
+        return res.status(400).send("invoice_item_uuid in not defined");
+      }
+
+      await updateInvoiceItemUUID(body.uuid, body.invoice_item_uuid);
 
       return res.status(200).send({
         message: "product refunded",

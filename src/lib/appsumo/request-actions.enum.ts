@@ -3,4 +3,5 @@ export enum RequestActions {
   EnhanceTier = "enhance_tier",
   ReduceTier = "reduce_tier",
   Refund = "refund",
+  Update = "update",
 }
