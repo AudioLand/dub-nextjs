@@ -9,17 +9,17 @@ import AppSumoEmailPasswordActivateContainer from "~/components/auth/appsumo/App
 import AppSumoActivatePageLayout from "~/components/auth/appsumo/AppsumoActivatePageLayout";
 import { withAuthProps } from "~/lib/props/with-auth-props";
 
-const subscriptionPath = configuration.paths.settings.subscription;
+const subscriptionPathWithSource = `${configuration.paths.settings.subscription}?source=appsumo`;
 
 const Activate: React.FCC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    void router.prefetch(subscriptionPath);
+    void router.prefetch(subscriptionPathWithSource);
   }, [router]);
 
   const onSubmit = useCallback(() => {
-    return router.push(subscriptionPath);
+    return router.push(subscriptionPathWithSource);
   }, [router]);
 
   return (
@@ -32,7 +32,6 @@ const Activate: React.FCC = () => {
     </AppSumoActivatePageLayout>
   );
 };
-
 export default Activate;
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {

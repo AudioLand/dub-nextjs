@@ -1,7 +1,9 @@
 import classNames from "clsx";
 import { GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
 import { Trans } from "next-i18next";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 
 import SettingsPageContainer from "~/components/settings/SettingsPageContainer";
 import Plans from "~/components/subscriptions/Plans";
@@ -18,10 +20,20 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/core/ui/Tooltip";
 import { useIsSumolingUser } from "~/lib/appsumo/hooks/is-sumo-ling-user";
 import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
 import { STRIPE_PRODUCTS } from "~/lib/stripe/stripe-products";
+import Alert from "~/core/ui/Alert";
 
 const Subscription = () => {
+  const router = useRouter();
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const organization = useCurrentOrganization();
   const isUserSumoling = useIsSumolingUser();
+
+  useEffect(() => {
+    // If we have query param source=appsumo - then we need to show activation success text to sumoling
+    if (router.query.source === "appsumo") {
+      setShowSuccessMessage(true);
+    }
+  }, [router.query.source]);
 
   if (!organization) {
     return <></>;
@@ -41,6 +53,8 @@ const Subscription = () => {
 
         <div className="flex flex-col pl-6">
           <Heading type={3}>Your subscription</Heading>
+
+          {showSuccessMessage && <Alert type="success">Your account successfully activated!</Alert>}
 
           <SettingsTile>
             <div className={"flex flex-col"}>
