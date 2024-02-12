@@ -4,7 +4,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 import getRestFirestore from "~/core/firebase/admin/get-rest-firestore";
 import { withAdmin } from "~/core/middleware/with-admin";
-import { withAuthedUser } from "~/core/middleware/with-authed-user";
 import withCsrf from "~/core/middleware/with-csrf";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
