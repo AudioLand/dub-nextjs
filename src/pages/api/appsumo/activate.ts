@@ -25,18 +25,15 @@ async function sumolingOnboardingHandler(req: NextApiRequest, res: NextApiRespon
   const body = await Body.parseAsync(req.body);
   const auth = getAuth();
   const { userId, planId, uuid, invoiceItemUUID } = body;
-  console.log("body", body);
 
   const firestore = getRestFirestore();
   const batch = firestore.batch();
 
   // Create user in firestore
   const userRef = getUsersCollection().doc(userId);
-  console.log("created user");
 
   // Create organization in firestore
   const organizationRef = getOrganizationsCollection().doc(uuid);
-  console.log("created organization");
   const organizationMembers = {
     [userId]: {
       user: userRef,
