@@ -1,4 +1,4 @@
-import { JwtPayload, verify } from "jsonwebtoken";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 import configuration from "~/configuration";
@@ -7,8 +7,9 @@ import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
 import { RequestActions } from "~/lib/appsumo/request-actions.enum";
-import { activateSumoling } from "../../../lib/appsumo/actions/activate-sumo-ling";
+import { SumolingData } from "~/lib/appsumo/types/sumo-ling-data";
 import { enhanceTier } from "../../../lib/appsumo/actions/enhance-tier";
+import { isSumolingExists } from "../../../lib/appsumo/actions/is-sumo-ling-exists";
 import { reduceTier } from "../../../lib/appsumo/actions/reduce-tier";
 import { refundTier } from "../../../lib/appsumo/actions/refund-tier";
 import { JWT_SECRET_KEY } from "../../../lib/appsumo/credentials";
@@ -34,6 +35,24 @@ const isTokenExpired = (token: string) => {
   }
 };
 
+const generateJWTTokenWithSumolingData = ({
+  planId,
+  uuid,
+  activationEmail,
+  invoiceItemUUID,
+}: SumolingData) => {
+  const token = sign(
+    {
+      planId,
+      uuid,
+      activationEmail,
+      invoiceItemUUID,
+    },
+    JWT_SECRET_KEY,
+  );
+  return token;
+};
+
 const Body = z.object({
   action: z.string(),
   plan_id: z.string(),
@@ -51,22 +70,22 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const body = await Body.parseAsync(req.body);
 
-  if (!body.invoice_item_uuid) {
-    return res.status(400).send("invoice_item_uuid in not defined");
-  }
-
   switch (body.action) {
     case RequestActions.Activation:
-      const token = await activateSumoling({
+      if (!body.invoice_item_uuid) {
+        return res.status(400).send("invoice_item_uuid in not defined");
+      }
+
+      if (await isSumolingExists(body.uuid)) {
+        return res.status(400).send(`User with uuid ${body.uuid} is already exists`);
+      }
+
+      const token = generateJWTTokenWithSumolingData({
         planId: body.plan_id,
         uuid: body.uuid,
         activationEmail: body.activation_email,
         invoiceItemUUID: body.invoice_item_uuid,
       });
-
-      if (!token) {
-        return res.status(400).send(`User with uuid ${body.uuid} is already exists`);
-      }
 
       const params = new URLSearchParams();
       params.append("token", token);
@@ -77,20 +96,24 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
       });
 
     case RequestActions.EnhanceTier:
-      await enhanceTier(body.uuid, body.plan_id, body.invoice_item_uuid);
+      await enhanceTier(body.uuid, body.plan_id);
 
       return res.status(200).send({
         message: "product enhanced",
       });
 
     case RequestActions.ReduceTier:
-      await reduceTier(body.uuid, body.plan_id, body.invoice_item_uuid);
+      await reduceTier(body.uuid, body.plan_id);
 
       return res.status(200).send({
         message: "product reduced",
       });
 
     case RequestActions.Refund:
+      if (!body.invoice_item_uuid) {
+        return res.status(400).send("invoice_item_uuid in not defined");
+      }
+
       await refundTier(body.uuid, body.invoice_item_uuid);
 
       return res.status(200).send({
