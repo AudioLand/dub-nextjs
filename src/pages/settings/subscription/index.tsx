@@ -1,8 +1,8 @@
 import classNames from "clsx";
 import { GetServerSidePropsContext } from "next";
-import { useRouter } from "next/router";
 import { Trans } from "next-i18next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import SettingsPageContainer from "~/components/settings/SettingsPageContainer";
@@ -13,14 +13,15 @@ import { withAppProps } from "~/lib/props/with-app-props";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import SettingsTile from "~/components/settings/SettingsTile";
 import SubscriptionCard from "~/components/subscriptions/SubscriptionCard";
+import UpgradeSumolingTierButton from "~/components/subscriptions/UpgradeSumolingTierButton";
 import configuration from "~/configuration";
+import Alert from "~/core/ui/Alert";
 import Heading from "~/core/ui/Heading";
 import If from "~/core/ui/If";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/core/ui/Tooltip";
 import { useIsSumolingUser } from "~/lib/appsumo/hooks/is-sumo-ling-user";
 import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
 import { STRIPE_PRODUCTS } from "~/lib/stripe/stripe-products";
-import Alert from "~/core/ui/Alert";
 
 const Subscription = () => {
   const router = useRouter();
@@ -71,6 +72,8 @@ const Subscription = () => {
               />
             </div>
           </SettingsTile>
+
+          <UpgradeSumolingTierButton />
         </div>
       </SettingsPageContainer>
     );
