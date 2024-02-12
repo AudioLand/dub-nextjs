@@ -5,8 +5,8 @@ import { useCallback, useEffect } from "react";
 
 import configuration from "~/configuration";
 
-import AppSumoEmailPasswordActivateContainer from "~/components/auth/AppSumoEmailPasswordActivateContainer";
-import AppSumoActivatePageLayout from "~/components/auth/AppsumoActivatePageLayout";
+import AppSumoEmailPasswordActivateContainer from "~/components/auth/appsumo/AppSumoEmailPasswordActivateContainer";
+import AppSumoActivatePageLayout from "~/components/auth/appsumo/AppsumoActivatePageLayout";
 import { withAuthProps } from "~/lib/props/with-auth-props";
 
 const subscriptionPath = configuration.paths.settings.subscription;

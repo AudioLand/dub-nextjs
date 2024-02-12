@@ -2,15 +2,16 @@ import { JwtPayload, verify } from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 import configuration from "~/configuration";
+import { withAdmin } from "~/core/middleware/with-admin";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
 import { RequestActions } from "~/lib/appsumo/request-actions.enum";
+import { activateSumoling } from "../../../lib/appsumo/actions/activate-sumo-ling";
+import { enhanceTier } from "../../../lib/appsumo/actions/enhance-tier";
+import { reduceTier } from "../../../lib/appsumo/actions/reduce-tier";
+import { refundTier } from "../../../lib/appsumo/actions/refund-tier";
 import { JWT_SECRET_KEY } from "../../../lib/appsumo/credentials";
-import { activateSumoling } from "./actions/activate-sumo-ling";
-import { enhanceTier } from "./actions/enhance-tier";
-import { reduceTier } from "./actions/reduce-tier";
-import { refundTier } from "./actions/refund-tier";
 
 const APPSUMO_AUTH_URL = `${configuration.site.siteUrl}${configuration.paths.appsumoAuthActivate}`;
 
@@ -56,16 +57,19 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 
   switch (body.action) {
     case RequestActions.Activation:
-      const authToken = await activateSumoling(
-        body.plan_id,
-        body.uuid,
-        body.activation_email,
-        body.invoice_item_uuid,
-      );
+      const token = await activateSumoling({
+        planId: body.plan_id,
+        uuid: body.uuid,
+        activationEmail: body.activation_email,
+        invoiceItemUUID: body.invoice_item_uuid,
+      });
+
+      if (!token) {
+        return res.status(400).send(`User with uuid ${body.uuid} is already exists`);
+      }
 
       const params = new URLSearchParams();
-      params.append("activation_email", body.activation_email);
-      params.append("token", authToken);
+      params.append("token", token);
 
       return res.status(201).send({
         message: "product activated",
@@ -100,7 +104,7 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 export default function appsumoActionsHandler(req: NextApiRequest, res: NextApiResponse) {
-  const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), actionsHandler);
+  const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), withAdmin, actionsHandler);
 
   return withExceptionFilter(req, res)(handler);
 }
