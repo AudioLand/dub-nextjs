@@ -114,7 +114,7 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).send("invoice_item_uuid in not defined");
       }
 
-      await refundTier(body.uuid, body.invoice_item_uuid);
+      await refundTier(body.uuid);
 
       return res.status(200).send({
         message: "product refunded",
