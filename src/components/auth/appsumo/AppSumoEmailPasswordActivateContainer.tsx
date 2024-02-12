@@ -123,7 +123,7 @@ function useCompleteSumolingOnboardingRequest() {
   const fetcher = useApiRequest<void, CompleteSumolingOnboarding>();
 
   return useSWRMutation(
-    "/api/appsumo/activate",
+    "/api/appsumo/onboarding",
     (path, { arg: body }: { arg: CompleteSumolingOnboarding }) => {
       return fetcher({
         path,
