@@ -83,6 +83,8 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).send(`User with uuid ${body.uuid} is already exists`);
       }
 
+      await addSumolingInvoiceItem(body.plan_id, body.uuid, body.invoice_item_uuid);
+
       const token = generateJWTTokenWithSumolingData({
         planId: body.plan_id,
         uuid: body.uuid,
@@ -117,7 +119,8 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).send("invoice_item_uuid in not defined");
       }
 
-      await refundTier(body.plan_id, body.uuid, body.invoice_item_uuid);
+      await addSumolingInvoiceItem(body.plan_id, body.uuid, body.invoice_item_uuid);
+      await refundTier(body.uuid);
 
       return res.status(200).json({
         message: "product refunded",
