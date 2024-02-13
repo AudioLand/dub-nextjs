@@ -16,13 +16,12 @@ import { NextApiResponse } from "next";
  * )
  *
  */
-function withCors(res: NextApiResponse) {
-  res.setHeader("Access-Control-Allow-Origin", ["https://appsumo.com", "*"]);
-  // Possible origins - stripe, localhost
+function withCors(res: NextApiResponse, domain: string | ReadonlyArray<string>) {
+  res.setHeader("Access-Control-Allow-Origin", domain);
 
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, https://appsumo.com",
+    `Origin, X-Requested-With, Content-Type, Accept, referrer-path`,
   );
 }
 

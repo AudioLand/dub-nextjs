@@ -11,6 +11,7 @@ import { enhanceTier } from "~/lib/appsumo/actions/enhance-tier";
 import { isSumolingExists } from "~/lib/appsumo/actions/is-sumo-ling-exists";
 import { reduceTier } from "~/lib/appsumo/actions/reduce-tier";
 import { refundTier } from "~/lib/appsumo/actions/refund-tier";
+import { APPSUMO_DOMAIN } from "~/lib/appsumo/cors-domains";
 import { JWT_SECRET_KEY } from "~/lib/appsumo/credentials";
 import { addSumolingInvoiceItem } from "~/lib/appsumo/hooks/update-invoice-item-uuid";
 import { RequestActions } from "~/lib/appsumo/request-actions.enum";
@@ -140,14 +141,15 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 export default function appsumoActionsHandler(req: NextApiRequest, res: NextApiResponse) {
-  withCors(res);
   const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), withAdmin, actionsHandler);
 
+  withCors(res, APPSUMO_DOMAIN);
+
   if (req.method === `OPTIONS`) {
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader("Access-Control-Allow-Methods", "POST");
 
     return res.end();
- }
+  }
 
   return withExceptionFilter(req, res)(handler);
 }

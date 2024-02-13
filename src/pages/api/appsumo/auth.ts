@@ -2,15 +2,16 @@ import { sign } from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 
+import withCors from "~/core/middleware/with-cors";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
+import { APPSUMO_DOMAIN } from "~/lib/appsumo/cors-domains";
 import {
   APPSUMO_PASSWORD,
   APPSUMO_USERNAME,
   JWT_SECRET_KEY,
 } from "../../../lib/appsumo/credentials";
-import withCors from "~/core/middleware/with-cors";
 
 const Body = z.object({
   username: z.string(),
@@ -37,14 +38,15 @@ async function authHandler(req: NextApiRequest, res: NextApiResponse) {
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 export default function appsumoAuthHandler(req: NextApiRequest, res: NextApiResponse) {
-  withCors(res);
   const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), authHandler);
 
+  withCors(res, APPSUMO_DOMAIN);
+
   if (req.method === `OPTIONS`) {
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader("Access-Control-Allow-Methods", "POST");
 
     return res.end();
- }
+  }
 
   return withExceptionFilter(req, res)(handler);
 }
