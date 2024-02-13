@@ -88,8 +88,9 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
   const [languageErrorMessage, setLanguageErrorMessage] = useState<string>("");
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
 
-  const targetLanguages = useTargetLanguages();
+  const targetLanguages = useTargetLanguages(shouldUseAlexAPI);
   const availableVoices = filterVoicesByLanguage(newProject.targetLanguage, shouldUseAlexAPI);
+
   const isLanguageSelected = availableVoices.length === 0;
 
   const handleNameUpdate = (e: ChangeEvent<HTMLInputElement>) => {
