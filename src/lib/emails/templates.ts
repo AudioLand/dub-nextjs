@@ -8,4 +8,7 @@ export enum EmailTemplate {
   SuccessfulTokenPurchase = "SuccessfulTokenPurchase",
   UnsuccessfulPayment = "UnsuccessfulPayment",
   Welcome = "Welcome",
+
+  // AppSumo
+  SumolingActivation = "SumolingActivation",
 }

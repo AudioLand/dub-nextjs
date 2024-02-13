@@ -10,8 +10,6 @@ import {
 } from "~/lib/emails/hooks/get-event-email-template";
 import { EmailTemplate } from "~/lib/emails/templates";
 
-const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
-
 async function sendEmailHandler(req: NextApiRequest, res: NextApiResponse) {
   const { userEmail, emailTemplate, args } = req.body;
 
@@ -28,6 +26,8 @@ async function sendEmailHandler(req: NextApiRequest, res: NextApiResponse) {
 
   return res.send({ success: true });
 }
+
+const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 export default function emailsHandler(req: NextApiRequest, res: NextApiResponse) {
   const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), sendEmailHandler);

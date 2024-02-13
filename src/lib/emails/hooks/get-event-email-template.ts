@@ -6,18 +6,21 @@ import { getSubscriptionAutoRenewEmailTemplate } from "../templates/subscription
 import { getSubscriptionExpirationEmailTemplate } from "../templates/subscription-expiration";
 import { getSuccessfulProjectCompletionEmailTemplate } from "../templates/successful-project-completion";
 import { getSuccessfulSubscriptionEmailTemplate } from "../templates/successful-subscription";
+import { getSumolingActivationEmailTemplate } from "../templates/sumo-ling-activation";
 import { getUnsuccessfulPaymentEmailTemplate } from "../templates/unsuccessful-payment";
 import { getWelcomeEmailTemplate } from "../templates/welcome";
 
 export interface EmailTemplateArgs {
   returnUrl?: string;
   subscription?: OrganizationSubscription;
+  activationUrl?: string;
 }
 
 const templatesWithArgs = [
   EmailTemplate.ResetPassword,
   EmailTemplate.SubscriptionAutoRenew,
   EmailTemplate.SuccessfulSubscription,
+  EmailTemplate.SumolingActivation,
 ];
 
 export const getEventEmailTemplate = (emailTemplate: EmailTemplate, args?: EmailTemplateArgs) => {
@@ -63,6 +66,12 @@ export const getEventEmailTemplate = (emailTemplate: EmailTemplate, args?: Email
 
     case EmailTemplate.Welcome:
       return getWelcomeEmailTemplate();
+
+    case EmailTemplate.SumolingActivation:
+      if (!args?.activationUrl) {
+        throw new Error(`SumolingActivation email template require activationUrl argument.`);
+      }
+      return getSumolingActivationEmailTemplate(args.activationUrl);
 
     default:
       throw new Error(`Unknown email template ${emailTemplate}.`);
