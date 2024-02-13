@@ -17,8 +17,8 @@ export const useFetchSumolingLastInvoiceItemByUUID = (sumolingUUID: string) => {
   const invoicesQuery = query<WithId<SumolingInvoice>>(
     collectionRef,
     whereConstraint,
-    // orderConstraint,
-    // limitConstraint,
+    orderConstraint,
+    limitConstraint,
   );
 
   const { data: invoices, status } = useFirestoreCollectionData<WithId<SumolingInvoice>>(
