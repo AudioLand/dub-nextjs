@@ -1,4 +1,4 @@
-import { NextApiResponse } from 'next';
+import { NextApiResponse } from "next";
 
 /**
  * @name withCors
@@ -17,11 +17,11 @@ import { NextApiResponse } from 'next';
  *
  */
 function withCors(res: NextApiResponse) {
-  res.setHeader('Access-Control-Allow-Origin', 'appsumo.com');
+  res.setHeader("Access-Control-Allow-Origin", "https://appsumo.com");
 
   res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, referer-path'
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, https://appsumo.com",
   );
 }
 
