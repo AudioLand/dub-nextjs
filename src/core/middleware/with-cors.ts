@@ -17,7 +17,8 @@ import { NextApiResponse } from "next";
  *
  */
 function withCors(res: NextApiResponse) {
-  res.setHeader("Access-Control-Allow-Origin", "https://appsumo.com");
+  res.setHeader("Access-Control-Allow-Origin", ["https://appsumo.com", "*"]);
+  // Possible origins - stripe, localhost
 
   res.setHeader(
     "Access-Control-Allow-Headers",

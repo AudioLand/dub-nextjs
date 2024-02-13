@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 import configuration from "~/configuration";
 import { withAdmin } from "~/core/middleware/with-admin";
+import withCors from "~/core/middleware/with-cors";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
@@ -139,7 +140,14 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 export default function appsumoActionsHandler(req: NextApiRequest, res: NextApiResponse) {
+  withCors(res);
   const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), withAdmin, actionsHandler);
+
+  if (req.method === `OPTIONS`) {
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+
+    return res.end();
+ }
 
   return withExceptionFilter(req, res)(handler);
 }
