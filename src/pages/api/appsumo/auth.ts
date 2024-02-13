@@ -40,5 +40,11 @@ export default function appsumoAuthHandler(req: NextApiRequest, res: NextApiResp
   withCors(res);
   const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), authHandler);
 
+  if (req.method === `OPTIONS`) {
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+
+    return res.end();
+ }
+
   return withExceptionFilter(req, res)(handler);
 }
