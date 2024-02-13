@@ -1,20 +1,26 @@
-// flagsmith
-import flagsmith from "flagsmith";
+import { titleCase } from "title-case";
+import { AVAILABLE_LANGUAGES, LANGUAGES_AND_VOICES_CONFIG } from "../languages-and-voices-config";
 
-// constants
-import FEATURES_IDS_LIST from "~/core/flagsmith/features-ids-list";
+const getAvailableLanguagesByProvider = (provider: string) => {
+  return Array.from(
+    // Get unique languages
+    new Set(
+      LANGUAGES_AND_VOICES_CONFIG.filter((voice) => voice.provider === provider).flatMap(
+        (voice) => voice.languages,
+      ),
+    ),
+  );
+}
 
-const useTargetLanguages = () => {
-  const valueString: string = flagsmith.getValue(FEATURES_IDS_LIST.languages_list);
-  let targetLanguages: string[];
-  try {
-    targetLanguages = JSON.parse(valueString);
-  } catch (error) {
-    console.error("Failed to parse json of target languages:", error);
-    targetLanguages = [];
+const useTargetLanguages = (shouldUseAlexAPI: boolean) => {
+  // Get langs only with 11labs provider
+  if (shouldUseAlexAPI) {
+    const availableLanguages = getAvailableLanguagesByProvider('eleven_labs')
+    return availableLanguages.map(lang => titleCase(lang));
   }
 
-  return targetLanguages;
+  // Get all available languages in TTS config
+  return AVAILABLE_LANGUAGES;
 };
 
 export default useTargetLanguages;

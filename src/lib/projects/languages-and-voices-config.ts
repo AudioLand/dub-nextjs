@@ -1,3 +1,5 @@
+import { titleCase } from "title-case";
+
 export const PREVIEW_HOST_URL = "https://speechki-book.s3.amazonaws.com";
 
 export const LANGUAGES_AND_VOICES_CONFIG = [
@@ -7482,3 +7484,12 @@ export const LANGUAGES_AND_VOICES_CONFIG = [
     languages: ["tamil"],
   },
 ];
+
+export const AVAILABLE_LANGUAGES = Array.from(
+  // Get unique languages
+  new Set(
+    LANGUAGES_AND_VOICES_CONFIG.flatMap(
+      (voice) => voice.languages,
+    ),
+  ),
+).map(lang => titleCase(lang));
