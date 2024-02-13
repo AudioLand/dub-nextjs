@@ -106,5 +106,10 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    match /sumo-lings-invoices/{invoiceId} {
+      allow read: if true;
+      allow write: if true;
+    }
   }
 }

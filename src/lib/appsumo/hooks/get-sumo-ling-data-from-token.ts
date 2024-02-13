@@ -1,9 +1,10 @@
 import { jwtDecode } from "jwt-decode";
-import { SumolingData } from "../types/sumo-ling-data";
+import { AppSumoReqData } from "../types/sumo-ling-data";
 
 export const getSumolingDataFromToken = (token: string) => {
-  const decodedToken = jwtDecode(token) as SumolingData;
-  console.log("token data", decodedToken);
+  const sumolingData = jwtDecode(token) as AppSumoReqData;
 
-  return decodedToken;
+  return {
+    ...sumolingData,
+  };
 };

@@ -10,3 +10,4 @@ export const USERS_COLLECTION = `users`;
 export const ORGANIZATIONS_COLLECTION = `organizations`;
 export const INVITES_COLLECTION = `invites`;
 export const PROJECTS_COLLECTION = `projects`;
+export const INVOICES_COLLECTION = `sumo-lings-invoices`;

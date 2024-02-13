@@ -1,9 +1,19 @@
-import { getSumolingOrganizationRefByUUID } from "./get-sumo-ling-organization-ref-by-uuid";
+import { Timestamp } from "firebase-admin/firestore";
+import { getSumolingsInvoicesCollection } from "~/lib/server/collections";
 
-export const updateInvoiceItemUUID = async (uuid: string, invoiceItemUUID: string) => {
-  const organization = await getSumolingOrganizationRefByUUID(uuid);
+export const addSumolingInvoiceItem = async (
+  planId: string,
+  uuid: string,
+  invoiceItemUUID: string,
+) => {
+  const invoicesCollection = getSumolingsInvoicesCollection();
 
-  return organization.update({
+  const timestamp = Timestamp.fromDate(new Date());
+
+  return invoicesCollection.add({
+    planId,
+    uuid,
     invoiceItemUUID,
+    timestamp: timestamp.toMillis(),
   });
 };
