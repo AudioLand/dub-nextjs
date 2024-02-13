@@ -9,9 +9,14 @@ import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
 import { buildSumolingSubscription } from "~/lib/appsumo/hooks/build-sumo-ling-subscription";
+import { SumolingInvoice } from "~/lib/appsumo/types/sumo-ling-data";
 import { MembershipRole } from "~/lib/organizations/types/membership-role";
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
-import { getOrganizationsCollection, getUsersCollection } from "~/lib/server/collections";
+import {
+  getOrganizationsCollection,
+  getSumolingsInvoicesCollection,
+  getUsersCollection,
+} from "~/lib/server/collections";
 
 const Body = z.object({
   userId: z.string(),
@@ -40,6 +45,16 @@ async function sumolingOnboardingHandler(req: NextApiRequest, res: NextApiRespon
     },
   };
 
+  // Create sumo-ling ivoice in firestore
+  const sumolingInvoiceRef = getSumolingsInvoicesCollection().doc();
+  const invoiceTimestamp = Timestamp.fromDate(new Date());
+  const sumolingInvoice: SumolingInvoice = {
+    planId,
+    uuid,
+    invoiceItemUUID,
+    timestamp: invoiceTimestamp.toMillis(),
+  };
+
   // Get next token reset date
   const newNextTokenResetDate = new Date();
   newNextTokenResetDate.setMonth(newNextTokenResetDate.getMonth() + 1);
@@ -57,11 +72,12 @@ async function sumolingOnboardingHandler(req: NextApiRequest, res: NextApiRespon
 
     subscription: sumolingSubscription as OrganizationSubscription,
     sumolingUUID: uuid,
-    invoiceItemUUID: invoiceItemUUID,
     isSumolingActivated: true,
   });
 
   batch.set(userRef, {});
+
+  batch.set(sumolingInvoiceRef, sumolingInvoice);
 
   await batch.commit();
 

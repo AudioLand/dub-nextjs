@@ -11,9 +11,9 @@ import { isSumolingExists } from "~/lib/appsumo/actions/is-sumo-ling-exists";
 import { reduceTier } from "~/lib/appsumo/actions/reduce-tier";
 import { refundTier } from "~/lib/appsumo/actions/refund-tier";
 import { JWT_SECRET_KEY } from "~/lib/appsumo/credentials";
-import { updateInvoiceItemUUID } from "~/lib/appsumo/hooks/update-invoice-item-uuid";
+import { addSumolingInvoiceItem } from "~/lib/appsumo/hooks/update-invoice-item-uuid";
 import { RequestActions } from "~/lib/appsumo/request-actions.enum";
-import { SumolingData } from "~/lib/appsumo/types/sumo-ling-data";
+import { AppSumoReqData } from "~/lib/appsumo/types/sumo-ling-data";
 
 const APPSUMO_AUTH_URL = `${configuration.site.siteUrl}${configuration.paths.appsumoAuthActivate}`;
 
@@ -41,7 +41,7 @@ const generateJWTTokenWithSumolingData = ({
   uuid,
   activationEmail,
   invoiceItemUUID,
-}: SumolingData) => {
+}: AppSumoReqData) => {
   const token = sign(
     {
       planId,
@@ -115,7 +115,7 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).send("invoice_item_uuid in not defined");
       }
 
-      await refundTier(body.uuid);
+      await refundTier(body.plan_id, body.uuid, body.invoice_item_uuid);
 
       return res.status(200).json({
         message: "product refunded",
@@ -126,10 +126,10 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).send("invoice_item_uuid in not defined");
       }
 
-      await updateInvoiceItemUUID(body.uuid, body.invoice_item_uuid);
+      await addSumolingInvoiceItem(body.plan_id, body.uuid, body.invoice_item_uuid);
 
       return res.status(200).json({
-        message: "product refunded",
+        message: "product updated",
       });
   }
 

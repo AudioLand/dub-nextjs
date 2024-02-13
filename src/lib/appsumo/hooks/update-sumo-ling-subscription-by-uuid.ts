@@ -1,5 +1,5 @@
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
-import { SumolingSubscription } from "../sumo-ling-subscription";
+import { SumolingSubscription } from "../types/sumo-ling-subscription";
 import { getSumolingOrganizationRefByUUID } from "./get-sumo-ling-organization-ref-by-uuid";
 
 export const updateSumoLingSubscriptionByUUID = async (

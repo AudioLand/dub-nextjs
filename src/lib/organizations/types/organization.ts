@@ -16,6 +16,5 @@ export interface Organization extends BaseOrganization {
   usedTokensInSeconds: number;
   nextTokenResetDate: UnixTimestamp | null;
   sumolingUUID?: string;
-  invoiceItemUUID?: string;
   isSumolingActivated?: boolean;
 }

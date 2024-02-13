@@ -1,17 +1,13 @@
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import classNames from "clsx";
 import { GetServerSidePropsContext } from "next";
 import { Trans } from "next-i18next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
 import SettingsPageContainer from "~/components/settings/SettingsPageContainer";
-import Plans from "~/components/subscriptions/Plans";
-
-import { withAppProps } from "~/lib/props/with-app-props";
-
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import SettingsTile from "~/components/settings/SettingsTile";
+import Plans from "~/components/subscriptions/Plans";
 import SubscriptionCard from "~/components/subscriptions/SubscriptionCard";
 import UpgradeSumolingTierButton from "~/components/subscriptions/UpgradeSumolingTierButton";
 import configuration from "~/configuration";
@@ -21,6 +17,7 @@ import If from "~/core/ui/If";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/core/ui/Tooltip";
 import { useIsSumolingUser } from "~/lib/appsumo/hooks/is-sumo-ling-user";
 import { useCurrentOrganization } from "~/lib/organizations/hooks/use-current-organization";
+import { withAppProps } from "~/lib/props/with-app-props";
 import { STRIPE_PRODUCTS } from "~/lib/stripe/stripe-products";
 
 const Subscription = () => {
@@ -34,7 +31,7 @@ const Subscription = () => {
     if (router.query.source === "appsumo") {
       setShowSuccessMessage(true);
     }
-  }, [router.query.source]);
+  }, [router.query.source, showSuccessMessage]);
 
   if (!organization) {
     return <></>;
@@ -55,11 +52,16 @@ const Subscription = () => {
         <div className="flex flex-col pl-6">
           <Heading type={3}>Your subscription</Heading>
 
-          {showSuccessMessage && <Alert type="success">Your account successfully activated!</Alert>}
+          <If condition={showSuccessMessage}>
+            <Alert className="mt-2" type="success">
+              Your account successfully activated!
+            </Alert>
+          </If>
 
           <SettingsTile>
             <div className={"flex flex-col"}>
               <SubscriptionCard subscription={organization.subscription!} />
+
               <PricingItem
                 plan={{
                   name: subscriptionPlan?.name,

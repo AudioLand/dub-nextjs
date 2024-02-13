@@ -1,5 +1,5 @@
 import { STRIPE_PRODUCTS } from "~/lib/stripe/stripe-products";
-import { SumolingSubscription } from "../sumo-ling-subscription";
+import { SumolingSubscription } from "../types/sumo-ling-subscription";
 
 export const buildSumolingSubscription = (planId: string) => {
   const subscriptionPlan = STRIPE_PRODUCTS.find((product) => product.appsumoTier == planId);

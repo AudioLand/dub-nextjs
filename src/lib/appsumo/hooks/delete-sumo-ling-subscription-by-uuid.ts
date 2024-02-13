@@ -8,7 +8,6 @@ export const deleteSumoLingSubscriptionByUUID = async (uuid: string) => {
     nextTokenResetDate: null,
     usedTokensInSeconds: 0,
     subscription: FieldValue.delete(),
-    invoiceItemUUID: FieldValue.delete(),
     sumolingUUID: FieldValue.delete(),
     isSumolingActivated: FieldValue.delete(),
   });
