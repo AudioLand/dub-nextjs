@@ -1,9 +1,7 @@
-name: Deploy to Firebase
+name: Deploy to PROD Firebase (only manual run)
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   all-is-okey:
@@ -27,14 +25,14 @@ jobs:
     - name: Install Firebase CLI
       run: npm install -g firebase-tools@latest
 
-    - name: Select DEV Project for Deploy
-      run: firebase use dev --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
+    - name: Select PROD Project for Deploy
+      run: firebase use prod --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
 
-    - name: Deploy Firestore rules to DEV Project
+    - name: Deploy Firestore rules to PROD Project
       run: firebase deploy --only firestore:rules --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
 
-    - name: Deploy Storage rules to DEV Project
+    - name: Deploy Storage rules to PROD Project
       run: firebase deploy --only storage --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
 
-    - name: Deploy Functions to DEV Project
+    - name: Deploy Functions to PROD Project
       run: firebase deploy --only functions --token ${{ secrets.FIREBASE_AUTH_TOKEN }}
