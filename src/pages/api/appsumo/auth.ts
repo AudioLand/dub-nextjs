@@ -10,6 +10,7 @@ import {
   APPSUMO_USERNAME,
   JWT_SECRET_KEY,
 } from "../../../lib/appsumo/credentials";
+import withCors from "~/core/middleware/with-cors";
 
 const Body = z.object({
   username: z.string(),
@@ -36,6 +37,7 @@ async function authHandler(req: NextApiRequest, res: NextApiResponse) {
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
 
 export default function appsumoAuthHandler(req: NextApiRequest, res: NextApiResponse) {
+  withCors(res);
   const handler = withPipe(withMethodsGuard(SUPPORTED_HTTP_METHODS), authHandler);
 
   return withExceptionFilter(req, res)(handler);

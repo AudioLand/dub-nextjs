@@ -17,7 +17,7 @@ import { NextApiResponse } from 'next';
  *
  */
 function withCors(res: NextApiResponse) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'appsumo.com');
 
   res.setHeader(
     'Access-Control-Allow-Headers',
