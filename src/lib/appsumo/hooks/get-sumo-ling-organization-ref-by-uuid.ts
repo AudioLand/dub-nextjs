@@ -7,7 +7,7 @@ export const getSumolingOrganizationRefByUUID = async (uuid: string) => {
     .get();
 
   if (!size) {
-    throw new Error(`No organization found with uuid ${uuid}`);
+    throw new Error(`No organization found with sumolingUUID ${uuid}`);
   }
 
   return docs[0].ref;
