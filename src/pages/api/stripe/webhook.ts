@@ -23,8 +23,8 @@ import {
   updateSubscriptionById,
 } from "~/lib/server/organizations/subscriptions";
 
-import sendEmailWithApi from "~/lib/emails/hooks/send-email-with-api";
-import { EmailTemplate } from "~/lib/emails/templates";
+import { EmailTemplate } from "~/lib/emails/email-templates.enum";
+import { sendEmail } from "~/lib/emails/hooks/send-email";
 import { buildOrganizationSubscription } from "~/lib/stripe/build-organization-subscription";
 
 const SUPPORTED_HTTP_METHODS: HttpMethod[] = ["POST"];
@@ -86,7 +86,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
         //* Send email that subscription is successful
         if (userEmail) {
           const organizationSubscription = buildOrganizationSubscription(subscription);
-          sendEmailWithApi(userEmail, EmailTemplate.SuccessfulSubscription, {
+          await sendEmail(userEmail, EmailTemplate.SuccessfulSubscription, {
             subscription: organizationSubscription,
           });
         } else {
@@ -115,7 +115,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
         //* Send email that subscription renew payment is successful
         if (userEmail) {
           const organizationSubscription = buildOrganizationSubscription(subscription);
-          sendEmailWithApi(userEmail, EmailTemplate.SubscriptionAutoRenew, {
+          await sendEmail(userEmail, EmailTemplate.SubscriptionAutoRenew, {
             subscription: organizationSubscription,
           });
         } else {
@@ -134,7 +134,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
         //* Send email that subscription renew payment is successful
         if (userEmail) {
           const organizationSubscription = buildOrganizationSubscription(subscription);
-          sendEmailWithApi(userEmail, EmailTemplate.SubscriptionAutoRenew, {
+          await sendEmail(userEmail, EmailTemplate.SubscriptionAutoRenew, {
             subscription: organizationSubscription,
           });
         } else {
@@ -150,7 +150,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
         //* Send email that subscription payment is upcoming
         if (userEmail) {
-          sendEmailWithApi(userEmail, EmailTemplate.SubscriptionExpiration);
+          await sendEmail(userEmail, EmailTemplate.SubscriptionExpiration);
         } else {
           console.error("User email is not defined in Stripe upcoming invoice event");
         }
@@ -164,7 +164,7 @@ async function checkoutWebhooksHandler(req: NextApiRequest, res: NextApiResponse
 
         //* Send email that subscription payment is failed
         if (userEmail) {
-          sendEmailWithApi(userEmail, EmailTemplate.UnsuccessfulPayment);
+          await sendEmail(userEmail, EmailTemplate.UnsuccessfulPayment);
         } else {
           console.error("User email is not defined in Stripe failed invoice event");
         }
