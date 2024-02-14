@@ -6,7 +6,6 @@ import { MembershipInvite } from "~/lib/organizations/types/membership-invite";
 import { MembershipRole } from "~/lib/organizations/types/membership-role";
 
 import configuration from "~/configuration";
-import { sendEmail } from "~/core/email/send-email";
 import { getUserInfoById } from "~/core/firebase/admin/auth/get-user-info-by-id";
 
 import logger from "~/core/logger";
@@ -170,11 +169,7 @@ function sendInviteEmail(props: {
     inviter,
   });
 
-  return sendEmail({
-    to: invitedUserEmail,
-    subject,
-    html,
-  });
+  // return sendEmail(invitedUserEmail, subject, html);
 }
 
 /**
