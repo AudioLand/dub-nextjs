@@ -6,8 +6,8 @@ import withCsrf from "~/core/middleware/with-csrf";
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
-import sendEmailWithApi from "~/lib/emails/hooks/send-email-with-api";
-import { EmailTemplate } from "~/lib/emails/templates";
+import { EmailTemplate } from "~/lib/emails/email-templates.enum";
+import { sendEmail } from "~/lib/emails/hooks/send-email";
 import { completeOnboarding } from "~/lib/server/onboarding/complete-onboarding";
 
 const Body = z.object({
@@ -30,7 +30,7 @@ async function onboardingHandler(req: NextApiRequest, res: NextApiResponse) {
 
   //* Send welcome email to user
   if (userEmail) {
-    sendEmailWithApi(userEmail, EmailTemplate.Welcome);
+    await sendEmail(userEmail, EmailTemplate.Welcome);
   } else {
     console.error("User email is not defined in registration request");
   }

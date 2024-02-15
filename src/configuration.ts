@@ -86,9 +86,10 @@ const configuration = {
     style: LayoutStyle.Sidebar,
   },
   appCheckSiteKey: process.env.NEXT_PUBLIC_APPCHECK_KEY,
-  emailEtherealTestAccount: {
-    email: process.env.ETHEREAL_EMAIL,
-    password: process.env.ETHEREAL_PASSWORD,
+  emails: {
+    apiKey: process.env.NEXT_PUBLIC_RESEND_API_KEY,
+    sender: process.env.NEXT_PUBLIC_EMAIL_FROM_SENDER,
+    address: process.env.NEXT_PUBLIC_EMAIL_FROM_ADDRESS,
   },
   sentry: {
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,

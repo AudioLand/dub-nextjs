@@ -16,6 +16,8 @@ import { JWT_SECRET_KEY } from "~/lib/appsumo/credentials";
 import { addSumolingInvoiceItem } from "~/lib/appsumo/hooks/update-invoice-item-uuid";
 import { RequestActions } from "~/lib/appsumo/request-actions.enum";
 import { AppSumoReqData } from "~/lib/appsumo/types/sumo-ling-data";
+import { EmailTemplate } from "~/lib/emails/email-templates.enum";
+import { sendEmail } from "~/lib/emails/hooks/send-email";
 
 const APPSUMO_AUTH_URL = `${configuration.site.siteUrl}${configuration.paths.appsumoAuthActivate}`;
 
@@ -96,10 +98,10 @@ async function actionsHandler(req: NextApiRequest, res: NextApiResponse) {
       params.append("token", token);
       const activationUrl = `${APPSUMO_AUTH_URL}?${params.toString()}`;
 
-      // TODO: send activation url to sumo-ling email
-      // await sendEmailWithApi(body.activation_email, EmailTemplate.SumolingActivation, {
-      //   activationUrl,
-      // });
+      // Send activation url to sumo-ling
+      await sendEmail(body.activation_email, EmailTemplate.SumolingActivation, {
+        activationUrl,
+      });
 
       return res.status(201).json({
         message: "product activated",

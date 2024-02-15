@@ -32,7 +32,7 @@ import { estimateProjectDuration } from "~/lib/projects/video";
 import { OUR_PIPELINE_URL, RASK_PIPELINE_URL } from "~/core/ml-pipeline/url";
 import { PREVIEW_HOST_URL } from "~/lib/projects/languages-and-voices-config";
 import { SPEAKERS_COUNT_LIST } from "~/lib/projects/speakers";
-import { RASK_STORAGE_BUCKET, STORAGE_BUCKET } from "~/lib/projects/storage-buckets";
+import { ALEX_STORAGE_BUCKET, STORAGE_BUCKET } from "~/lib/projects/storage-buckets";
 import { filterVoicesByLanguage } from "~/lib/projects/voices";
 
 // types
@@ -174,7 +174,7 @@ const CreateProjectForm: FC<CreateProjectFormProps> = (props) => {
     //* Upload file to google cloud storage
     let publicUrl, filePathInBucket;
     try {
-      const bucketName = shouldUseAlexAPI ? RASK_STORAGE_BUCKET : STORAGE_BUCKET;
+      const bucketName = shouldUseAlexAPI ? ALEX_STORAGE_BUCKET : STORAGE_BUCKET;
       const data = await uploadFileToStorage(userMediaFile!, userId, createdProject.id, bucketName);
       publicUrl = data.publicUrl;
       filePathInBucket = data.filePathInBucket;

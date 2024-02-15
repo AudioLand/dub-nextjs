@@ -1,5 +1,5 @@
 import { OrganizationSubscription } from "~/lib/organizations/types/organization-subscription";
-import { EmailTemplate } from "../templates";
+import { EmailTemplate } from "../email-templates.enum";
 import { getProjectErrorEmailTemplate } from "../templates/project-error";
 import { getResetPasswordEmailTemplate } from "../templates/reset-password";
 import { getSubscriptionAutoRenewEmailTemplate } from "../templates/subscription-auto-renew";

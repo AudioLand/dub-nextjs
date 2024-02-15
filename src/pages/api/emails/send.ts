@@ -1,28 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { sendEmail } from "~/core/email/send-email";
-
 import { withExceptionFilter } from "~/core/middleware/with-exception-filter";
 import { withMethodsGuard } from "~/core/middleware/with-methods-guard";
 import { withPipe } from "~/core/middleware/with-pipe";
-import {
-  EmailTemplateArgs,
-  getEventEmailTemplate,
-} from "~/lib/emails/hooks/get-event-email-template";
-import { EmailTemplate } from "~/lib/emails/templates";
+import { sendEmail } from "~/lib/emails/hooks/send-email";
 
 async function sendEmailHandler(req: NextApiRequest, res: NextApiResponse) {
   const { userEmail, emailTemplate, args } = req.body;
 
-  const htmlTemplate = getEventEmailTemplate(
-    emailTemplate as EmailTemplate,
-    args as EmailTemplateArgs,
-  );
-
-  await sendEmail({
-    to: userEmail,
-    subject: htmlTemplate.subject,
-    html: htmlTemplate.html,
-  });
+  await sendEmail(userEmail, emailTemplate, args);
 
   return res.send({ success: true });
 }
